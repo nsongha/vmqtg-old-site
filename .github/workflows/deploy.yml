@@ -22,9 +22,14 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Combine old + new site artifacts
+        run: |
+          mkdir -p _deploy
+          cp -r site/. _deploy/
+          cp -r vmqtg-new-site _deploy/vmqtg-new-site
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: _deploy
       - id: deployment
         uses: actions/deploy-pages@v4
 
