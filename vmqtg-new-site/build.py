@@ -1269,8 +1269,8 @@ def build_home():
       <div class="quickbar__icon">{ICON_TICKET}</div>
       <div>
         <div class="quickbar__label">Giá vé</div>
-        <div class="quickbar__value">70.000đ / người lớn</div>
-        <div class="quickbar__meta">35.000đ sinh viên · miễn phí dưới 15 tuổi</div>
+        <div class="quickbar__value">30.000đ / người lớn</div>
+        <div class="quickbar__meta">15.000đ HS/SV · miễn phí dưới 15 tuổi</div>
       </div>
     </div>
     <div class="quickbar__item">
@@ -1426,12 +1426,12 @@ def build_home():
       <div class="visit__tips">
         <h3>Thông tin cho du khách</h3>
         <ul>
-          <li><strong>Giờ mở cửa</strong><span>07:30 – 18:00 (tháng 4 – 10) · 08:00 – 17:00 (tháng 11 – 3)</span></li>
-          <li><strong>Giá vé</strong><span>70.000đ người lớn · 35.000đ sinh viên · Miễn phí trẻ em &lt;15 tuổi</span></li>
+          <li><strong>Giờ mở cửa</strong><span>07:30 – 18:00 (mùa hè) · 08:00 – 17:00 (mùa đông)</span></li>
+          <li><strong>Giá vé</strong><span>30.000đ người lớn · 15.000đ HS/SV &amp; người &gt;60 · Miễn phí trẻ &lt;15</span></li>
           <li><strong>Thời gian tham quan</strong><span>Đề xuất 60 – 90 phút cho toàn bộ năm khu nội tự</span></li>
-          <li><strong>Hướng dẫn viên</strong><span>Tiếng Việt, Anh, Pháp · đặt trước 24 giờ</span></li>
-          <li><strong>Audio guide</strong><span>Máy nghe thuyết minh đa ngôn ngữ (VI/EN/FR/CN/JP/KR)</span></li>
-          <li><strong>Tiện ích</strong><span>Bãi đỗ xe · WC · Quầy lưu niệm · Quán trà</span></li>
+          <li><strong>Thuyết minh viên</strong><span>Việt · Anh · Trung · Pháp — đặt qua 024.3823.5601</span></li>
+          <li><strong>Thuyết minh tự động</strong><span>8 ngôn ngữ · 30.000đ (VI) · 50.000đ (ngoại ngữ)</span></li>
+          <li><strong>Tiện ích</strong><span>Bãi đỗ ô tô · bãi xe máy vườn Giám · café · hàng ăn · lưu niệm</span></li>
         </ul>
         <div class="visit__cta">
           <a href="#mua-ve" class="btn btn--primary">Đặt vé trực tuyến {ICON_ARROW}</a>
@@ -1647,12 +1647,12 @@ def build_tham_quan():
         'allowfullscreen title="Bản đồ Văn Miếu – Quốc Tử Giám"></iframe>'
     )
 
-    # Transport data
+    # Transport / parking data (real from Các tiện ích.docx)
     transports = [
-        (ICON_BUS,   "Xe buýt",       "Tuyến 02, 23, 38, 41 · Dừng tại bến Văn Miếu"),
-        (ICON_TRAIN, "Tàu điện",      "Metro Line 2 (đang quy hoạch) · Gần nhất: ga Chợ Dừa"),
-        (ICON_CAR,   "Xe máy / Ô tô", "Bãi đỗ xe vỉa Văn Miếu · Phí theo giờ"),
-        (ICON_TAXI,  "Taxi / Grab",   "Khu đón/trả khách tại cổng chính Văn Miếu"),
+        (ICON_CAR,   "Bãi đỗ ô tô",         "Phố Văn Miếu"),
+        (ICON_BUS,   "Bãi đỗ xe máy · xe đạp", "Tại vườn Giám"),
+        (ICON_TAXI,  "Taxi · Grab",          "Đón trả tại 58 Quốc Tử Giám"),
+        (ICON_PIN,   "Đi bộ · xe buýt",      "Xem tuyến trên Google Maps"),
     ]
     transport_html = "".join(f"""
 <div class="transport-card">
@@ -1661,16 +1661,16 @@ def build_tham_quan():
   <p>{desc}</p>
 </div>""" for icon, title, desc in transports)
 
-    # Amenities
+    # Amenities (real from Các tiện ích.docx + Dịch vụ tham quan.docx)
     amenities = [
-        (ICON_USER_GUIDE, "Hướng dẫn viên",    "Việt · Anh · Pháp"),
-        (ICON_HEADPHONE,  "Thuyết minh audio", "6 ngôn ngữ"),
-        (ICON_WIFI,       "Wifi miễn phí",     "Toàn khuôn viên"),
-        (ICON_RESTROOM,   "Nhà vệ sinh",       "4 điểm trong di tích"),
-        (ICON_COFFEE,     "Cafe &amp; Snack",  "Tại Khu Thái Học"),
-        (ICON_GIFT,       "Khu lưu niệm",      "Quà tặng văn hoá"),
-        (ICON_BENCH,      "Ghế nghỉ",          "Rải rác khắp di tích"),
-        (ICON_MAP_ICON,   "Sơ đồ in",          "Tại quầy bán vé"),
+        (ICON_USER_GUIDE, "Thuyết minh viên",    "VI · EN · CN · FR"),
+        (ICON_HEADPHONE,  "Thuyết minh tự động", "8 ngôn ngữ"),
+        (ICON_COFFEE,     "Café",                "Trong khuôn viên"),
+        (ICON_GIFT,       "Đồ lưu niệm",         "Quà tặng văn hoá"),
+        (ICON_BENCH,      "Hàng ăn",             "Tại khuôn viên"),
+        (ICON_CAR,        "Bãi đỗ ô tô",         "Phố Văn Miếu"),
+        (ICON_MAP_ICON,   "Bãi xe máy · xe đạp", "Vườn Giám"),
+        (ICON_PHONE,      "Đặt dịch vụ",         "024.3823.5601"),
     ]
     amenity_html = "".join(f"""
 <div class="amenity">
@@ -1679,52 +1679,8 @@ def build_tham_quan():
   <p>{desc}</p>
 </div>""" for icon, title, desc in amenities)
 
-    # Tours
-    tour_day_img   = _find_image("cong-thai-hoc") or _find_image("cong-dai-thanh") or hero_img
-    tour_night_img = _find_image("vuon-bia") or _find_image("dai-thanh") or hero_img
-
-    tours_html = f"""
-<div class="tour-grid">
-  <div class="tour-card">
-    <div class="tour-card__media" style="background-image:url('{tour_day_img}')">
-      <span class="tour-card__tag">Ban ngày</span>
-    </div>
-    <div class="tour-card__body">
-      <div class="tour-card__meta">
-        <span class="duration">{ICON_CLOCK} 1,5 giờ</span>
-        <span class="price">200.000 đ/người</span>
-      </div>
-      <h3>Tour Ban Ngày</h3>
-      <p>Tìm hiểu lịch sử Nho giáo và hành trình giáo dục qua các triều đại. Chiêm ngưỡng kiến trúc cổ và bia tiến sĩ.</p>
-      <ul>
-        <li>Tham quan 5 khu di tích chính</li>
-        <li>Hướng dẫn viên chuyên nghiệp</li>
-        <li>Ngôn ngữ: Tiếng Việt, Tiếng Anh</li>
-      </ul>
-      <a href="#dat-tour" class="btn btn--light tour-card__cta">Đặt tour ban ngày {ICON_ARROW}</a>
-    </div>
-  </div>
-  <div class="tour-card">
-    <div class="tour-card__media" style="background-image:url('{tour_night_img}')">
-      <span class="tour-card__tag">Tour đêm</span>
-    </div>
-    <div class="tour-card__body">
-      <div class="tour-card__meta">
-        <span class="duration">{ICON_CLOCK} 2 giờ</span>
-        <span class="price">199.000 – 350.000 đ</span>
-      </div>
-      <h3>Tour Đêm Văn Miếu</h3>
-      <p>Hoà mình vào không gian huyền bí của Văn Miếu khi màn đêm buông xuống. Ánh sáng nghệ thuật, âm nhạc dân tộc và trải nghiệm văn hoá độc đáo.</p>
-      <ul>
-        <li>Trình diễn hoa văn &amp; nghệ thuật</li>
-        <li>Ánh sáng &amp; âm nhạc đặc sắc</li>
-        <li>Giới hạn 30 khách/đêm</li>
-      </ul>
-      <a href="#dat-tour" class="btn btn--primary tour-card__cta">Đặt tour đêm {ICON_ARROW}</a>
-    </div>
-  </div>
-</div>
-"""
+    # (Section "Khám phá cùng chuyên gia" removed per user request —
+    # service info is still conveyed via the amenities grid and booking form.)
 
     # Docs listing (existing 4 docx articles, compact)
     doc_links = "".join(f"""
@@ -1760,41 +1716,44 @@ def build_tham_quan():
     <div class="visit-info">
       <div class="info-card">
         <span class="info-card__eyebrow">Giờ mở cửa</span>
-        <h3>Lịch mở cửa theo ngày</h3>
+        <h3>Lịch mở cửa theo mùa</h3>
         <table class="hours-table">
           <tbody>
-            <tr><td>Thứ 2 – Thứ 6</td><td>08:00 – 17:00</td></tr>
-            <tr><td>Thứ 7 – Chủ Nhật</td><td>07:30 – 18:00</td></tr>
-            <tr class="is-highlight"><td>Ngày lễ · Tết</td><td>Kiểm tra lịch</td></tr>
-            <tr><td style="padding-top:18px;color:var(--ink-mute);font-weight:400;font-size:13px;">Mùa đông (11 – 3)</td><td style="padding-top:18px;color:var(--ink-mute);font-weight:400;font-size:13px;">08:00 – 17:00</td></tr>
+            <tr class="is-highlight"><td>Mùa hè (tháng 4 – 10)</td><td>07:30 – 18:00</td></tr>
+            <tr><td>Mùa đông (tháng 11 – 3)</td><td>08:00 – 17:00</td></tr>
+            <tr><td style="padding-top:18px;color:var(--ink-mute);font-weight:400;font-size:13px;">Ngày lễ · Tết</td><td style="padding-top:18px;color:var(--ink-mute);font-weight:400;font-size:13px;">Xác nhận qua hotline</td></tr>
           </tbody>
         </table>
+        <p style="margin:18px 0 0;font-size:13px;color:var(--ink-mute);line-height:1.5;">
+          Hotline xác nhận: <strong style="color:var(--brick);">024.3747.1322</strong> ·
+          <strong style="color:var(--brick);">024.3211.5793</strong>
+        </p>
       </div>
 
       <div class="info-card">
-        <span class="info-card__eyebrow">Giá vé</span>
-        <h3>Bảng giá hiện hành</h3>
+        <span class="info-card__eyebrow">Giá vé (theo Vé.docx)</span>
+        <h3>Bảng giá tham quan</h3>
         <table class="price-table">
           <tbody>
-            <tr>
+            <tr class="is-featured">
               <td><div class="price-row__title">Người lớn</div><div class="price-row__sub">Vé tham quan tiêu chuẩn</div></td>
-              <td>70.000đ</td>
+              <td>30.000đ</td>
             </tr>
             <tr>
               <td><div class="price-row__title">Học sinh · Sinh viên</div><div class="price-row__sub">Xuất trình thẻ học sinh/sinh viên</div></td>
-              <td>35.000đ</td>
+              <td>15.000đ</td>
+            </tr>
+            <tr>
+              <td><div class="price-row__title">Người lớn trên 60 tuổi</div><div class="price-row__sub">Xuất trình CMND / hộ chiếu</div></td>
+              <td>15.000đ</td>
             </tr>
             <tr class="is-free">
               <td><div class="price-row__title">Trẻ em dưới 15 tuổi</div><div class="price-row__sub">Không cần vé · miễn phí hoàn toàn</div></td>
               <td>Miễn phí</td>
             </tr>
-            <tr class="is-featured">
-              <td><div class="price-row__title">Tour đêm</div><div class="price-row__sub">Trải nghiệm đêm huyền bí, có hướng dẫn</div></td>
-              <td>199.000 – 350.000đ</td>
-            </tr>
           </tbody>
         </table>
-        <a href="#dat-tour" class="info-card__cta">Mua vé online {ICON_ARROW}</a>
+        <a href="/tham-quan/ve/" class="info-card__cta">Xem chi tiết vé {ICON_ARROW}</a>
       </div>
     </div>
 
@@ -1824,25 +1783,18 @@ def build_tham_quan():
     <div class="a11y-banner">
       <div class="a11y-banner__icon">{ICON_A11Y}</div>
       <div>
-        <h4>Tiếp cận người khuyết tật</h4>
-        <p>Đường dành cho xe lăn tại các lối đi chính · Thang máy tại khu Thái Học · Hỗ trợ đặt trước qua hotline 024.3747.1322.</p>
+        <h4>Hỗ trợ khách có nhu cầu đặc biệt</h4>
+        <p>Vui lòng liên hệ trước qua hotline <strong>024.3747.1322</strong> hoặc <strong>024.3211.5793</strong> để được bố trí hỗ trợ phù hợp khi tham quan.</p>
       </div>
     </div>
 
-    <!-- TOUR HƯỚNG DẪN -->
-    <div style="margin-top:72px;">
-      <span class="eyebrow">Đặt tour có hướng dẫn</span>
-      <h2 class="section-title" style="margin:10px 0 24px;">Khám phá cùng chuyên gia</h2>
-    </div>
-
-    {tours_html}
-
-    <!-- FORM ĐẶT TOUR -->
-    <div class="booking-section" id="dat-tour" style="margin-top:64px;">
-      <span class="eyebrow">Đặt tour</span>
-      <h2 class="section-title" style="margin:10px 0 4px;">Đặt chỗ nhanh</h2>
-      <p style="color:var(--ink-soft);max-width:560px;margin:0 0 12px;font-size:15px;">
-        Điền thông tin bên dưới, đội ngũ Văn Miếu sẽ liên hệ xác nhận trong vòng 24 giờ.
+    <!-- FORM ĐẶT DỊCH VỤ -->
+    <div class="booking-section" id="dat-dich-vu" style="margin-top:64px;">
+      <span class="eyebrow">Đặt dịch vụ thuyết minh</span>
+      <h2 class="section-title" style="margin:10px 0 4px;">Đăng ký nhanh</h2>
+      <p style="color:var(--ink-soft);max-width:620px;margin:0 0 12px;font-size:15px;">
+        Điền thông tin bên dưới, hoặc gọi trực tiếp <strong>024.3823.5601</strong> để đặt thuyết minh viên.
+        Cán bộ tại Quầy bán vé cũng tiếp nhận yêu cầu khi du khách đến di tích.
       </p>
       <form class="booking-form" action="mailto:vanmieuqtg@hanoi.gov.vn" method="post" enctype="text/plain">
         <div class="field">
@@ -1859,13 +1811,24 @@ def build_tham_quan():
             <option value="10+">Trên 10 người (đoàn)</option>
           </select>
         </div>
-        <div class="field field--full">
-          <label for="book-type">Loại tour</label>
-          <select id="book-type" name="type" required>
-            <option value="day">Tour Ban Ngày · 200.000đ/người</option>
-            <option value="night-standard">Tour Đêm · Vé tiêu chuẩn · 199.000đ</option>
-            <option value="night-premium">Tour Đêm · Vé VIP · 350.000đ</option>
-            <option value="free">Tham quan tự do (chỉ mua vé vào cổng)</option>
+        <div class="field">
+          <label for="book-service">Dịch vụ</label>
+          <select id="book-service" name="service" required>
+            <option value="guide">Thuyết minh viên trực tiếp</option>
+            <option value="audio">Thuyết minh tự động (audio guide)</option>
+            <option value="khuyen-hoc">Chương trình khuyến học</option>
+            <option value="event">Tổ chức sự kiện tại di tích</option>
+            <option value="none">Tham quan tự do (chỉ mua vé)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="book-lang">Ngôn ngữ</label>
+          <select id="book-lang" name="language">
+            <option value="vi">Tiếng Việt</option>
+            <option value="en">Tiếng Anh</option>
+            <option value="zh">Tiếng Trung</option>
+            <option value="fr">Tiếng Pháp</option>
+            <option value="other">Khác (audio: ES/KO/JA/TH)</option>
           </select>
         </div>
         <div class="field field--full">
@@ -1874,9 +1837,9 @@ def build_tham_quan():
         </div>
         <div class="field field--full">
           <label for="book-note">Ghi chú</label>
-          <textarea id="book-note" name="note" placeholder="Yêu cầu đặc biệt, ngôn ngữ hướng dẫn viên…"></textarea>
+          <textarea id="book-note" name="note" placeholder="Số lượng đoàn, yêu cầu đặc biệt…"></textarea>
         </div>
-        <button type="submit" class="booking-form__submit">{ICON_CHECK} Gửi yêu cầu đặt tour</button>
+        <button type="submit" class="booking-form__submit">{ICON_CHECK} Gửi yêu cầu</button>
       </form>
     </div>
 
