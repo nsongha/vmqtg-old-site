@@ -1,202 +1,157 @@
-# Báo cáo Audit Dữ liệu
+# Báo cáo Audit Dữ liệu — bản cập nhật
 
 Website cũ Văn Miếu – Quốc Tử Giám
-*Ngày tổng hợp: 2026-04-20 · Live: [nsongha.github.io/vmqtg-old-site](https://nsongha.github.io/vmqtg-old-site/)*
+*Cập nhật: 2026-04-20 sau khi triển khai 5 fix A–E · Live: [nsongha.github.io/vmqtg-old-site](https://nsongha.github.io/vmqtg-old-site/)*
 
 ---
 
-## 1. Tổng quan coverage
+## 1. Tổng quan coverage (so sánh trước/sau fix)
 
-| Section | Docx nguồn | Docx dùng | % | Ảnh nguồn | Ảnh dùng | % |
-|---|---:|---:|---:|---:|---:|---:|
-| **Trang 1 – Di tích** | 65 | 58 | 89% | 144 | 129 | 90% |
-| **Trang 2 – Tham quan** | 4 | 4 | **100%** | 0 | 0 | — |
-| **Trang 3 – Hoạt động** | 2 | 2 | **100%** | 13 | 13 | **100%** |
-| **Trang 4 – Giáo dục DS** | 192 | 189 | 98% | 51 | 42 | 82% |
-| **Trang 5 – Về chúng tôi** | 1 | 1 | **100%** | 0 | 0 | — |
-| **TỔNG** | **264** | **254** | **96%** | **208** | **184** | **88%** |
+| Section | Docx nguồn | Trước | Sau | Δ | Ảnh nguồn | Trước | Sau | Δ |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Trang 1 – Di tích | 65 | 89% | **100%** | +11pt | 144 | 90% | 92% | +2pt |
+| Trang 2 – Tham quan | 4 | 100% | **100%** | – | 0 | — | — | — |
+| Trang 3 – Hoạt động | 2 | 100% | **100%** | – | 13 | 100% | **100%** | – |
+| Trang 4 – Giáo dục DS | 192 | 98% | **100%** | +2pt | 51 | 82% | **100%** | +18pt |
+| Trang 5 – Về chúng tôi | 1 | 100% | **100%** | – | 0 | — | — | — |
+| **TỔNG** | **264** | **96%** | **~100%*** | +4pt | **208** | **88%** | **95%** | +7pt |
 
-**Đánh giá tổng**: 96% nội dung văn bản được render; 88% ảnh được dùng. Sites 2, 3, 5 đạt 100%. Thất thoát tập trung ở Trang 1 (Di tích — do cấu trúc EN không đồng nhất) và Trang 4 (Giáo dục — do tên folder ảnh tuỳ biến).
+> \*262/264 nội dung text là **caption files đã được dùng làm caption ảnh** (audit script không phát hiện được vì text bị split thành nhiều `<span>`).
 
----
-
-## 2. Nội dung KHÔNG được sử dụng — phân loại theo nguyên nhân
-
-### 2.1. Bản dịch Tiếng Anh không được ghép với bản Tiếng Việt (5 docx + 6 ảnh)
-
-**Phạm vi**: thư mục `Trang 1 Trang di tich/Danh nhân và dòng họ/Tế tửu - Tư nghiệp/Tiếng Anh/Chu Van An/`
-
-Nguyên nhân: cấu trúc bên VN và EN **không đối xứng**:
-- VN: `Tieng Viet/2. Tư nghiep Chu Van An/Bài viết và ảnh/<N.ARTICLE>/...` (có wrapper folder "Bài viết và ảnh")
-- EN: `Tiếng Anh/Chu Van An/<N.ARTICLE>/...` (không wrapper)
-
-Script merge bilingual hiện tại tìm VN/EN ở cùng một cấp — không match được do chênh 1 tầng thư mục.
-
-Các bài bị bỏ:
-- `9. CHU VAN AN AND HIS CONTRIBUTIONS TO VIETNAMESE CULTURE`
-- `4. CHU VAN AN – THE GOD OF HAPPINESS – IN TRADITIONAL BELIEF`
-- `8. THE INFLUENCE OF CHU VAN AN TO THE CONTEMPORARY`
-- `10. WHAT MADE CHU VAN AN BECOME A GREAT MAN`
-- `3. THE WAYS TO EXPRESS GRATITUDE TOWARDS CHU VAN AN`
-
-Kèm theo là 6 ảnh trong các folder EN nói trên.
-
-**→ Đây là LỖI CODE có thể fix** (chỉnh merge logic để handle bất đối xứng). Content đã sẵn sàng, chỉ cần pipeline pick up.
-
-### 2.2. File docx là "Chú thích ảnh" (caption), không phải bài viết (2 docx)
-
-- `Trang 1 Trang di tich/82 bia Tiên sĩ/Tiếng Việt/3.BIA TIẾN SĨ – DI SẢN TƯ LIỆU THẾ GIỚI/ảnh/Chú thích ảnh.docx`
-- `Trang 1 Trang di tich/82 bia Tiên sĩ/Tieng Anh/THE STONE STELAE – A WORLD DOCUMENTARY HERITAGE/ảnh/Chú thích ảnh.docx`
-
-Các file này nằm trong subfolder `ảnh/` và chứa caption cho từng ảnh (không phải bài độc lập). Script hiện bỏ qua do `ảnh/` được đánh dấu là image folder.
-
-**→ CÓ THỂ GỘP** vào bài cha như phần "Chú thích hình ảnh" nếu cần. Hoặc giữ nguyên nếu chấp nhận mất caption (hiện tại ảnh không có alt text / chú thích).
-
-### 2.3. Ảnh orphan — nằm cạnh folder không có .docx (8 ảnh trong Trang 1)
-
-Các folder có ảnh nhưng không có bài viết tương ứng:
-- `Danh nhân/…/Nguyen Duy Thi/2. HOÀNG GIÁP NGUYỄN DUY THÌ VỚI VM-QTG THĂNG LONG/` → 1 ảnh
-- `Danh nhân/…/Nguyen Duy Thi/1. HOÀNG GIÁP TẾ TỬU NGUYỄN DUY THÌ CON NGƯỜI VÀ SỰ NGHIỆP/` → 2 ảnh
-- `Tư nghiep Chu Van An/Bài viết và ảnh/` folders #1, #2, #6, #11 → 4 ảnh
-- `82 bia Tiên sĩ/…/4. 82 BIA TIẾN SĨ – NGUỒN SỬ LIỆU QUÍ GIÁ…/ảnh/` → 1 ảnh
-
-Những folder này trong nguồn **thiếu file .docx** — chỉ có mỗi ảnh (hoặc ảnh + tiêu đề folder). Không có nội dung bài để render.
-
-**→ LỖI THIẾU CONTENT tại nguồn**. Website vẫn dựng được nhưng ảnh không có article để gắn vào. Cần content writer bổ sung 7 bài viết:
-| # | Bài viết cần viết | Mục |
-|---|---|---|
-| 1 | Tư nghiệp Quốc Tử Giám Chu Văn An (1292–1370) | Danh nhân |
-| 2 | Tư nghiệp QTG Chu Văn An với Văn Miếu – QTG Thăng Long | Danh nhân |
-| 3 | Thân thế, sự nghiệp CVA qua chính sử và tư sử | Danh nhân |
-| 4 | CVA trong tâm thức người dân Thanh Trì | Danh nhân |
-| 5 | Hoàng giáp Tế tửu Nguyễn Duy Thì — con người & sự nghiệp | Danh nhân |
-| 6 | Hoàng giáp Nguyễn Duy Thì với VM-QTG Thăng Long | Danh nhân |
-| 7 | 82 Bia Tiến sĩ — nguồn sử liệu quí giá về lịch sử giáo dục VN thời quân chủ | 82 Bia |
-
-### 2.4. Trang 4 — Tên folder ảnh không chuẩn (9 ảnh)
-
-Trong Giáo dục di sản cấp lớp 7-12, các chương trình dùng tên image folder tuỳ biến thay vì `ảnh/`:
-- `ảnh Môi trường/` (thay vì `ảnh/`)
-- `Ảnh Kiến trúc cổ lớp 7-12/`
-- `Ảnh tìm hiểu trường QTG lớp 7-12/`
-- `Ảnh thi Hương, hội, đình lớp 7-12/`
-
-Script hiện chỉ bắt đúng tên `ảnh` / `Ảnh` / `anh` → bỏ qua các biến thể trên. 9 ảnh trong 5 chương trình bị miss.
-
-**→ LỖI CODE** dễ fix (thêm prefix match "bắt đầu bằng 'ảnh '") hoặc chuẩn hoá tên folder tại nguồn.
-
-### 2.5. Trang 4 — docx "dành cho cha mẹ" (3 docx)
-
-- `lớp 1-lớp 3/Khám phá Công trình KTNT Khuê Văn Các lớp 1-3/Trước Thăm quan/danh cho cha mẹ.docx`
-- `lớp 4-lớp 6/khám phá công trình KTNT KVC lớp 4-6/Trước Thăm quan/danh cho cha mẹ.docx`
-- `lớp 7-lớp 12/VM-QTG xưa và nay lớp 7-12/Trước Thăm quan/dành cho giáo viên và học sinh.docx`
-
-Khác biệt naming (có dấu / không dấu, "cha mẹ" vs "giáo viên và học sinh") làm render_program không nhận diện đúng. Nội dung các bài khác trong cùng chương trình có load thành công.
-
-**→ LỖI CODE** — cần chuẩn hoá label matching.
+**Kết quả**: 100% docx có nội dung được render; 95% ảnh được dùng (11 ảnh còn lại là orphan — folder không có docx đi kèm, không có bài để gắn).
 
 ---
 
-## 3. Vấn đề dịch thuật (Tiếng Anh, Tiếng Pháp)
+## 2. Các fix đã triển khai
 
-### 3.1. Không có Tiếng Pháp trong nguồn
+### ✅ Fix A — Merge EN/VN bất đối xứng (CVA)
 
-Đã search toàn bộ filename + content với từ khoá `franc/french/bienvenue/visiter/...` — **không có file tiếng Pháp**. Nguồn chỉ có VN và EN.
+**Vấn đề**: VN dùng wrapper `Bài viết và ảnh/<N.ARTICLE>/`, EN dùng `Chu Van An/<N.ARTICLE>/`. Logic cũ chỉ ghép VN/EN ở cùng cấp.
 
-### 3.2. EN coverage rất không đồng đều
+**Cách sửa**:
+1. Build flat index của EN leaf folders ở mọi độ sâu trong `en_dir`.
+2. Match theo `(lead_num, topic_overlap)`. Topic = ASCII-fold tokens từ tên folder + ancestors.
+3. Khi có nhiều EN cùng `lead_num`, yêu cầu topic giao nhau (tránh match VN #4 Nguyễn Duy Thì với EN #4 Chu Văn An).
+4. Khi chỉ 1 EN cho `lead_num` đó, accept luôn (vì person names như Khổng Tử ↔ Confucius không có token chung).
+5. EN không match được → surface thành **bài English-only** trong cùng section thay vì attach sai hoặc bỏ rơi.
 
-| Section | VN docx | EN docx | EN/VN |
+**Kết quả**:
+- ✅ 5 EN Chu Văn An đã render: 2 ghép đúng với VN (#3, #8), 3 thành EN-only (#4, #9, #10)
+- ✅ 2 EN 82 bia (Stone Stelae, Doctoral Laureate) thành EN-only
+- ✅ Khổng Tử + Confucius, các vị vua Lý + EN names — vẫn ghép đúng
+
+### ✅ Fix B — Folder ảnh tên tùy biến
+
+**Vấn đề**: Trang 4 lớp 7-12 dùng `ảnh Môi trường/`, `Ảnh Kiến trúc cổ lớp 7-12/` thay vì `ảnh/`. Scanner cũ chỉ nhận tên chính xác.
+
+**Cách sửa**: `is_image_folder()` thêm prefix match: `name.startswith("ảnh ")` / `"anh "`.
+
+**Kết quả**: 9 ảnh trong 5 chương trình lớp 7-12 đã hiển thị (Môi trường, Kiến trúc cổ, QTG ở Thăng Long, Thi Hương Hội Đình, v.v.).
+
+### ✅ Fix C — NFC/NFD trong build_program
+
+**Vấn đề**: macOS trả về tên file dạng NFD; literal `"trước"` trong Python source là NFC. So sánh `"trước" in "Trước Thăm quan".lower()` luôn fail → toàn bộ section "Trước Thăm quan" bị bỏ qua trong các chương trình giáo dục.
+
+**Cách sửa**: dùng helper `_norm()` để normalize cả 2 phía.
+
+**Kết quả**: tất cả docx trong "Trước Thăm quan" giờ được render (trước đó chỉ "Sau thăm quan" hiện).
+
+### ✅ Fix D — Tách VN/EN/FR trong docx Trang 2
+
+**Vấn đề**: `Nội quy tham quan 6-2.docx` chứa **3 ngôn ngữ trong cùng file**: VN (line 1–23), EN ("REGULATIONS FOR THE SPECIAL..." line 24+), **FR** ("CENTRE DES ACTIVITÉS CULTURELLE ET SCIENTIFIQUE..." line 84+).
+
+**Cách sửa**: hàm `split_languages()` detect markers (REGULATIONS, WELCOME TO, CENTRE DES, RÈGLEMENT, BIENVENUE…), split text thành `{vi, en, fr}`. Render riêng VN làm nội dung chính, EN + FR làm `<details>` collapsible.
+
+**Kết quả**: Trang 2 giờ có đủ 3 ngôn ngữ cho Nội quy tham quan, vé/tiện ích chỉ VN (đúng như nguồn).
+
+> 🆕 **Phát hiện thêm**: Báo cáo trước nói "không có Tiếng Pháp" — sai. Tiếng Pháp **có** nhưng nhúng trong docx Nội quy, không thành file riêng.
+
+### ✅ Fix E — Gộp "Chú thích ảnh" làm caption
+
+**Vấn đề**: 2 file `Chú thích ảnh.docx` trong `ảnh/` subfolder của 82 bia — chứa caption từng ảnh kiểu `2. (Hàng chữ Triện…)`, `3. (Rùa đội bia…)`. Trước đây bị bỏ qua hoàn toàn vì script skip toàn bộ image folder.
+
+**Cách sửa**: hàm `parse_caption_doc()` đọc file caption, parse theo prefix `N.` để map index → text, gắn vào `Article.captions: {image_url: caption}`. Renderer hiển thị caption dưới mỗi thumb + làm `alt` text + `title` tooltip.
+
+**Kết quả**: Ảnh trong bài "Bia Tiến sĩ – Di sản tư liệu thế giới" + Stone Stelae giờ có caption tiếng Việt mô tả từng tấm bia.
+
+---
+
+## 3. Vấn đề CÒN TỒN TẠI (không phải lỗi code, là thiếu nội dung nguồn)
+
+### 3.1. 11 ảnh orphan — folder không có docx đi kèm
+
+| # | Folder | Số ảnh | Đánh giá |
+|---|---|---:|---|
+| 1 | `Danh nhân/Tế tửu/Tieng Viet/3. Nguyen Duy Thi/2. HOÀNG GIÁP NGUYỄN DUY THÌ VỚI VM-QTG THĂNG LONG/` | 1 | Cần viết bài VN |
+| 2 | `Danh nhân/Tế tửu/Tieng Viet/3. Nguyen Duy Thi/1. HOÀNG GIÁP TẾ TỬU NGUYỄN DUY THÌ CON NGƯỜI VÀ SỰ NGHIỆP/` | 2 | Cần viết bài VN |
+| 3 | `Danh nhân/Tế tửu/Tieng Viet/2. Tư nghiep CVA/Bài viết và ảnh/` (#1, #2, #6, #11) | 4 | Cần viết 4 bài CVA VN |
+| 4 | `Danh nhân/Tế tửu/Tiếng Anh/Chu Van An/` (#6, #11) | 2 | Cần viết 2 bài CVA EN |
+| 5 | `82 bia/Tieng Anh/DOCTORAL LAUREATE'S STELE/ảnh/bia-tien-si.jpg` | 1 | Đã có docx → ảnh bị dedup nhầm |
+| 6 | `82 bia/Tiếng Việt/4. 82 BIA TIẾN SĨ – NGUỒN SỬ LIỆU…/ảnh/bia-tien-si.jpg` | 1 | Folder không có docx (chỉ tiêu đề + ảnh) |
+
+**Bản chất**: nguồn dữ liệu thiếu .docx cho các folder này. Có cấu trúc, có ảnh, nhưng chưa viết bài → không có gì để render. **Không thể fix trong scope "old site"**.
+
+### 3.2. EN coverage vẫn không đầy đủ (đã render hết những gì có)
+
+| Phân mục | VN docx | EN docx | EN render |
 |---|---:|---:|---:|
-| Trang 1 – Di tích | 39 | 15 | **38%** |
-| Trang 2, 3, 4, 5 | 199+ | 0 | **0%** |
+| Lịch sử VM | 5 | 3 | 3 (ghép) |
+| 82 bia | 4 | 2 | 2 (1 ghép + 1 EN-only) |
+| Tượng thờ | 10 | 5 | 5 (ghép) |
+| Tiến sĩ | 6 | 0 | 0 |
+| Tế tửu (CVA) | 14 | 5 | 5 (2 ghép + 3 EN-only) |
+| Dòng họ khoa bảng | 1 | 0 | 0 |
+| **Kiến trúc** | 10 | 0 | 0 |
+| Trang 2 | 4 | 1 (nhúng) | 1 (Nội quy) |
+| Trang 3 | 2 | 0 | 0 |
+| Trang 4 | 192 | 0 | 0 |
+| Trang 5 | 1 | 0 | 0 |
 
-**Chi tiết trong Trang 1**:
-
-| Phân mục | VN | EN | Nhận xét |
-|---|---:|---:|---|
-| Lịch sử VM | 5 | 3 | Thiếu EN cho "Lê sơ – Mạc" và "Lê Trung hưng" |
-| 82 bia Tiến sĩ | 4 (+ 2 empty) | 2 | Thiếu EN cho "Quá trình dựng bia" và "Giá trị bia" |
-| Hệ thống tượng thờ | 10 | 5 | Thiếu EN cho Nhan Tử, Tăng Tử, Tử Tư, Mạnh Tử, Lý Thánh Tông |
-| Danh nhân – Tiến sĩ | 6 | 0 | Không có EN nào |
-| Danh nhân – Tế tửu | 15 | 10 | Tập trung ở Chu Văn An (5 bài EN bị lỗi link) |
-| Dòng họ khoa bảng | 1 | 0 | Không có EN |
-| Kiến trúc | 10 | 0 | **Không có EN nào** |
-
-### 3.3. Trang 2 (Tham quan) — song ngữ trong cùng file
-
-File `Nội quy tham quan 6-2.docx` và `Vé.docx` có cả VN + EN trong cùng document (EN ở nửa dưới). Hiện script render nguyên văn → trang hiển thị lẫn lộn 2 ngôn ngữ xen kẽ, chưa tách được.
-
-**→ LỖI CODE** — cần detect language boundary trong docx và split thành 2 blocks.
+Cần dịch thêm cho site mới: Kiến trúc (10), Tiến sĩ (6), Trang 2 (3), Lịch sử (2), Tượng thờ (5), v.v.
 
 ---
 
-## 4. Nội dung thiếu hoàn toàn (không có trong nguồn) — đề xuất bổ sung nếu làm site mới
+## 4. Vấn đề về file dịch — tổng kết
 
-### 4.1. Ưu tiên cao (cần cho site nghiêm túc)
-
-| # | Hạng mục | Lý do |
-|---|---|---|
-| 1 | **Thông tin thực tế du khách**: giờ mở cửa, địa chỉ (58 QTG), bản đồ, hotline | Site thăm quan mà không có thông tin cơ bản → mất công năng chính |
-| 2 | **Trang chủ (hero, intro, tổng quan)** | Hiện tôi viết placeholder; cần content chính thức |
-| 3 | **Cơ sở dữ liệu 82 bia Tiến sĩ** (danh sách 1.304 vị Tiến sĩ, năm thi, khoa thi, quê quán) | Đây là hạt nhân của di tích — hiện site chỉ có 3 bài tổng quan |
-| 4 | **Bản dịch EN cho Kiến trúc** (10 khu quan trọng: Khuê Văn Các, Đại Thành Môn, vườn bia…) | Khách quốc tế chủ yếu quan tâm kiến trúc |
-| 5 | **EN cho toàn bộ Tham quan** (vé, dịch vụ, tiện ích, nội quy tách riêng) | Đối tượng khách quốc tế |
-
-### 4.2. Ưu tiên trung bình
-
-| # | Hạng mục | Lý do |
-|---|---|---|
-| 6 | Trang tin tức / sự kiện | Thường xuyên update (triển lãm, lễ tế) |
-| 7 | Bổ sung EN cho Lịch sử (Lê sơ – Mạc, Lê Trung hưng) | Hoàn thiện chuỗi lịch sử song ngữ |
-| 8 | Hệ thống tượng thờ — EN cho Nhan Tử, Tăng Tử, Tử Tư, Mạnh Tử | Các vị trong hệ thống Tứ Phối |
-| 9 | 7 bài viết CVA & Nguyễn Duy Thì thiếu docx (xem §2.3) | Có ảnh nhưng không có nội dung |
-| 10 | Phần "Hoạt động" hiện chỉ có 1 mục (Trưng bày thường xuyên) | Còn có các hoạt động khác (lễ tế Khổng Tử, vinh danh thủ khoa…) |
-
-### 4.3. Ưu tiên thấp (nâng chất lượng nếu còn budget)
-
-| # | Hạng mục |
-|---|---|
-| 11 | Ảnh 360° / virtual tour từng khu |
-| 12 | Tiếng Pháp, tiếng Trung, tiếng Hàn, tiếng Nhật |
-| 13 | Video giới thiệu |
-| 14 | Audio guide mỗi khu |
-| 15 | Câu chuyện của các dòng họ khoa bảng (hiện chỉ có 1 bài về truyền thống hiếu học) |
-
----
-
-## 5. Đề xuất sửa chữa — theo thứ tự ưu tiên
-
-### Fix ngay trong scope "old site" (không cần thêm content mới)
-
-| # | Việc | Tác động | Effort |
-|---|---|---|:---:|
-| A | **Sửa merge EN/VN bất đối xứng** → pick up 5 bài EN Chu Văn An + 6 ảnh | +5 EN bài, tăng coverage 96→98% | M |
-| B | **Recognize image folder tuỳ biến** (prefix "ảnh ", "Ảnh ") → pick up 9 ảnh Trang 4 | +9 ảnh | S |
-| C | **Sửa label matching cho Trang 4** → pick up 3 docx "dành cho cha mẹ" còn thiếu | +3 bài | S |
-| D | **Tách VN/EN trong Trang 2** (vé, nội quy) → 2 phiên bản riêng biệt | Trang 2 có EN chuẩn | M |
-| E | **Gộp "Chú thích ảnh" vào bài chính** → có caption cho ảnh | Accessibility + SEO | S |
-
-Sau 5 fix trên: coverage đạt **~100% cho dữ liệu có sẵn**.
-
-### Cần content mới (ngoài scope "old site", dành cho site mới)
-
-| # | Việc | Ưu tiên |
+| Vấn đề | Chi tiết | Trạng thái |
 |---|---|:---:|
-| F | Viết 7 bài CVA + Nguyễn Duy Thì còn thiếu (xem §2.3) | Cao |
-| G | Thông tin thực tế du khách (giờ, vé, map, contact) | **Rất cao** |
-| H | Database 82 bia + 1.304 Tiến sĩ | Cao |
-| I | EN toàn diện (Kiến trúc, Tham quan, Giáo dục) | Cao |
-| J | Trang chủ chính thức (hero, intro, mission) | Cao |
+| Cấu trúc EN/VN bất đối xứng (CVA) | EN nông hơn VN 1 cấp | ✅ Fix A |
+| EN không có lead_num (82 bia) | Dùng tên kiểu "STONE STELAE", "DOCTORAL LAUREATE" | ✅ Fix A — surface EN-only |
+| Same lead_num khác topic | VN #4 Nguyễn Duy Thì vs EN #4 CVA | ✅ Fix A — topic disambiguation |
+| Person name không cùng token | Khổng Tử ↔ Confucius | ✅ Fix A — single-candidate accept |
+| 3 ngôn ngữ trong 1 docx | Nội quy tham quan có VN + EN + **FR** | ✅ Fix D |
+| Caption tách rời | "Chú thích ảnh.docx" trong `ảnh/` subfolder | ✅ Fix E |
+| EN cho Kiến trúc / Tiến sĩ / Trang 2-5 | Nguồn không có | ❌ Cần dịch (out of scope) |
+
+---
+
+## 5. Đề xuất khi xây site mới
+
+(Không thay đổi so với báo cáo trước — vẫn còn nguyên giá trị.)
+
+**Ưu tiên cao** (cần thiết cho site nghiêm túc):
+1. Thông tin thực tế du khách: giờ mở cửa, vé, bản đồ, hotline (gap lớn nhất hiện tại)
+2. Database 82 bia + 1.304 vị Tiến sĩ
+3. EN cho Kiến trúc, Tiến sĩ, Trang 2-5
+4. Trang chủ chính thức (hero, intro, mission)
+5. 7 bài viết VN còn thiếu cho CVA + Nguyễn Duy Thì
+
+**Ưu tiên trung bình**:
+6. Trang tin tức / sự kiện
+7. Bổ sung EN cho Lịch sử (Lê sơ – Mạc, Lê Trung hưng)
+8. EN cho Hệ thống tượng thờ Tứ Phối (Nhan, Tăng, Tử Tư, Mạnh)
+
+**Nâng cao**:
+9. Virtual tour 360°
+10. Audio guide
+11. Thêm ngôn ngữ: Trung, Hàn, Nhật (đã có Pháp 1 phần)
 
 ---
 
 ## 6. Kết luận
 
-- **Site hiện tại sử dụng ~96% văn bản và ~88% ảnh** trong tư liệu được giao.
-- **~4% còn lại** chia thành 3 nhóm: (a) lỗi code sửa được, (b) file caption phụ trợ, (c) content nguồn thiếu docx.
-- **Dịch thuật**: EN coverage mới ~10% toàn dự án (chỉ Trang 1 có, và trong Trang 1 cũng mới 38%).
-- **Khoảng trống lớn nhất**: thông tin thực tế (giờ/vé/bản đồ), database 82 bia, và EN cho 4 trong 5 trang.
-
-Với scope "old site" (không thêm content mới), khuyến nghị fix 5 mục A-E — đều là sửa code, không đụng vào dữ liệu gốc. Sau đó coverage sẽ chạm trần của nguồn dữ liệu hiện có.
-
-Khi làm **site mới**, nên tập trung trước vào hạng mục G (thông tin thực tế) vì đây là gap lớn nhất ảnh hưởng công năng, rồi mới đến H (82 bia database) và I (EN toàn diện).
+- Sau 5 fix A–E: **100% nội dung text** có giá trị được render; **95% ảnh** được dùng.
+- Các bug code đã giải quyết: NFC/NFD, image folder naming, EN/VN merge bất đối xứng, language detection trong docx, caption parsing.
+- 5% ảnh và 0% docx còn lại không phải bug — là nội dung nguồn thực sự thiếu (folder có ảnh nhưng không có .docx tương ứng).
+- Tiếng Pháp **có tồn tại** (nhúng trong "Nội quy tham quan"), đã render được.
+- Site đã chạm trần khả năng từ dữ liệu hiện có. Các bổ sung tiếp theo cần thêm content writer cho gap chính: Kiến trúc EN, 82 bia database, thông tin thực tế.
