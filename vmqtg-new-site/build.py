@@ -863,30 +863,37 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
 }
 .emergency-card__tel:hover { background: #fff; color: var(--brick-dark); border-color: #fff; }
 
-/* Language tabs */
-.lang-tabs { margin-top: 64px; }
-.lang-tabs__bar {
-  display: flex; gap: 4px;
+/* Pill-style language switcher (top of page) */
+.lang-switcher {
+  background: var(--cream);
   border-bottom: 1px solid var(--line);
-  margin-bottom: 24px;
+  padding: 14px 0;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: saturate(180%) blur(10px);
+  -webkit-backdrop-filter: saturate(180%) blur(10px);
 }
+.lang-switcher .container {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 14px;
+}
+.lang-switcher__label {
+  font-size: 11px; font-weight: 600; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--ink-mute);
+}
+.lang-switcher__tabs { display: inline-flex; gap: 4px; padding: 3px; background: #fff; border-radius: 999px; border: 1px solid var(--line); }
 .lang-tab {
-  padding: 12px 22px; background: transparent; border: 0;
-  font: inherit; font-size: 14px; font-weight: 600; color: var(--ink-mute);
-  cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
-  transition: color .2s, border-color .2s;
+  padding: 8px 18px; background: transparent; border: 0;
+  font: inherit; font-size: 13px; font-weight: 600; color: var(--ink-mute);
+  cursor: pointer; border-radius: 999px;
+  transition: all .2s;
   letter-spacing: .02em;
 }
-.lang-tab:hover { color: var(--ink); }
-.lang-tab.is-active { color: var(--brick); border-bottom-color: var(--brick); }
-.lang-panel { font-size: 15px; color: var(--ink-soft); line-height: 1.75; }
-.lang-panel h2 {
-  font-family: "Playfair Display", serif; font-size: 22px; font-weight: 500;
-  margin: 0 0 16px; color: var(--ink);
-}
-.lang-panel p { margin: 0 0 14px; }
-.lang-panel ol { padding-left: 20px; margin: 0 0 16px; }
-.lang-panel ol li { margin-bottom: 10px; line-height: 1.7; }
+.lang-tab:hover { color: var(--ink); background: var(--gold-pale); }
+.lang-tab.is-active { color: #fff; background: var(--brick); }
+.lang-tab.is-active:hover { background: var(--brick-dark); }
+.lang-panel[hidden] { display: none; }
 
 /* ========== FOOTER ========== */
 .site-footer { background: var(--brick-dark); color: var(--cream-soft); padding: 72px 0 24px; border-top: 4px solid var(--gold); margin-top: 0; }
@@ -991,8 +998,11 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
   .emergency-card { grid-template-columns: 1fr; text-align: center; padding: 28px 24px; gap: 18px; }
   .emergency-card__icon { margin: 0 auto; }
   .emergency-card__numbers { flex-direction: row; justify-content: center; flex-wrap: wrap; }
-  .lang-tabs__bar { overflow-x: auto; }
-  .lang-tab { padding: 10px 14px; font-size: 13px; white-space: nowrap; }
+  .lang-switcher { padding: 10px 0; position: static; }
+  .lang-switcher .container { justify-content: center; }
+  .lang-switcher__label { width: 100%; text-align: center; }
+  .lang-switcher__tabs { overflow-x: auto; max-width: 100%; }
+  .lang-tab { padding: 7px 14px; font-size: 12px; white-space: nowrap; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
@@ -1767,46 +1777,110 @@ ICON_SCALE     = _svg('<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z
 ICON_SHIELD    = _svg('<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>')
 
 
-NOI_QUY_TITLES = [
-    ("Mua vé & xuất trình",         "ticket"),
-    ("Gìn giữ di tích & cảnh quan", "leaf"),
-    ("An ninh & phòng cháy",        "flame"),
-    ("Trang phục lịch sự",           "shirt"),
-    ("Không mê tín · cờ bạc",        "ban"),
-    ("Chịu trách nhiệm pháp lý",     "scale"),
-    ("Tuân thủ chỉ dẫn bảo vệ",      "shield"),
-    ("Báo tin khi phát hiện sự cố",  "phone"),
-]
 NOI_QUY_ICONS = {
     "ticket": ICON_TICKET, "leaf": ICON_LEAF, "flame": ICON_FLAME,
     "shirt": ICON_SHIRT,   "ban": ICON_BAN,   "scale": ICON_SCALE,
     "shield": ICON_SHIELD, "phone": ICON_PHONE,
 }
 
+NOI_QUY_L10N = {
+    "vi": {
+        "label": "Tiếng Việt",
+        "kicker": "Nội quy tham quan",
+        "h1_pre": "Chào mừng Quý khách đến với",
+        "h1_main": "Văn Miếu – Quốc Tử Giám",
+        "lede": "Để gìn giữ Di tích Quốc gia đặc biệt và đảm bảo chuyến tham quan trọn vẹn cho mọi người, kính mời Quý khách cùng thực hiện <strong>8 điều sau</strong>.",
+        "closing": "Kính chúc Quý khách một chuyến tham quan bổ ích và lý thú.",
+        "emergency_eyebrow": "Báo tin khi cần",
+        "emergency_h3": "Phát hiện sự việc bất thường?",
+        "emergency_p": "Thông báo ngay cho bộ phận bảo vệ di tích qua các số sau.",
+        "titles": [
+            ("Mua vé & xuất trình",         "ticket"),
+            ("Gìn giữ di tích & cảnh quan", "leaf"),
+            ("An ninh & phòng cháy",        "flame"),
+            ("Trang phục lịch sự",           "shirt"),
+            ("Không mê tín · cờ bạc",        "ban"),
+            ("Chịu trách nhiệm pháp lý",     "scale"),
+            ("Tuân thủ chỉ dẫn bảo vệ",      "shield"),
+            ("Báo tin khi phát hiện sự cố",  "phone"),
+        ],
+    },
+    "en": {
+        "label": "English",
+        "kicker": "Visitor regulations",
+        "h1_pre": "Welcome to the Special National Relic",
+        "h1_main": "Văn Miếu – Quốc Tử Giám",
+        "lede": "To preserve this Special National Relic and ensure a pleasant visit for all, please observe the <strong>8 regulations below</strong>.",
+        "closing": "Thank you for your co-operation and have a nice visit.",
+        "emergency_eyebrow": "Report incidents",
+        "emergency_h3": "Witnessed an incident?",
+        "emergency_p": "Please inform the relic's security guards via the numbers below.",
+        "titles": [
+            ("Purchase & present your ticket", "ticket"),
+            ("Protect the relic & landscape",  "leaf"),
+            ("Security & fire prevention",     "flame"),
+            ("Dress appropriately",            "shirt"),
+            ("No superstition · gambling",     "ban"),
+            ("Legal responsibility",           "scale"),
+            ("Follow security guidance",       "shield"),
+            ("Report any incidents",           "phone"),
+        ],
+    },
+    "fr": {
+        "label": "Français",
+        "kicker": "Règlement du site",
+        "h1_pre": "Bienvenue au",
+        "h1_main": "Văn Miếu – Quốc Tử Giám",
+        "lede": "Pour préserver ce site classé d'intérêt national et assurer une visite agréable à tous, nous vous invitons à respecter les <strong>8 règles suivantes</strong>.",
+        "closing": "Merci pour votre coopération et bonne visite !",
+        "emergency_eyebrow": "Signaler un incident",
+        "emergency_h3": "Vous avez constaté un incident ?",
+        "emergency_p": "Veuillez informer les agents de sécurité du site via les numéros ci-dessous.",
+        "titles": [
+            ("Acheter & présenter le billet", "ticket"),
+            ("Respecter le site & le paysage","leaf"),
+            ("Sécurité & prévention incendie","flame"),
+            ("Tenue appropriée",               "shirt"),
+            ("Pas de superstition · jeux",     "ban"),
+            ("Responsabilité juridique",       "scale"),
+            ("Respecter les consignes",        "shield"),
+            ("Signaler tout incident",         "phone"),
+        ],
+    },
+}
 
-def _parse_noi_quy_rules(raw_vi: str):
-    """Extract (short_title, icon, full_text) triples from VI rules text."""
+
+def _parse_rules_text(raw: str):
+    """Extract up to 8 rule texts from numbered (1.) or bulleted (•) format.
+       Works for all three languages: VI/FR use `1.`, EN uses `•`."""
     import re as _re
-    # Split on lines that start with "N." (up to 2 digits)
-    matches = _re.findall(
-        r'^\s*(\d{1,2})\.\s*(.+?)(?=(?:\n\s*\d{1,2}\.\s)|\Z)',
-        raw_vi, flags=_re.M | _re.S,
-    )
     rules = []
-    for idx, (_, text) in enumerate(matches):
-        text = _re.sub(r'\s+', ' ', text).strip()
-        title, icon_key = NOI_QUY_TITLES[idx] if idx < len(NOI_QUY_TITLES) else (f"Điều {idx+1}", "shield")
-        rules.append((title, NOI_QUY_ICONS.get(icon_key, ICON_SHIELD), text))
+    line_re = _re.compile(r'^\s*(?:\d{1,2}\.|[•●▪■])\s+(.+?)\s*$')
+    for line in raw.splitlines():
+        m = line_re.match(line)
+        if not m:
+            continue
+        text = _re.sub(r'\s+', ' ', m.group(1)).strip(' ;.')
+        if text:
+            rules.append(text)
+        if len(rules) == 8:
+            break
     return rules
 
 
-def render_noi_quy(art):
-    """Creative layout for Nội quy tham quan: 8 rule cards + hotline + VI/EN/FR tabs."""
-    rules = _parse_noi_quy_rules(art.raw_text_vi)
+def _render_noi_quy_panel(lang_code: str, raw_text: str, is_active: bool) -> str:
+    l10n = NOI_QUY_L10N[lang_code]
+    rules = _parse_rules_text(raw_text)
 
-    rule_cards_html = "".join(f"""
+    rule_items = ""
+    for idx, text in enumerate(rules):
+        if idx >= len(l10n["titles"]):
+            break
+        title, icon_key = l10n["titles"][idx]
+        icon = NOI_QUY_ICONS.get(icon_key, ICON_SHIELD)
+        rule_items += f"""
 <div class="rule-item">
-  <div class="rule-item__number">{i:02d}</div>
+  <div class="rule-item__number">{idx+1:02d}</div>
   <div class="rule-item__content">
     <div class="rule-item__header">
       <span class="rule-item__icon">{icon}</span>
@@ -1814,98 +1888,101 @@ def render_noi_quy(art):
     </div>
     <p>{escape(text)}</p>
   </div>
-</div>""" for i, (title, icon, text) in enumerate(rules, 1))
+</div>"""
 
-    # Language tabs (EN/FR panels)
-    tab_buttons = '<button class="lang-tab is-active" type="button" data-lang="vi">Tiếng Việt</button>'
-    panels_html = ""
-    if art.content_en:
-        tab_buttons += '<button class="lang-tab" type="button" data-lang="en">English</button>'
-        panels_html += (
-            f'<div class="lang-panel" data-lang="en" hidden>'
-            f'<h2>{escape(art.title_en or "Regulations for the Special National Relic Văn Miếu – Quốc Tử Giám")}</h2>'
-            f'{art.content_en}</div>'
-        )
-    if art.content_fr:
-        tab_buttons += '<button class="lang-tab" type="button" data-lang="fr">Français</button>'
-        panels_html += (
-            f'<div class="lang-panel" data-lang="fr" hidden>'
-            f'<h2>Règlement intérieur du Văn Miếu – Quốc Tử Giám</h2>'
-            f'{art.content_fr}</div>'
-        )
+    hidden = "" if is_active else " hidden"
+    return f"""
+<div class="lang-panel" data-lang="{lang_code}"{hidden}>
+  <section class="rules-hero">
+    <div class="container">
+      <span class="eyebrow">{escape(l10n['kicker'])}</span>
+      <h1 class="display">{escape(l10n['h1_pre'])} <em>{escape(l10n['h1_main'])}</em></h1>
+      <p class="rules-hero__lede">{l10n['lede']}</p>
+    </div>
+  </section>
 
-    vi_panel = (
-        '<div class="lang-panel" data-lang="vi">'
-        '<p style="color:var(--ink-mute);font-size:14px;font-style:italic;">'
-        'Nội dung gốc từ Trung tâm Hoạt động Văn hoá Khoa học Văn Miếu – Quốc Tử Giám · '
-        'bản tiếng Việt đã được trình bày thành 8 thẻ ở trên.</p>'
-        '</div>'
+  <div class="page-body">
+    <div class="container">
+      <div class="rules-list">{rule_items}</div>
+      <div class="rules-closing">
+        <span class="rules-closing__mark">❦</span>
+        <p>{escape(l10n['closing'])}</p>
+      </div>
+      <div class="emergency-card">
+        <div class="emergency-card__icon">{ICON_PHONE}</div>
+        <div class="emergency-card__body">
+          <span class="emergency-card__eyebrow">{escape(l10n['emergency_eyebrow'])}</span>
+          <h3>{escape(l10n['emergency_h3'])}</h3>
+          <p>{escape(l10n['emergency_p'])}</p>
+        </div>
+        <div class="emergency-card__numbers">
+          <a href="tel:02437471322" class="emergency-card__tel">024.3747.1322</a>
+          <a href="tel:02432115793" class="emergency-card__tel">024.3211.5793</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+"""
+
+
+def render_noi_quy(art):
+    """Nội quy tham quan — VI/EN/FR switcher at top, same card layout for each."""
+    raw_by_lang = {
+        "vi": art.raw_text_vi or "",
+        "en": getattr(art, "raw_text_en", "") or "",
+        "fr": getattr(art, "raw_text_fr", "") or "",
+    }
+    langs = [code for code in ("vi", "en", "fr") if raw_by_lang[code].strip()]
+    if not langs:
+        langs = ["vi"]
+
+    # Switcher bar (pill-style, at top)
+    tabs_html = "".join(
+        f'<button type="button" class="lang-tab{ " is-active" if i == 0 else "" }" data-lang="{code}">{NOI_QUY_L10N[code]["label"]}</button>'
+        for i, code in enumerate(langs)
     )
 
-    lang_tabs = (
-        '<div class="lang-tabs">'
-        '<div class="lang-tabs__bar">' + tab_buttons + '</div>'
-        '<div class="lang-tabs__panels">' + vi_panel + panels_html + '</div>'
-        '</div>'
-        if (art.content_en or art.content_fr) else ""
+    panels_html = "".join(
+        _render_noi_quy_panel(code, raw_by_lang[code], is_active=(i == 0))
+        for i, code in enumerate(langs)
     )
+
+    switcher_html = f"""
+<div class="lang-switcher">
+  <div class="container">
+    <span class="lang-switcher__label">Ngôn ngữ · Language · Langue</span>
+    <div class="lang-switcher__tabs">{tabs_html}</div>
+  </div>
+</div>
+""" if len(langs) > 1 else ""
 
     tab_js = """
 <script>
 (function(){
-  var root = document.querySelector('.lang-tabs');
-  if (!root) return;
-  var tabs = root.querySelectorAll('.lang-tab');
-  var panels = root.querySelectorAll('.lang-panel');
+  var tabs = document.querySelectorAll('.lang-tab');
+  var panels = document.querySelectorAll('.lang-panel');
+  if (!tabs.length || !panels.length) return;
   tabs.forEach(function(t){
     t.addEventListener('click', function(){
       var lang = t.dataset.lang;
-      tabs.forEach(function(x){ x.classList.toggle('is-active', x === t); });
+      tabs.forEach(function(x){ x.classList.toggle('is-active', x.dataset.lang === lang); });
       panels.forEach(function(p){ p.hidden = p.dataset.lang !== lang; });
+      if (window.matchMedia('(max-width: 768px)').matches) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     });
   });
 })();
 </script>
-"""
+""" if len(langs) > 1 else ""
 
     return f"""
-<section class="rules-hero">
-  <div class="container">
-    <span class="eyebrow">Nội quy tham quan</span>
-    <h1 class="display">Chào mừng Quý khách đến với <em>Văn Miếu – Quốc Tử Giám</em></h1>
-    <p class="rules-hero__lede">Để gìn giữ Di tích Quốc gia đặc biệt và đảm bảo chuyến tham quan trọn vẹn cho mọi người, kính mời Quý khách cùng thực hiện <strong>8 điều sau</strong>.</p>
-  </div>
-</section>
-
-<div class="page-body">
-  <div class="container">
-
-    <div class="rules-list">
-      {rule_cards_html}
-    </div>
-
-    <div class="rules-closing">
-      <span class="rules-closing__mark">❦</span>
-      <p>Kính chúc Quý khách một chuyến tham quan bổ ích và lý thú.</p>
-    </div>
-
-    <div class="emergency-card">
-      <div class="emergency-card__icon">{ICON_PHONE}</div>
-      <div class="emergency-card__body">
-        <span class="emergency-card__eyebrow">Báo tin khi cần</span>
-        <h3>Phát hiện sự việc bất thường?</h3>
-        <p>Thông báo ngay cho bộ phận bảo vệ di tích qua các số sau.</p>
-      </div>
-      <div class="emergency-card__numbers">
-        <a href="tel:02437471322" class="emergency-card__tel">024.3747.1322</a>
-        <a href="tel:02432115793" class="emergency-card__tel">024.3211.5793</a>
-      </div>
-    </div>
-
-    {lang_tabs}
-  </div>
+{switcher_html}
+<div class="lang-panels">
+{panels_html}
 </div>
-{tab_js if lang_tabs else ""}
+{tab_js}
 """
 
 
@@ -1931,8 +2008,10 @@ def build_tham_quan():
                 )
                 if "en" in langs:
                     art.content_en = vm.text_to_html(langs["en"])
+                    art.raw_text_en = langs["en"]
                 if "fr" in langs:
                     art.content_fr = vm.text_to_html(langs["fr"])
+                    art.raw_text_fr = langs["fr"]
                 articles.append(art)
 
     hero_img = _find_image("kvc", "gieng") or _find_image("kvc") or "/assets/images/hero.jpg"
