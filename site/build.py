@@ -177,7 +177,10 @@ header.site-header {
 .topbar a { color: var(--cream); margin-left: 14px; }
 .brand-row {
   display: flex; align-items: center; gap: 18px; padding: 18px 0;
+  color: var(--cream); text-decoration: none;
 }
+a.brand-row:hover { text-decoration: none; }
+a.brand-row:hover .brand-text h1 { color: var(--gold); }
 .brand-mark {
   width: 64px; height: 64px; border: 2px solid var(--gold);
   border-radius: 50%; display:flex; align-items:center; justify-content:center;
@@ -352,7 +355,6 @@ footer.site-footer .copy { text-align: center; padding-top: 22px; margin-top: 22
 """
 
 NAV_ITEMS = [
-    ("/", "Trang chủ"),
     ("/di-tich/", "Di tích"),
     ("/tham-quan/", "Tham quan"),
     ("/hoat-dong/", "Hoạt động"),
@@ -362,7 +364,7 @@ NAV_ITEMS = [
 
 def page(title: str, body: str, current_path: str = "/", breadcrumbs=None) -> str:
     nav_html = "\n".join(
-        f'<li><a href="{href}" class="{"active" if current_path.startswith(href) and href != "/" or (current_path == "/" and href == "/") else ""}">{label}</a></li>'
+        f'<li><a href="{href}" class="{"active" if current_path.startswith(href) else ""}">{label}</a></li>'
         for href, label in NAV_ITEMS
     )
     bc = ""
@@ -390,13 +392,13 @@ def page(title: str, body: str, current_path: str = "/", breadcrumbs=None) -> st
       <span>Di tích Quốc gia đặc biệt</span>
       <span><a href="mailto:vanmieuqtg@hanoi.gov.vn">vanmieuqtg@hanoi.gov.vn</a> · ĐT: 024.3747.1322</span>
     </div>
-    <div class="brand-row">
+    <a class="brand-row" href="/">
       <div class="brand-mark">VM</div>
       <div class="brand-text">
         <h1>VĂN MIẾU – QUỐC TỬ GIÁM</h1>
         <p>Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám</p>
       </div>
-    </div>
+    </a>
   </div>
   <nav class="main-nav">
     <div class="container">
