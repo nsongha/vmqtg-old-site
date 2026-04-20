@@ -17,7 +17,7 @@
   --dc-nav-h: 72px;
   --dc-pin-top: 96px;
   --dc-rail-x: 150px;
-  --dc-marker-w: 110px;
+  --dc-marker-w: 82px;
   --dc-gap: 40px;
   --dc-right-left: 33%;
 }
@@ -134,7 +134,7 @@
   position: absolute; inset: 0;
   opacity: 0;
   transform: translateY(14px);
-  transition: opacity .55s ease, transform .55s ease;
+  transition: opacity .2s ease, transform .2s ease;
   pointer-events: none;
   overflow-y: auto;
   padding-right: 6px;
@@ -290,52 +290,59 @@
   min-height: 150px;
   opacity: .28;
   filter: saturate(.55);
-  transition: opacity .5s ease, filter .5s ease;
+  transition: opacity .18s ease, filter .18s ease;
 }
 .dc-event.is-focus { opacity: 1; filter: none; }
 .dc-event.is-past { opacity: .55; filter: saturate(.88); }
 .dc-event:last-child { padding-bottom: 16px; }
 
-/* Marker: year-only tag with INVERTED (concave) corners on all 4 sides */
+/* Marker: year-only tag with INVERTED (concave) corners + outline — no shadow */
 .dc-event__marker {
-  --corner: 11px;
+  --r: 9px;            /* concave corner radius */
+  --w: 1.5px;          /* outline thickness */
+  --out: var(--brick); /* outline color */
   position: absolute;
-  left: 0; top: 4px;
+  left: 0; top: 8px;
   width: var(--dc-marker-w);
-  padding: 14px 18px 14px 14px;
-  background:
-    radial-gradient(circle at 0 0,          transparent var(--corner), var(--marker-bg) calc(var(--corner) + 0.5px)) top left    / 50% 50% no-repeat,
-    radial-gradient(circle at 100% 0,       transparent var(--corner), var(--marker-bg) calc(var(--corner) + 0.5px)) top right   / 50% 50% no-repeat,
-    radial-gradient(circle at 0 100%,       transparent var(--corner), var(--marker-bg) calc(var(--corner) + 0.5px)) bottom left / 50% 50% no-repeat,
-    radial-gradient(circle at 100% 100%,    transparent var(--corner), var(--marker-bg) calc(var(--corner) + 0.5px)) bottom right/ 50% 50% no-repeat;
-  text-align: right;
+  min-height: 38px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center;
   cursor: pointer;
-  filter: drop-shadow(0 1px 3px rgba(44,27,20,.08));
-  transition: transform .3s ease, filter .3s ease;
+  /* Stack: edge-outlines on top, concave-corners beneath (hole + outline ring + fill) */
+  background:
+    linear-gradient(to right, transparent var(--r), var(--out) calc(var(--r) + 0.5px), var(--out) calc(100% - var(--r)), transparent calc(100% - var(--r) + 0.5px)) left top    / 100% var(--w) no-repeat,
+    linear-gradient(to right, transparent var(--r), var(--out) calc(var(--r) + 0.5px), var(--out) calc(100% - var(--r)), transparent calc(100% - var(--r) + 0.5px)) left bottom / 100% var(--w) no-repeat,
+    linear-gradient(to bottom, transparent var(--r), var(--out) calc(var(--r) + 0.5px), var(--out) calc(100% - var(--r)), transparent calc(100% - var(--r) + 0.5px)) left top  / var(--w) 100% no-repeat,
+    linear-gradient(to bottom, transparent var(--r), var(--out) calc(var(--r) + 0.5px), var(--out) calc(100% - var(--r)), transparent calc(100% - var(--r) + 0.5px)) right top / var(--w) 100% no-repeat,
+    radial-gradient(circle at 0 0,       transparent var(--r), var(--out) calc(var(--r) + 0.5px), var(--out) calc(var(--r) + var(--w)), var(--marker-bg) calc(var(--r) + var(--w) + 0.5px)) top left     / 50% 50% no-repeat,
+    radial-gradient(circle at 100% 0,    transparent var(--r), var(--out) calc(var(--r) + 0.5px), var(--out) calc(var(--r) + var(--w)), var(--marker-bg) calc(var(--r) + var(--w) + 0.5px)) top right    / 50% 50% no-repeat,
+    radial-gradient(circle at 0 100%,    transparent var(--r), var(--out) calc(var(--r) + 0.5px), var(--out) calc(var(--r) + var(--w)), var(--marker-bg) calc(var(--r) + var(--w) + 0.5px)) bottom left  / 50% 50% no-repeat,
+    radial-gradient(circle at 100% 100%, transparent var(--r), var(--out) calc(var(--r) + 0.5px), var(--out) calc(var(--r) + var(--w)), var(--marker-bg) calc(var(--r) + var(--w) + 0.5px)) bottom right / 50% 50% no-repeat;
+  transition: transform .14s ease;
 }
-.dc-event__marker:hover {
-  filter: drop-shadow(0 3px 10px rgba(139,46,46,.18));
-  transform: translateX(-2px);
-}
+.dc-event__marker:hover { transform: translateX(-2px); }
 .dc-event.is-focus .dc-event__marker {
   --marker-bg: var(--gold-pale);
-  transform: translateX(-6px);
-  filter: drop-shadow(0 5px 16px rgba(139,46,46,.22));
+  --out: var(--brick-dark);
+  transform: translateX(-3px);
 }
 .dc-event__year {
   font-family: "Playfair Display", Georgia, serif;
-  font-size: 22px; font-weight: 600;
+  font-size: 18px; font-weight: 600;
   color: var(--brick);
-  line-height: 1.05;
+  line-height: 1;
   letter-spacing: -.005em;
+  text-align: center;
+  white-space: nowrap;
 }
 .dc-event.is-focus .dc-event__year { color: var(--brick-dark); }
 .dc-event__year small {
   display: block;
   font-family: "Be Vietnam Pro", sans-serif;
-  font-size: 11px; font-weight: 500;
+  font-size: 10px; font-weight: 500;
   color: var(--ink-mute);
-  margin-top: 4px;
+  margin-top: 2px;
   letter-spacing: .02em;
 }
 .dc-event.is-focus .dc-event__year small { color: var(--brick); }
@@ -352,7 +359,7 @@
   border: 2px solid var(--gold-soft);
   box-sizing: border-box;
   z-index: 5; /* above rail z-index 1 */
-  transition: transform .35s ease, background .35s ease, border-color .35s ease, box-shadow .35s ease;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
 }
 .dc-event.is-focus .dc-event__dot {
   background: var(--brick);
@@ -373,7 +380,7 @@
   margin: 0 0 10px;
   line-height: 1.3;
   letter-spacing: -.01em;
-  transition: transform .4s ease, color .3s;
+  transition: transform .2s ease, color .18s;
 }
 .dc-event.is-focus .dc-event__body h3 { transform: translateX(12px); }
 .dc-event--milestone .dc-event__body h3 { color: var(--brick); }
@@ -428,7 +435,7 @@
   border-radius: 2px 8px 8px 2px;
   opacity: .3;
   filter: saturate(.5);
-  transition: opacity .5s ease, filter .5s ease;
+  transition: opacity .18s ease, filter .18s ease;
 }
 .dc-quote.is-focus { opacity: 1; filter: none; }
 .dc-quote.is-past { opacity: .55; filter: saturate(.88); }
@@ -1362,29 +1369,43 @@
     scrollNodeIntoView(nodes[newIdx]);
   });
 
-  // Focus tracking
+  // Focus tracking — only mutates classes when the focused node actually changes,
+  // so CSS transitions aren't restarted every scroll frame.
+  var lastFocus = null;
   function closestToFocus() {
     var focusY = window.innerHeight * 0.42;
     var best = null, bestDist = Infinity;
-    timelineNodes.forEach(function(node){
+    for (var i = 0; i < timelineNodes.length; i++) {
+      var node = timelineNodes[i];
       var r = node.getBoundingClientRect();
+      if (r.top >= window.innerHeight * 0.9 || r.bottom <= 40) continue;
       var center = r.top + r.height / 2;
       var d = Math.abs(center - focusY);
-      if (r.top < window.innerHeight * 0.9 && r.bottom > 40) {
-        if (d < bestDist) { bestDist = d; best = node; }
+      if (d < bestDist) { bestDist = d; best = node; }
+    }
+    if (best === lastFocus) {
+      // Focus hasn't changed — just sync is-past for nodes that scrolled off.
+      for (var j = 0; j < timelineNodes.length; j++) {
+        var n = timelineNodes[j];
+        if (n === best) continue;
+        var rr = n.getBoundingClientRect();
+        n.classList.toggle('is-past', rr.bottom < 0);
       }
-    });
-    timelineNodes.forEach(function(node){
-      node.classList.remove('is-focus');
-      if (node === best) return;
-      var r = node.getBoundingClientRect();
-      if (r.bottom < 0) node.classList.add('is-past');
-      else node.classList.remove('is-past');
-    });
+      return;
+    }
+    if (lastFocus) lastFocus.classList.remove('is-focus');
+    lastFocus = best;
     if (best) {
       best.classList.add('is-focus');
       best.classList.remove('is-past');
       setActiveEra(best.dataset.era);
+    }
+    // Update is-past state for everyone else
+    for (var k = 0; k < timelineNodes.length; k++) {
+      var nk = timelineNodes[k];
+      if (nk === best) continue;
+      var rk = nk.getBoundingClientRect();
+      nk.classList.toggle('is-past', rk.bottom < 0);
     }
   }
 
