@@ -2294,8 +2294,48 @@ vm.build_tham_quan = build_tham_quan
 vm.build_site_map = build_site_map
 
 
+# Hand-written pages that live inside directories vm.main() wipes
+# (di-tich/, tham-quan/, hoat-dong/, giao-duc-di-san/, ve-chung-toi/,
+# so-do-trang/). They are backed up before the build and restored
+# afterwards so repeated builds do not delete them.
+PRESERVE_PATHS = [
+    "di-tich/lich-su/dong-chay",
+]
+
+
+def _preserve_and_build():
+    import shutil
+    backup_root = vm.SITE / ".preserve-backup"
+    if backup_root.exists():
+        shutil.rmtree(backup_root)
+
+    saved = []
+    for rel in PRESERVE_PATHS:
+        src = vm.SITE / rel
+        if src.exists():
+            dst = backup_root / rel
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(src, dst)
+            saved.append(rel)
+            print(f"  Preserving {rel}")
+
+    try:
+        vm.main()
+    finally:
+        for rel in saved:
+            src = backup_root / rel
+            dst = vm.SITE / rel
+            if dst.exists():
+                shutil.rmtree(dst)
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(src, dst)
+            print(f"  Restored {rel}")
+        if backup_root.exists():
+            shutil.rmtree(backup_root)
+
+
 if __name__ == "__main__":
     # Ensure asset dirs exist (old main() doesn't create css/)
     (vm.ASSETS / "css").mkdir(parents=True, exist_ok=True)
     vm.IMG_DIR.mkdir(parents=True, exist_ok=True)
-    vm.main()
+    _preserve_and_build()
