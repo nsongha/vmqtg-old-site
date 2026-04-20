@@ -540,6 +540,208 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
 .lightbox .next { right: 12px; }
 .lightbox .counter { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 13px; background: rgba(0,0,0,.5); padding: 4px 12px; border-radius: 12px; }
 
+/* ========== THAM QUAN ========== */
+.visit-hero {
+  position: relative; min-height: 440px; overflow: hidden; color: #fff;
+  display: flex; align-items: flex-end;
+}
+.visit-hero__media { position: absolute; inset: 0; z-index: 0; }
+.visit-hero__content { position: relative; z-index: 1; padding: 88px 0 64px; max-width: var(--container); width: 100%; margin: 0 auto; }
+.visit-hero__kicker { display: inline-flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-soft); margin-bottom: 18px; }
+.visit-hero__kicker::before { content: ""; width: 32px; height: 1px; background: var(--gold-soft); }
+.visit-hero h1 { font-family: "Playfair Display", serif; font-weight: 500; font-size: clamp(36px, 5.5vw, 68px); line-height: 1.05; letter-spacing: -.02em; margin: 0 0 18px; max-width: 14ch; }
+.visit-hero h1 em { font-style: italic; color: var(--gold-soft); }
+.visit-hero__lede { font-size: clamp(16px, 1.4vw, 18px); max-width: 560px; color: rgba(255,255,255,.9); line-height: 1.55; margin: 0; }
+
+.visit-info { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: stretch; }
+.info-card {
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md);
+  padding: 28px 30px 26px; display: flex; flex-direction: column;
+}
+.info-card__eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--brick); margin-bottom: 6px; }
+.info-card h3 { font-family: "Playfair Display", serif; font-size: 24px; font-weight: 500; margin: 0 0 18px; color: var(--ink); letter-spacing: -.01em; }
+.hours-table, .price-table { width: 100%; border-collapse: collapse; }
+.hours-table td, .price-table td { padding: 14px 0; border-bottom: 1px dashed var(--line); font-size: 15px; vertical-align: top; }
+.hours-table tr:last-child td, .price-table tr:last-child td { border-bottom: 0; }
+.hours-table td:first-child, .price-table td:first-child { color: var(--ink); font-weight: 500; }
+.hours-table td:last-child, .price-table td:last-child { text-align: right; font-weight: 600; color: var(--brick); font-variant-numeric: tabular-nums; }
+.hours-table tr.is-highlight td { color: var(--brick-dark); }
+.hours-table tr.is-highlight td:first-child::before { content: "•"; color: var(--gold); margin-right: 8px; font-size: 18px; }
+.price-table .price-row__title { font-weight: 500; color: var(--ink); }
+.price-table .price-row__sub { font-size: 12px; color: var(--ink-mute); margin-top: 2px; font-weight: 400; }
+.price-table tr.is-featured td { background: var(--gold-pale); border-radius: var(--radius-sm); }
+.price-table tr.is-featured td:first-child { padding-left: 12px; border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+.price-table tr.is-featured td:last-child { padding-right: 12px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: var(--brick-dark); }
+.price-table tr.is-free td:last-child { color: #059669; }
+.info-card__cta {
+  margin-top: 22px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 22px; background: var(--brick); color: #fff; font-weight: 600; font-size: 15px;
+  border-radius: 999px; text-decoration: none; transition: all .2s; width: 100%; box-sizing: border-box;
+}
+.info-card__cta:hover { background: var(--brick-dark); color: #fff; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.info-card__cta svg { width: 16px; height: 16px; }
+
+/* Map + transport */
+.directions-map {
+  border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm); margin-bottom: 24px; position: relative; background: var(--cream);
+}
+.directions-map iframe { display: block; width: 100%; height: 420px; border: 0; }
+.directions-map__cta {
+  position: absolute; top: 16px; left: 16px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 16px; background: #fff; color: var(--ink); font-weight: 600; font-size: 14px;
+  border-radius: 999px; text-decoration: none; border: 1px solid var(--line);
+  box-shadow: var(--shadow-md); transition: all .2s;
+}
+.directions-map__cta:hover { background: var(--brick); color: #fff; border-color: var(--brick); }
+.directions-map__cta svg { width: 14px; height: 14px; }
+
+.transport-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.transport-card {
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md);
+  padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 10px;
+  transition: border-color .2s, transform .2s;
+}
+.transport-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+.transport-card__icon {
+  width: 44px; height: 44px; border-radius: 50%; background: var(--gold-pale);
+  color: var(--brick); display: flex; align-items: center; justify-content: center;
+}
+.transport-card__icon svg { width: 22px; height: 22px; }
+.transport-card h4 { font-size: 15px; font-weight: 600; color: var(--ink); margin: 4px 0 2px; }
+.transport-card p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.5; }
+
+/* Amenities */
+.amenities-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.amenity {
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md);
+  padding: 20px 16px 18px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  transition: border-color .2s, background .2s;
+}
+.amenity:hover { border-color: var(--gold); background: var(--cream); }
+.amenity__icon {
+  width: 40px; height: 40px; border-radius: 50%; background: var(--gold-pale);
+  color: var(--brick); display: flex; align-items: center; justify-content: center;
+}
+.amenity__icon svg { width: 20px; height: 20px; }
+.amenity h4 { font-size: 13px; font-weight: 600; color: var(--ink); margin: 2px 0 0; line-height: 1.3; }
+.amenity p { font-size: 11px; color: var(--ink-mute); margin: 2px 0 0; }
+
+.a11y-banner {
+  margin-top: 16px;
+  background: linear-gradient(90deg, var(--gold-pale) 0%, #fff 100%);
+  border: 1px solid var(--gold-soft); border-radius: var(--radius-md);
+  padding: 20px 24px; display: flex; align-items: center; gap: 18px;
+}
+.a11y-banner__icon {
+  flex: 0 0 48px; width: 48px; height: 48px; border-radius: 50%;
+  background: var(--brick); color: var(--gold-soft);
+  display: flex; align-items: center; justify-content: center;
+}
+.a11y-banner__icon svg { width: 24px; height: 24px; }
+.a11y-banner h4 { margin: 0 0 4px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.a11y-banner p { margin: 0; font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+
+/* Tours */
+.tour-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.tour-card {
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md);
+  overflow: hidden; display: flex; flex-direction: column;
+  transition: border-color .25s, box-shadow .25s, transform .25s;
+}
+.tour-card:hover { border-color: var(--gold); box-shadow: var(--shadow-md); transform: translateY(-3px); }
+.tour-card__media {
+  aspect-ratio: 16/9; background: var(--cream-soft) center/cover no-repeat;
+  position: relative;
+}
+.tour-card__media::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.55) 100%);
+}
+.tour-card__tag {
+  position: absolute; top: 16px; left: 16px; z-index: 2;
+  padding: 6px 12px; background: rgba(255,255,255,.95); color: var(--brick);
+  font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  border-radius: 999px; backdrop-filter: blur(6px);
+}
+.tour-card__body { padding: 24px 26px 26px; display: flex; flex-direction: column; flex: 1; }
+.tour-card__meta {
+  display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--ink-mute);
+  margin-bottom: 10px;
+}
+.tour-card__meta .duration { display: inline-flex; align-items: center; gap: 4px; }
+.tour-card__meta .price { color: var(--brick); font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; }
+.tour-card h3 {
+  font-family: "Playfair Display", serif; font-size: 24px; font-weight: 500;
+  color: var(--ink); margin: 0 0 10px; line-height: 1.2; letter-spacing: -.01em;
+}
+.tour-card p { font-size: 14px; color: var(--ink-soft); margin: 0 0 16px; line-height: 1.55; }
+.tour-card ul { margin: 0 0 20px; padding: 0; list-style: none; }
+.tour-card li { padding: 6px 0 6px 22px; position: relative; font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+.tour-card li::before {
+  content: ""; position: absolute; left: 0; top: 14px;
+  width: 14px; height: 2px; background: var(--gold);
+}
+.tour-card__cta { align-self: flex-start; margin-top: auto; }
+
+/* Booking form */
+.booking-section {
+  background: var(--cream); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  padding: 40px 44px 36px;
+}
+.booking-form {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 20px;
+  margin-top: 24px;
+}
+.booking-form .field { display: flex; flex-direction: column; gap: 6px; }
+.booking-form .field--full { grid-column: span 2; }
+.booking-form label {
+  font-size: 13px; font-weight: 600; color: var(--ink);
+  letter-spacing: .02em;
+}
+.booking-form input,
+.booking-form select,
+.booking-form textarea {
+  padding: 12px 14px; font: inherit; font-size: 14px;
+  border: 1px solid var(--line); background: #fff; color: var(--ink);
+  border-radius: var(--radius-sm);
+  transition: border-color .2s, box-shadow .2s;
+}
+.booking-form input:focus,
+.booking-form select:focus,
+.booking-form textarea:focus {
+  outline: none; border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 161, 74, .2);
+}
+.booking-form textarea { resize: vertical; min-height: 96px; font-family: inherit; }
+.booking-form__submit {
+  grid-column: span 2; margin-top: 8px;
+  padding: 16px 28px; background: var(--brick); color: #fff;
+  font-size: 15px; font-weight: 600; border: 0; border-radius: 999px;
+  cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all .2s;
+}
+.booking-form__submit:hover { background: var(--brick-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.booking-form__submit svg { width: 16px; height: 16px; }
+
+/* Related docs (compact) */
+.docs-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.docs-list__item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 20px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md);
+  text-decoration: none; color: var(--ink);
+  transition: border-color .2s, transform .2s;
+}
+.docs-list__item:hover { border-color: var(--gold); transform: translateX(3px); color: var(--ink); }
+.docs-list__icon {
+  flex: 0 0 36px; width: 36px; height: 36px; border-radius: var(--radius-sm);
+  background: var(--gold-pale); color: var(--brick);
+  display: flex; align-items: center; justify-content: center;
+}
+.docs-list__icon svg { width: 18px; height: 18px; }
+.docs-list__title { font-size: 14px; font-weight: 600; line-height: 1.3; flex: 1; }
+
 /* ========== FOOTER ========== */
 .site-footer { background: var(--brick-dark); color: var(--cream-soft); padding: 72px 0 24px; border-top: 4px solid var(--gold); margin-top: 0; }
 .site-footer a { color: var(--cream-soft); }
@@ -597,6 +799,9 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
   .explore-grid { grid-template-columns: repeat(2, 1fr); }
   .edu-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .visit-info { grid-template-columns: 1fr; }
+  .transport-grid, .amenities-grid { grid-template-columns: repeat(2, 1fr); }
+  .tour-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 768px) {
   .section { padding: 60px 0; }
@@ -625,6 +830,16 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
   .activity { padding: 28px 24px; }
   article.article-body { padding: 0 4px; }
   article.article-body p:first-of-type::first-letter { font-size: 2.4em; padding: 4px 8px 0 0; }
+  .visit-hero { min-height: 360px; }
+  .visit-hero__content { padding: 64px 0 40px; }
+  .info-card { padding: 22px 20px; }
+  .transport-grid, .amenities-grid { grid-template-columns: 1fr 1fr; }
+  .directions-map iframe { height: 320px; }
+  .booking-section { padding: 28px 22px; }
+  .booking-form { grid-template-columns: 1fr; }
+  .booking-form .field--full,
+  .booking-form__submit { grid-column: span 1; }
+  .a11y-banner { flex-direction: column; text-align: center; align-items: center; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
@@ -1361,6 +1576,336 @@ def build_home():
 
 
 # =========================================================================
+# THAM QUAN — rich visitor page (hero + hours/prices + directions +
+# amenities + tours + booking + docs)
+# =========================================================================
+
+# SVG icon set (Lucide-style, stroke-current)
+def _svg(path_d, extra=""):
+    return (
+        f'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+        f'stroke-width="2" stroke-linecap="round" stroke-linejoin="round"{extra}>'
+        f'{path_d}</svg>'
+    )
+
+ICON_BUS       = _svg('<path d="M8 6v6"/><path d="M16 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2v-4.4c0-.4-.1-.8-.2-1.2A92 92 0 0 0 21 3.4 2 2 0 0 0 19.2 2H4.8c-.9 0-1.6.5-1.8 1.4-.3 1-1 3.8-1 3.8a6 6 0 0 0-.2 1.2v4.4c0 .4.1.8.2 1.2L2.8 16H6"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>')
+ICON_TRAIN     = _svg('<rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/><circle cx="8" cy="15" r="1"/><circle cx="16" cy="15" r="1"/>')
+ICON_CAR       = _svg('<path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/>')
+ICON_TAXI      = _svg('<path d="M10 2h4"/><path d="M5 7h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><path d="M7 7V4h10v3"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/>')
+ICON_USER_GUIDE= _svg('<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>')
+ICON_HEADPHONE = _svg('<path d="M3 12a9 9 0 0 1 18 0v6a3 3 0 0 1-3 3h-2a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h5"/><path d="M3 18v-6h5a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H6a3 3 0 0 1-3-3z"/>')
+ICON_WIFI      = _svg('<path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>')
+ICON_RESTROOM  = _svg('<path d="M7 4v16"/><path d="M17 4v16"/><path d="M12 4v16"/>')
+ICON_COFFEE    = _svg('<path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/>')
+ICON_GIFT      = _svg('<polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>')
+ICON_BENCH     = _svg('<path d="M2 9h20"/><path d="M4 9v8"/><path d="M20 9v8"/><path d="M4 13h16"/><path d="M6 17v3"/><path d="M18 17v3"/>')
+ICON_MAP_ICON  = _svg('<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>')
+ICON_A11Y      = _svg('<circle cx="12" cy="4" r="2"/><path d="M19 13v-2a7 7 0 1 0-14 0v2"/><path d="M15 21a3 3 0 1 0-6 0"/><path d="M12 13v8"/>')
+ICON_EXTERNAL  = _svg('<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>')
+ICON_CHECK     = _svg('<polyline points="20 6 9 17 4 12"/>')
+ICON_DOC       = _svg('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>')
+ICON_SUNRISE   = _svg('<path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="8 6 12 2 16 6"/>')
+ICON_MOON      = _svg('<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>')
+
+
+def build_tham_quan():
+    """Rich visitor-focused /tham-quan/ landing + individual article pages."""
+    src = ROOT / "Trang 2 Thăm quan"
+    articles = []
+    if src.exists():
+        for f in sorted(src.iterdir()):
+            if f.is_file() and f.suffix.lower() == ".docx":
+                raw = vm.docx_to_text(f)
+                langs = vm.split_languages(raw)
+                title = vm.strip_lead_num(f.stem)
+                imgs = vm.collect_images(f.parent)
+                img_paths = [vm.copy_image(im, "tham-quan") for im in imgs]
+                art = vm.Article(
+                    slug=vm.slugify(title),
+                    title_vi=title,
+                    content_vi=vm.text_to_html(langs.get("vi", "")),
+                    images=img_paths,
+                    raw_text_vi=langs.get("vi", ""),
+                    source_folder=f.parent,
+                )
+                if "en" in langs:
+                    art.content_en = vm.text_to_html(langs["en"])
+                if "fr" in langs:
+                    art.content_fr = vm.text_to_html(langs["fr"])
+                articles.append(art)
+
+    hero_img = _find_image("kvc", "gieng") or _find_image("kvc") or "/assets/images/hero.jpg"
+
+    # Google Maps embed — Văn Miếu, 58 Quốc Tử Giám
+    map_embed = (
+        '<iframe '
+        'src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.'
+        '1469437253!2d105.83282887503895!3d21.02897398062112!2m3!1f0!2f0!3f0'
+        '!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab94c4a6ce75%3A0xd4e3e29c6c'
+        '37f0a3!2zVsSDbiBNaeG6v3UgUXX hu5FjIFThu60gR2nDoW0!5e0!3m2!1svi!2s!4v1" '
+        'loading="lazy" referrerpolicy="no-referrer-when-downgrade" '
+        'allowfullscreen title="Bản đồ Văn Miếu – Quốc Tử Giám"></iframe>'
+    )
+
+    # Transport data
+    transports = [
+        (ICON_BUS,   "Xe buýt",       "Tuyến 02, 23, 38, 41 · Dừng tại bến Văn Miếu"),
+        (ICON_TRAIN, "Tàu điện",      "Metro Line 2 (đang quy hoạch) · Gần nhất: ga Chợ Dừa"),
+        (ICON_CAR,   "Xe máy / Ô tô", "Bãi đỗ xe vỉa Văn Miếu · Phí theo giờ"),
+        (ICON_TAXI,  "Taxi / Grab",   "Khu đón/trả khách tại cổng chính Văn Miếu"),
+    ]
+    transport_html = "".join(f"""
+<div class="transport-card">
+  <div class="transport-card__icon">{icon}</div>
+  <h4>{title}</h4>
+  <p>{desc}</p>
+</div>""" for icon, title, desc in transports)
+
+    # Amenities
+    amenities = [
+        (ICON_USER_GUIDE, "Hướng dẫn viên",    "Việt · Anh · Pháp"),
+        (ICON_HEADPHONE,  "Thuyết minh audio", "6 ngôn ngữ"),
+        (ICON_WIFI,       "Wifi miễn phí",     "Toàn khuôn viên"),
+        (ICON_RESTROOM,   "Nhà vệ sinh",       "4 điểm trong di tích"),
+        (ICON_COFFEE,     "Cafe &amp; Snack",  "Tại Khu Thái Học"),
+        (ICON_GIFT,       "Khu lưu niệm",      "Quà tặng văn hoá"),
+        (ICON_BENCH,      "Ghế nghỉ",          "Rải rác khắp di tích"),
+        (ICON_MAP_ICON,   "Sơ đồ in",          "Tại quầy bán vé"),
+    ]
+    amenity_html = "".join(f"""
+<div class="amenity">
+  <div class="amenity__icon">{icon}</div>
+  <h4>{title}</h4>
+  <p>{desc}</p>
+</div>""" for icon, title, desc in amenities)
+
+    # Tours
+    tour_day_img   = _find_image("cong-thai-hoc") or _find_image("cong-dai-thanh") or hero_img
+    tour_night_img = _find_image("vuon-bia") or _find_image("dai-thanh") or hero_img
+
+    tours_html = f"""
+<div class="tour-grid">
+  <div class="tour-card">
+    <div class="tour-card__media" style="background-image:url('{tour_day_img}')">
+      <span class="tour-card__tag">Ban ngày</span>
+    </div>
+    <div class="tour-card__body">
+      <div class="tour-card__meta">
+        <span class="duration">{ICON_CLOCK} 1,5 giờ</span>
+        <span class="price">200.000 đ/người</span>
+      </div>
+      <h3>Tour Ban Ngày</h3>
+      <p>Tìm hiểu lịch sử Nho giáo và hành trình giáo dục qua các triều đại. Chiêm ngưỡng kiến trúc cổ và bia tiến sĩ.</p>
+      <ul>
+        <li>Tham quan 5 khu di tích chính</li>
+        <li>Hướng dẫn viên chuyên nghiệp</li>
+        <li>Ngôn ngữ: Tiếng Việt, Tiếng Anh</li>
+      </ul>
+      <a href="#dat-tour" class="btn btn--light tour-card__cta">Đặt tour ban ngày {ICON_ARROW}</a>
+    </div>
+  </div>
+  <div class="tour-card">
+    <div class="tour-card__media" style="background-image:url('{tour_night_img}')">
+      <span class="tour-card__tag">Tour đêm</span>
+    </div>
+    <div class="tour-card__body">
+      <div class="tour-card__meta">
+        <span class="duration">{ICON_CLOCK} 2 giờ</span>
+        <span class="price">199.000 – 350.000 đ</span>
+      </div>
+      <h3>Tour Đêm Văn Miếu</h3>
+      <p>Hoà mình vào không gian huyền bí của Văn Miếu khi màn đêm buông xuống. Ánh sáng nghệ thuật, âm nhạc dân tộc và trải nghiệm văn hoá độc đáo.</p>
+      <ul>
+        <li>Trình diễn hoa văn &amp; nghệ thuật</li>
+        <li>Ánh sáng &amp; âm nhạc đặc sắc</li>
+        <li>Giới hạn 30 khách/đêm</li>
+      </ul>
+      <a href="#dat-tour" class="btn btn--primary tour-card__cta">Đặt tour đêm {ICON_ARROW}</a>
+    </div>
+  </div>
+</div>
+"""
+
+    # Docs listing (existing 4 docx articles, compact)
+    doc_links = "".join(f"""
+<a class="docs-list__item" href="/tham-quan/{a.slug}/">
+  <span class="docs-list__icon">{ICON_DOC}</span>
+  <span class="docs-list__title">{escape(a.title_vi)}</span>
+</a>""" for a in articles)
+
+    # -------- Assemble page --------
+    body = f"""
+<section class="visit-hero">
+  <div class="hero__media" role="img" aria-label="Văn Miếu – Quốc Tử Giám"
+       style="position:absolute;inset:0;z-index:0;background:
+         linear-gradient(180deg, rgba(28,25,23,.3) 0%, rgba(28,25,23,.6) 80%, rgba(28,25,23,.78) 100%),
+         url('{hero_img}') center/cover no-repeat;">
+  </div>
+  <div class="container visit-hero__content">
+    <div class="visit-hero__kicker">Tham quan</div>
+    <h1>Lên kế hoạch cho <em>chuyến thăm</em></h1>
+    <p class="visit-hero__lede">Mọi thông tin du khách cần — giờ mở cửa, giá vé, đường đi, tiện nghi và các chương trình tham quan có hướng dẫn.</p>
+  </div>
+</section>
+
+<div class="page-body">
+  <div class="container">
+
+    <!-- GIỜ & VÉ -->
+    <div style="margin-bottom:12px;">
+      <span class="eyebrow">Giờ mở cửa &amp; vé</span>
+      <h2 class="section-title" style="margin:10px 0 24px;">Thông tin tham quan</h2>
+    </div>
+
+    <div class="visit-info">
+      <div class="info-card">
+        <span class="info-card__eyebrow">Giờ mở cửa</span>
+        <h3>Lịch mở cửa theo ngày</h3>
+        <table class="hours-table">
+          <tbody>
+            <tr><td>Thứ 2 – Thứ 6</td><td>08:00 – 17:00</td></tr>
+            <tr><td>Thứ 7 – Chủ Nhật</td><td>07:30 – 18:00</td></tr>
+            <tr class="is-highlight"><td>Ngày lễ · Tết</td><td>Kiểm tra lịch</td></tr>
+            <tr><td style="padding-top:18px;color:var(--ink-mute);font-weight:400;font-size:13px;">Mùa đông (11 – 3)</td><td style="padding-top:18px;color:var(--ink-mute);font-weight:400;font-size:13px;">08:00 – 17:00</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="info-card">
+        <span class="info-card__eyebrow">Giá vé</span>
+        <h3>Bảng giá hiện hành</h3>
+        <table class="price-table">
+          <tbody>
+            <tr>
+              <td><div class="price-row__title">Người lớn</div><div class="price-row__sub">Vé tham quan tiêu chuẩn</div></td>
+              <td>70.000đ</td>
+            </tr>
+            <tr>
+              <td><div class="price-row__title">Học sinh · Sinh viên</div><div class="price-row__sub">Xuất trình thẻ học sinh/sinh viên</div></td>
+              <td>35.000đ</td>
+            </tr>
+            <tr class="is-free">
+              <td><div class="price-row__title">Trẻ em dưới 15 tuổi</div><div class="price-row__sub">Không cần vé · miễn phí hoàn toàn</div></td>
+              <td>Miễn phí</td>
+            </tr>
+            <tr class="is-featured">
+              <td><div class="price-row__title">Tour đêm</div><div class="price-row__sub">Trải nghiệm đêm huyền bí, có hướng dẫn</div></td>
+              <td>199.000 – 350.000đ</td>
+            </tr>
+          </tbody>
+        </table>
+        <a href="#dat-tour" class="info-card__cta">Mua vé online {ICON_ARROW}</a>
+      </div>
+    </div>
+
+    <!-- HƯỚNG DẪN ĐI LẠI -->
+    <div style="margin-top:72px;">
+      <span class="eyebrow">Đường đến &amp; Bãi đỗ xe</span>
+      <h2 class="section-title" style="margin:10px 0 24px;">Cách đến Văn Miếu</h2>
+    </div>
+
+    <div class="directions-map">
+      <a href="https://maps.app.goo.gl/VJuZqgHFvXgSHi8B7" target="_blank" rel="noopener" class="directions-map__cta">
+        {ICON_EXTERNAL} Mở Google Maps
+      </a>
+      {map_embed}
+    </div>
+
+    <div class="transport-grid">{transport_html}</div>
+
+    <!-- TIỆN NGHI -->
+    <div style="margin-top:72px;">
+      <span class="eyebrow">Dịch vụ &amp; Tiện ích</span>
+      <h2 class="section-title" style="margin:10px 0 24px;">Tiện nghi tại khuôn viên</h2>
+    </div>
+
+    <div class="amenities-grid">{amenity_html}</div>
+
+    <div class="a11y-banner">
+      <div class="a11y-banner__icon">{ICON_A11Y}</div>
+      <div>
+        <h4>Tiếp cận người khuyết tật</h4>
+        <p>Đường dành cho xe lăn tại các lối đi chính · Thang máy tại khu Thái Học · Hỗ trợ đặt trước qua hotline 024.3747.1322.</p>
+      </div>
+    </div>
+
+    <!-- TOUR HƯỚNG DẪN -->
+    <div style="margin-top:72px;">
+      <span class="eyebrow">Đặt tour có hướng dẫn</span>
+      <h2 class="section-title" style="margin:10px 0 24px;">Khám phá cùng chuyên gia</h2>
+    </div>
+
+    {tours_html}
+
+    <!-- FORM ĐẶT TOUR -->
+    <div class="booking-section" id="dat-tour" style="margin-top:64px;">
+      <span class="eyebrow">Đặt tour</span>
+      <h2 class="section-title" style="margin:10px 0 4px;">Đặt chỗ nhanh</h2>
+      <p style="color:var(--ink-soft);max-width:560px;margin:0 0 12px;font-size:15px;">
+        Điền thông tin bên dưới, đội ngũ Văn Miếu sẽ liên hệ xác nhận trong vòng 24 giờ.
+      </p>
+      <form class="booking-form" action="mailto:vanmieuqtg@hanoi.gov.vn" method="post" enctype="text/plain">
+        <div class="field">
+          <label for="book-date">Ngày tham quan</label>
+          <input type="date" id="book-date" name="date" required>
+        </div>
+        <div class="field">
+          <label for="book-count">Số người</label>
+          <select id="book-count" name="guests" required>
+            <option value="1">1 người</option>
+            <option value="2" selected>2 người</option>
+            <option value="3-5">3 – 5 người</option>
+            <option value="6-10">6 – 10 người</option>
+            <option value="10+">Trên 10 người (đoàn)</option>
+          </select>
+        </div>
+        <div class="field field--full">
+          <label for="book-type">Loại tour</label>
+          <select id="book-type" name="type" required>
+            <option value="day">Tour Ban Ngày · 200.000đ/người</option>
+            <option value="night-standard">Tour Đêm · Vé tiêu chuẩn · 199.000đ</option>
+            <option value="night-premium">Tour Đêm · Vé VIP · 350.000đ</option>
+            <option value="free">Tham quan tự do (chỉ mua vé vào cổng)</option>
+          </select>
+        </div>
+        <div class="field field--full">
+          <label for="book-name">Họ tên &amp; liên hệ</label>
+          <input type="text" id="book-name" name="contact" placeholder="Nguyễn Văn A · 09xx xxx xxx" required>
+        </div>
+        <div class="field field--full">
+          <label for="book-note">Ghi chú</label>
+          <textarea id="book-note" name="note" placeholder="Yêu cầu đặc biệt, ngôn ngữ hướng dẫn viên…"></textarea>
+        </div>
+        <button type="submit" class="booking-form__submit">{ICON_CHECK} Gửi yêu cầu đặt tour</button>
+      </form>
+    </div>
+
+    <!-- DOCS (compact link list) -->
+    {'''<div style="margin-top:72px;">
+      <span class="eyebrow">Tài liệu chi tiết</span>
+      <h2 class="section-title" style="margin:10px 0 24px;">Quy định &amp; tài liệu tham khảo</h2>
+    </div>
+    <div class="docs-list">''' + doc_links + '</div>' if articles else ''}
+
+  </div>
+</div>
+"""
+    vm.write_page(
+        vm.SITE / "tham-quan" / "index.html",
+        page("Tham quan", body, "/tham-quan/",
+             [("/", "Trang chủ"), (None, "Tham quan")])
+    )
+
+    # Still generate individual article pages for each docx
+    for art in articles:
+        bc = [("/", "Trang chủ"), ("/tham-quan/", "Tham quan"), (None, art.title_vi)]
+        vm.write_page(
+            vm.SITE / "tham-quan" / art.slug / "index.html",
+            page(art.title_vi, render_article(art, bc), "/tham-quan/", bc)
+        )
+
+
+# =========================================================================
 # Sitemap wrapper (keep existing logic, just re-rendered through new page())
 # =========================================================================
 def build_site_map():
@@ -1416,6 +1961,7 @@ vm.render_listing = render_listing
 vm.render_section_index = render_section_index
 vm.render_program = render_program
 vm.build_home = build_home
+vm.build_tham_quan = build_tham_quan
 vm.build_site_map = build_site_map
 
 
