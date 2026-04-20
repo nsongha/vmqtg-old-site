@@ -1,0 +1,14 @@
+.DS_Store
+**/.DS_Store
+.vercel
+__pycache__/
+*.pyc
+~$*.docx
+
+# Source data — not needed on GitHub (site/ is pre-built + committed).
+# Rebuild by restoring these folders locally from the original dataset.
+Trang 1 Trang di tich/
+Trang 2 Thăm quan/
+Trang 3 các hoạt động/
+Trang 5 Về chúng tôi/
+trang 4 Trang Giáo dục di sản/
