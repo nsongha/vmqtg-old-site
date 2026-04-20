@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sơ đồ trang — Hiện trạng & Đề xuất · VMQTG</title>
+<style>
+:root {
+  --brick: #8b2e2e;
+  --brick-dark: #5a1818;
+  --gold: #c9a14a;
+  --cream: #f5efe2;
+  --ink: #2a221c;
+  --paper: #fbf8f1;
+  --muted: #6b5e52;
+  --line: #d8cdb8;
+  --ok: #2f6e3a;
+  --warn: #a85c1a;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  font-size: 16px;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 40px 28px 80px; }
+
+header.doc-head {
+  background: var(--brick-dark);
+  color: var(--cream);
+  padding: 40px 0;
+  border-bottom: 4px solid var(--gold);
+  margin-bottom: 40px;
+}
+header.doc-head .container { padding-top: 0; padding-bottom: 0; }
+header.doc-head .kicker {
+  font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); margin: 0 0 6px;
+}
+header.doc-head h1 {
+  font-size: 32px; margin: 0 0 10px; letter-spacing: .5px;
+}
+header.doc-head p.meta { margin: 0; font-size: 14px; opacity: .85; font-style: italic; }
+header.doc-head a { color: var(--gold); border-bottom: 1px solid rgba(201,161,74,.4); text-decoration: none; }
+header.doc-head a:hover { border-bottom-color: var(--gold); }
+
+h2 {
+  font-size: 24px; color: var(--brick-dark);
+  border-bottom: 2px solid var(--gold);
+  padding-bottom: 8px;
+  margin: 50px 0 18px;
+  display: inline-block;
+}
+h3 {
+  font-size: 18px; color: var(--brick-dark);
+  margin: 30px 0 10px;
+  font-weight: 600;
+}
+h3 .tag {
+  display: inline-block; vertical-align: middle;
+  font-size: 11px; padding: 2px 8px; margin-left: 8px;
+  background: var(--cream); color: var(--muted);
+  border: 1px solid var(--line); border-radius: 10px;
+  font-weight: 400; letter-spacing: .5px; text-transform: uppercase;
+}
+
+a { color: var(--brick); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+p { margin: 0 0 14px; }
+ul, ol { padding-left: 22px; margin: 0 0 14px; }
+li { margin: 4px 0; }
+
+.tree {
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13.5px;
+  line-height: 1.7;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--gold);
+  padding: 20px 24px;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--ink);
+  margin: 0 0 20px;
+  border-radius: 2px;
+}
+.tree .sec { color: var(--brick-dark); font-weight: 700; }
+.tree .count { color: var(--muted); font-style: italic; }
+.tree .note { color: var(--muted); }
+.tree .new { color: var(--ok); font-weight: 600; }
+.tree .chg { color: var(--warn); font-weight: 600; }
+
+table {
+  width: 100%; border-collapse: collapse;
+  margin: 0 0 18px; font-size: 14.5px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { background: var(--cream); color: var(--brick-dark); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .5px; }
+tr:last-child td { border-bottom: none; }
+td.center, th.center { text-align: center; }
+td.num { font-variant-numeric: tabular-nums; }
+.check { color: var(--ok); font-weight: 700; }
+
+code {
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  background: var(--cream);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--brick-dark);
+}
+
+.callout {
+  background: var(--cream);
+  border-left: 3px solid var(--gold);
+  padding: 14px 18px;
+  margin: 14px 0;
+  font-size: 15px;
+}
+.callout strong { color: var(--brick-dark); }
+
+.problem {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--brick);
+  padding: 16px 22px;
+  margin: 16px 0;
+  border-radius: 2px;
+}
+.problem h3 { margin-top: 4px; }
+
+.legend {
+  display: flex; gap: 18px; flex-wrap: wrap;
+  font-size: 13px; color: var(--muted);
+  margin: 0 0 8px;
+}
+.legend span::before {
+  content: "■"; margin-right: 5px;
+}
+.legend .lg-new::before { color: var(--ok); }
+.legend .lg-chg::before { color: var(--warn); }
+
+nav.toc {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 16px 22px;
+  margin: 0 0 40px;
+  font-size: 14.5px;
+}
+nav.toc h4 { margin: 0 0 8px; font-size: 12px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+nav.toc ol { margin: 0; padding-left: 22px; }
+nav.toc a { color: var(--ink); }
+nav.toc a:hover { color: var(--brick); }
+
+footer.doc-foot {
+  margin-top: 60px; padding-top: 24px;
+  border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 13px; font-style: italic;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  header.doc-head { padding: 28px 0; }
+  header.doc-head h1 { font-size: 24px; }
+  h2 { font-size: 20px; }
+  .tree { font-size: 12px; padding: 14px 16px; }
+  table { font-size: 13px; }
+  th, td { padding: 8px 10px; }
+}
+</style>
+</head>
+<body>
+
+<header class="doc-head">
+  <div class="container">
+    <p class="kicker">Văn Miếu – Quốc Tử Giám · Tài liệu thiết kế</p>
+    <h1>Sơ đồ trang — Hiện trạng &amp; Đề xuất</h1>
+    <p class="meta">Build ngày 2026-04-20 · 93 trang · 5 chuyên mục · <a href="https://nsongha.github.io/vmqtg-old-site/so-do-trang/">Xem sơ đồ tương tác →</a></p>
+  </div>
+</header>
+
+<div class="container">
+
+<nav class="toc">
+  <h4>Nội dung</h4>
+  <ol>
+    <li><a href="#s1">Sơ đồ hiện tại</a></li>
+    <li><a href="#s2">8 vấn đề nhận diện</a></li>
+    <li><a href="#s3">Đề xuất sơ đồ mới</a></li>
+    <li><a href="#s4">Lý do thay đổi — theo chuyên mục</a></li>
+    <li><a href="#s5">Quick wins (làm ngay)</a></li>
+    <li><a href="#s6">Thay đổi cấu trúc (cần bàn)</a></li>
+  </ol>
+</nav>
+
+<h2 id="s1">1. Sơ đồ hiện tại</h2>
+
+<div class="tree"><span class="sec">Trang chủ</span>
+├── <span class="sec">Di tích</span>                            <span class="count">(54 bài)</span>
+│   ├── Kiến trúc                      <span class="count">(10)</span>   Cổng · Đại Thành Môn · Hồ Văn · Khuê Văn Các · Thái Học · …
+│   ├── Lịch sử                        <span class="count">( 5)</span>   Lý-Trần-Hồ · Lê sơ-Mạc · Lê Trung hưng · 1802-1945 · 1945-1988
+│   ├── 82 Bia Tiến sĩ                 <span class="count">( 3)</span>   + 1 trang bản tiếng Anh tách riêng
+│   ├── Hệ thống tượng thờ             <span class="count">(10)</span>   Khổng Tử · Á Thánh · Phục Thánh · Chu Văn An · 2 vua Lý · …
+│   └── Danh nhân &amp; dòng họ            <span class="count">(21)</span>   <span class="note">Flat list — trộn Tế tửu, Tiến sĩ, Dòng họ, Tư liệu</span>
+├── <span class="sec">Tham quan</span>                          <span class="count">( 4)</span>   Vé · Dịch vụ · Nội quy · Các tiện ích
+├── <span class="sec">Hoạt động</span>                          <span class="count">( 2)</span>   Trưng bày thường xuyên · Chú thích ảnh <span class="note">(tách riêng)</span>
+├── <span class="sec">Giáo dục di sản</span>                    <span class="count">(28)</span>   <span class="note">Theo lứa tuổi</span>
+│   ├── Mầm non                        <span class="count">( 3)</span>   Linh vật · Mãnh hổ · Ô kìa con nghê
+│   ├── Lớp 1–3                        <span class="count">( 6)</span>   + Bia Tiến sĩ, Khuê Văn Các, Lớp học xưa
+│   ├── Lớp 4–6                        <span class="count">( 5)</span>   − Mãnh hổ; + Kiến trúc nội thất KVC
+│   └── Lớp 7–12                       <span class="count">(10)</span>   Thi Hương-Hội-Đình · Sách học · Vinh quy · QTG Thăng Long · …
+└── <span class="sec">Về chúng tôi</span>                       <span class="count">( 1)</span>   <span class="note">Chỉ 1 trang</span>
+</div>
+
+<h2 id="s2">2. Vấn đề nhận diện</h2>
+
+<div class="problem">
+  <h3>2.1. <code>Danh nhân &amp; dòng họ</code> — flat 21 bài, khó tra cứu</h3>
+  <p>Nội dung trộn <strong>5 nhóm khác nhau</strong> nhưng cùng một cấp:</p>
+  <table>
+    <thead><tr><th>Nhóm</th><th>Bài hiện có</th></tr></thead>
+    <tbody>
+      <tr><td>Tế tửu – Tư nghiệp QTG</td><td>Nguyễn Bá Lân, Nguyễn Công Thái, Nguyễn Trí Vị, Nguyễn Trực (Tế tửu), Phùng Khắc Khoan, Vũ Miên, Ngô Sĩ Liên, Chu Văn An, Quan Tế tửu – Tư nghiệp (giới thiệu)</td></tr>
+      <tr><td>Tiến sĩ / Quận công</td><td>Nguyễn Công Cơ, Trần Công Xán, Đại tư đồ Nguyễn Nghiễm, Nguyễn Quý Đức</td></tr>
+      <tr><td>Danh nhân Chu Văn An</td><td>Ảnh hưởng với đương thời, Các hình thức tôn vinh</td></tr>
+      <tr><td>Dòng họ khoa bảng</td><td>1 bài tổng quan</td></tr>
+      <tr><td>Tư liệu / Đền thờ / Hoàng giáp</td><td>Nguyễn Duy Thì (2 bài), Nguyễn Duy Hiểu, Nghiêm Tướng công từ, Nhữ Đình Toản</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Hệ quả:</strong> trang <code>/di-tich/danh-nhan/</code> hiển thị 21 link theo alphabet, không ngữ cảnh. Slug lỗi: <code>10te-tuu-quoc-tu-giam-nguyen-ba-lan-…</code> (prefix "10" thừa).</p>
+</div>
+
+<div class="problem">
+  <h3>2.2. <code>Hoạt động</code> — chỉ 2 trang, 1 trang là "Chú thích ảnh" tách riêng</h3>
+  <p><code>/hoat-dong/trung-bay-trien-lam-thuong-xuyen/</code> và <code>…-chu-thich-anh/</code> là <strong>một nội dung bị tách làm đôi</strong> (nội dung chính + phụ lục ảnh). Không ai click vào "Chú thích ảnh" như một mục riêng.</p>
+</div>
+
+<div class="problem">
+  <h3>2.3. <code>Tham quan</code> — tên trang sai/lỗi thời</h3>
+  <ul>
+    <li><code>noi-quy-tham-quan-6-2</code> — có "6-2" lạc trong slug (tên file nguồn: <code>Nội quy tham quan 6-2.docx</code>).</li>
+    <li><code>ve</code> — slug quá ngắn, SEO kém. Nên là <code>gia-ve</code> hoặc <code>ve-tham-quan</code>.</li>
+    <li>Thiếu: <strong>giờ mở cửa</strong>, <strong>bản đồ</strong>, <strong>hướng dẫn di chuyển</strong> — những thông tin khách cần nhất.</li>
+  </ul>
+</div>
+
+<div class="problem">
+  <h3>2.4. <code>Giáo dục di sản</code> — chương trình lặp qua 4 lứa tuổi, khó so sánh</h3>
+  <p>Hiện tại xếp theo lứa tuổi → mỗi chương trình xuất hiện 2–4 lần ở các trang khác nhau:</p>
+  <table>
+    <thead><tr><th>Chương trình</th><th class="center">MN</th><th class="center">1–3</th><th class="center">4–6</th><th class="center">7–12</th></tr></thead>
+    <tbody>
+      <tr><td>Đi tìm linh vật</td><td class="center check">✓</td><td class="center check">✓</td><td class="center check">✓</td><td class="center check">✓</td></tr>
+      <tr><td>Ô kìa con Nghê</td><td class="center check">✓</td><td class="center check">✓</td><td class="center check">✓</td><td class="center check">✓</td></tr>
+      <tr><td>Khám phá Bia Tiến sĩ</td><td class="center">—</td><td class="center check">✓</td><td class="center check">✓</td><td class="center check">✓</td></tr>
+      <tr><td>Mãnh hổ hạ sơn</td><td class="center check">✓</td><td class="center check">✓</td><td class="center">—</td><td class="center">—</td></tr>
+      <tr><td>Khám phá Khuê Văn Các</td><td class="center">—</td><td class="center check">✓</td><td class="center check">✓</td><td class="center">—</td></tr>
+      <tr><td>Lớp học xưa</td><td class="center">—</td><td class="center check">✓</td><td class="center check">✓</td><td class="center">—</td></tr>
+      <tr><td><em>(chỉ 7–12)</em> Thi Hương-Hội-Đình, Vinh quy bái tổ, Sách học &amp; ván khắc, QTG Thăng Long, VM xưa-nay, Kiến trúc cổ, Môi trường</td><td class="center">—</td><td class="center">—</td><td class="center">—</td><td class="center check">✓</td></tr>
+    </tbody>
+  </table>
+  <p>Giáo viên/phụ huynh muốn biết "chương trình X dành cho độ tuổi nào?" → phải mở 4 trang.</p>
+</div>
+
+<div class="problem">
+  <h3>2.5. Title ALL CAPS</h3>
+  <p>Tiêu đề trang được kéo thẳng từ <code>.docx</code> dạng <code>TẾ TỬU QUỐC TỬ GIÁM NGUYỄN TRỰC (1417-1473)</code>, hiển thị chói trong listing và sitemap. Dễ fix bằng title-case ở tầng build.</p>
+</div>
+
+<div class="problem">
+  <h3>2.6. Song ngữ thiếu nhất quán</h3>
+  <ul>
+    <li>Hầu hết trang bilingual dùng <code>&lt;details&gt;English version&lt;/details&gt;</code> trong cùng trang.</li>
+    <li>Riêng <code>bia-tien-si-di-san-tu-lieu-the-gioi</code> có <strong>bản EN tách thành trang riêng</strong> (<code>the-stone-stelae-a-world-documentary-heritage/</code>). Là glitch của build logic khi gặp cấu trúc folder <code>VN/EN</code>.</li>
+  </ul>
+</div>
+
+<div class="problem">
+  <h3>2.7. <code>Về chúng tôi</code> quá mỏng</h3>
+  <p>Chỉ 1 bài giới thiệu Trung tâm. Thiếu <strong>liên hệ</strong>, <strong>đội ngũ</strong>, <strong>lịch sử Trung tâm</strong>, <strong>báo chí/tin tức</strong>, <strong>tuyển dụng</strong> — những nội dung institutional site thường có.</p>
+</div>
+
+<div class="problem">
+  <h3>2.8. Home conflate với Di tích</h3>
+  <p>Trang chủ đặt tiêu đề <code>Khám phá di tích</code> → dễ nhầm là trang Di tích. Nên đổi thành <code>Khám phá Văn Miếu – Quốc Tử Giám</code>.</p>
+</div>
+
+<h2 id="s3">3. Đề xuất sơ đồ mới</h2>
+
+<div class="callout">
+  <strong>Nguyên tắc:</strong> giữ 5 chuyên mục hàng đầu (ít cost migration, khách quen URL cũ), tái cấu trúc bên trong + thêm 1 tầng phân loại cho 2 chuyên mục nặng nhất (<code>Danh nhân</code>, <code>Giáo dục</code>).
+</div>
+
+<div class="legend">
+  <span class="lg-new">Mới thêm</span>
+  <span class="lg-chg">Cần đổi / tái cấu trúc</span>
+</div>
+
+<div class="tree"><span class="sec">Trang chủ</span>  <span class="chg">← đổi heading thành "Khám phá Văn Miếu – Quốc Tử Giám"</span>
+│
+├── <span class="sec">Di tích</span>
+│   ├── Lịch sử                       <span class="count">(5 → giữ nguyên)</span>
+│   ├── Kiến trúc                     <span class="count">(10 → giữ nguyên)</span>
+│   ├── 82 Bia Tiến sĩ                <span class="count">(3 + gộp bản EN vào &lt;details&gt;)</span>
+│   ├── Tượng thờ                     <span class="count">(10 → đổi tên "Hệ thống tượng thờ")</span>
+│   └── <span class="chg">Danh nhân khoa bảng            ★ tái cấu trúc</span>
+│       ├── Tế tửu – Tư nghiệp QTG    <span class="count">(10)</span>
+│       ├── Tiến sĩ – Quan lại        <span class="count">(4)</span>
+│       ├── Chu Văn An                <span class="count">(2 + link tới tượng thờ)</span>
+│       ├── Dòng họ khoa bảng         <span class="count">(1 + mở rộng tương lai)</span>
+│       └── Tư liệu &amp; Đền thờ         <span class="count">(5)</span>
+│
+├── <span class="sec">Tham quan</span>                          <span class="chg">★ bổ sung</span>
+│   ├── <span class="new">Giờ mở cửa &amp; Giá vé</span>           <span class="count">(gộp "ve" + thêm giờ)</span>
+│   ├── <span class="new">Hướng dẫn &amp; Bản đồ</span>            <span class="count">(mới)</span>
+│   ├── Nội quy tham quan             <span class="count">(bỏ "-6-2")</span>
+│   ├── Dịch vụ tham quan
+│   └── Tiện ích tại di tích
+│
+├── <span class="sec">Hoạt động</span>                          <span class="chg">★ gộp + mở rộng</span>
+│   ├── Trưng bày thường xuyên        <span class="count">(gộp 2 trang hiện có)</span>
+│   └── <span class="new">Sự kiện &amp; Triển lãm chuyên đề</span>  <span class="count">(mới)</span>
+│
+├── <span class="sec">Giáo dục di sản</span>                    <span class="chg">★ 2 view</span>
+│   ├── <span class="new">Theo chương trình</span>             <span class="count">(mới — primary)</span>
+│   │   ├── Đi tìm linh vật          <span class="count">(MN, 1–3, 4–6, 7–12)</span>
+│   │   ├── Khám phá Bia Tiến sĩ     <span class="count">(1–3, 4–6, 7–12)</span>
+│   │   ├── Ô kìa con Nghê           <span class="count">(MN, 1–3, 4–6, 7–12)</span>
+│   │   ├── Mãnh hổ hạ sơn           <span class="count">(MN, 1–3)</span>
+│   │   ├── Khuê Văn Các &amp; Kiến trúc <span class="count">(1–3, 4–6, 7–12)</span>
+│   │   ├── Lớp học xưa              <span class="count">(1–3, 4–6)</span>
+│   │   ├── Khoa cử: Thi Hương–Hội–Đình · Vinh quy bái tổ  <span class="count">(7–12)</span>
+│   │   ├── Sách học &amp; Ván khắc      <span class="count">(7–12)</span>
+│   │   └── QTG Thăng Long · VM xưa-nay · Môi trường <span class="count">(7–12)</span>
+│   └── Theo lứa tuổi                <span class="count">(view phụ — URL cũ giữ cho SEO)</span>
+│       ├── Mầm non · Lớp 1–3 · Lớp 4–6 · Lớp 7–12
+│
+└── <span class="sec">Về chúng tôi</span>                       <span class="chg">★ mở rộng</span>
+    ├── Giới thiệu Trung tâm          <span class="count">(trang hiện có)</span>
+    ├── <span class="new">Liên hệ</span>                        <span class="count">(mới — email, ĐT, form)</span>
+    ├── <span class="new">Đội ngũ</span>                        <span class="count">(mới — không bắt buộc)</span>
+    └── <span class="new">Tin tức &amp; Báo chí</span>              <span class="count">(mới — trống ban đầu cũng OK)</span>
+</div>
+
+<h2 id="s4">4. Lý do thay đổi — theo chuyên mục</h2>
+
+<h3>Di tích → chia <code>Danh nhân</code> thành 5 nhóm</h3>
+<ul>
+  <li><strong>Vấn đề:</strong> 21 bài flat, người dùng phải scroll/đoán.</li>
+  <li><strong>Lợi ích:</strong> người tìm "Tế tửu Quốc Tử Giám là ai?" có nhóm riêng 10 vị. Chu Văn An có trang hub kết nối Danh nhân + Tượng thờ.</li>
+  <li><strong>Cost:</strong> build.py thêm phân loại (có thể manual — chỉ 21 bài).</li>
+</ul>
+
+<h3>Di tích → gộp bản EN của Bia Tiến sĩ vào <code>&lt;details&gt;</code></h3>
+<ul>
+  <li><strong>Vấn đề:</strong> 1 trang EN tách riêng → trùng lặp, sitemap có entry lạ <em>THE STONE STELAE…</em>.</li>
+  <li><strong>Lợi ích:</strong> nhất quán với 82 trang bilingual khác đã dùng <code>&lt;details&gt;</code>.</li>
+  <li><strong>Cost:</strong> sửa logic <code>collect_articles_recursive</code>.</li>
+</ul>
+
+<h3>Tham quan → bổ sung Giờ mở cửa + Bản đồ, sửa tên</h3>
+<ul>
+  <li><strong>Vấn đề:</strong> thông tin khách cần nhất (giờ, bản đồ) đang nằm ở footer hoặc không có.</li>
+  <li><strong>Lợi ích:</strong> Tham quan thực sự hữu ích cho first-time visitor.</li>
+  <li><strong>Cost:</strong> 2 trang nội dung mới, cần ảnh bản đồ.</li>
+</ul>
+
+<h3>Hoạt động → gộp 2 trang trưng bày + chừa chỗ sự kiện</h3>
+<ul>
+  <li><strong>Vấn đề:</strong> "Chú thích ảnh" là phụ lục không nên là page riêng.</li>
+  <li><strong>Lợi ích:</strong> section này hiện chỉ 2 bài → yếu. Chừa slot cho triển lãm chuyên đề tương lai.</li>
+  <li><strong>Cost:</strong> gộp 2 file <code>.docx</code> thành 1 khi build.</li>
+</ul>
+
+<h3>Giáo dục di sản → <strong>pivot sang chương trình làm primary</strong></h3>
+<ul>
+  <li><strong>Vấn đề:</strong> chương trình lặp qua 4 lứa tuổi. Giáo viên muốn biết chương trình "Đi tìm linh vật" khác nhau thế nào giữa MN và 7–12 → hiện tại phải mở 4 trang rời rạc.</li>
+  <li><strong>Lợi ích:</strong> mỗi chương trình có 1 trang hub liệt kê các biến thể theo lứa tuổi, có bảng so sánh. Giữ URL cũ cho SEO.</li>
+  <li><strong>Cost:</strong> thêm layer index theo theme. Không xóa trang nào.</li>
+</ul>
+
+<h3>Về chúng tôi → mở rộng thành institutional landing</h3>
+<ul>
+  <li><strong>Vấn đề:</strong> 1 trang quá mỏng cho "đầu não" của site.</li>
+  <li><strong>Lợi ích:</strong> người muốn hợp tác/liên hệ/đặt đoàn có điểm đến rõ.</li>
+  <li><strong>Cost:</strong> cần nội dung — có thể bắt đầu chỉ với trang Liên hệ.</li>
+</ul>
+
+<h2 id="s5">5. Quick wins <span class="tag">Làm ngay, không cần thêm nội dung</span></h2>
+
+<table>
+  <thead>
+    <tr><th style="width:36px">#</th><th>Việc</th><th>File</th><th style="width:90px">Thời gian</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="num">1</td><td>Đổi <code>Khám phá di tích</code> → <code>Khám phá Văn Miếu – Quốc Tử Giám</code> ở home</td><td><code>build.py:build_home</code></td><td>2 phút</td></tr>
+    <tr><td class="num">2</td><td>Title-case cho tiêu đề ALL CAPS khi render listing &amp; sitemap</td><td><code>build.py:text_to_html</code></td><td>10 phút</td></tr>
+    <tr><td class="num">3</td><td>Strip prefix số lạc (<code>10te-tuu-…</code>, <code>noi-quy-…-6-2</code>)</td><td><code>build.py:strip_lead_num</code> mở rộng</td><td>5 phút</td></tr>
+    <tr><td class="num">4</td><td>Gộp 2 trang <code>hoat-dong/trung-bay-trien-lam-*</code> thành 1</td><td>Gộp file <code>.docx</code></td><td>10 phút</td></tr>
+    <tr><td class="num">5</td><td>Fix bản EN Bia Tiến sĩ tách riêng</td><td><code>build.py:collect_articles_recursive</code></td><td>20 phút</td></tr>
+    <tr><td class="num">6</td><td>Rename slug <code>ve</code> → <code>gia-ve</code>, thêm redirect</td><td><code>build_tham_quan</code> + <code>vercel.json</code></td><td>10 phút</td></tr>
+  </tbody>
+</table>
+
+<h2 id="s6">6. Thay đổi cấu trúc <span class="tag">Cần bàn trước khi làm</span></h2>
+
+<table>
+  <thead>
+    <tr><th style="width:36px">#</th><th>Việc</th><th>Ảnh hưởng</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="num">A</td><td>Chia <code>Danh nhân &amp; dòng họ</code> thành 5 nhóm</td><td>URL mới, cần redirect từ URL cũ</td></tr>
+    <tr><td class="num">B</td><td>Pivot Giáo dục di sản theo chương trình</td><td>Thêm trang, URL cũ giữ</td></tr>
+    <tr><td class="num">C</td><td>Bổ sung Tham quan: giờ, bản đồ, hướng dẫn</td><td>Cần nội dung nguồn</td></tr>
+    <tr><td class="num">D</td><td>Mở rộng Về chúng tôi</td><td>Cần nội dung nguồn</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>Đề xuất thứ tự:</strong> làm Quick wins (§5) trước → xem lại §6 sau khi có nội dung cho C &amp; D.
+</div>
+
+<footer class="doc-foot">
+  Tài liệu tham khảo · Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám
+</footer>
+
+</div>
+</body>
+</html>
