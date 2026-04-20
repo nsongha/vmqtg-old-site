@@ -822,28 +822,18 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
 }
 .emergency-card__tel:hover { background: #fff; color: var(--brick-dark); border-color: #fff; }
 
-/* Pill-style language switcher (top of page) */
-.lang-switcher {
-  background: var(--cream);
-  border-bottom: 1px solid var(--line);
-  padding: 14px 0;
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  backdrop-filter: saturate(180%) blur(10px);
-  -webkit-backdrop-filter: saturate(180%) blur(10px);
+/* Pill-style language switcher inside rules-hero */
+.rules-hero__tabs {
+  margin: 28px auto 0;
+  display: inline-flex; gap: 4px;
+  padding: 4px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
 }
-.lang-switcher .container {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 14px;
-}
-.lang-switcher__label {
-  font-size: 11px; font-weight: 600; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--ink-mute);
-}
-.lang-switcher__tabs { display: inline-flex; gap: 4px; padding: 3px; background: #fff; border-radius: 999px; border: 1px solid var(--line); }
 .lang-tab {
-  padding: 8px 18px; background: transparent; border: 0;
+  padding: 8px 20px; background: transparent; border: 0;
   font: inherit; font-size: 13px; font-weight: 600; color: var(--ink-mute);
   cursor: pointer; border-radius: 999px;
   transition: all .2s;
@@ -957,10 +947,7 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
   .emergency-card { grid-template-columns: 1fr; text-align: center; padding: 28px 24px; gap: 18px; }
   .emergency-card__icon { margin: 0 auto; }
   .emergency-card__numbers { flex-direction: row; justify-content: center; flex-wrap: wrap; }
-  .lang-switcher { padding: 10px 0; position: static; }
-  .lang-switcher .container { justify-content: center; }
-  .lang-switcher__label { width: 100%; text-align: center; }
-  .lang-switcher__tabs { overflow-x: auto; max-width: 100%; }
+  .rules-hero__tabs { margin-top: 22px; max-width: 100%; overflow-x: auto; }
   .lang-tab { padding: 7px 14px; font-size: 12px; white-space: nowrap; }
 }
 @media (prefers-reduced-motion: reduce) {

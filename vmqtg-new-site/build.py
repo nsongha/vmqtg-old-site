@@ -863,28 +863,18 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
 }
 .emergency-card__tel:hover { background: #fff; color: var(--brick-dark); border-color: #fff; }
 
-/* Pill-style language switcher (top of page) */
-.lang-switcher {
-  background: var(--cream);
-  border-bottom: 1px solid var(--line);
-  padding: 14px 0;
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  backdrop-filter: saturate(180%) blur(10px);
-  -webkit-backdrop-filter: saturate(180%) blur(10px);
+/* Pill-style language switcher inside rules-hero */
+.rules-hero__tabs {
+  margin: 28px auto 0;
+  display: inline-flex; gap: 4px;
+  padding: 4px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
 }
-.lang-switcher .container {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 14px;
-}
-.lang-switcher__label {
-  font-size: 11px; font-weight: 600; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--ink-mute);
-}
-.lang-switcher__tabs { display: inline-flex; gap: 4px; padding: 3px; background: #fff; border-radius: 999px; border: 1px solid var(--line); }
 .lang-tab {
-  padding: 8px 18px; background: transparent; border: 0;
+  padding: 8px 20px; background: transparent; border: 0;
   font: inherit; font-size: 13px; font-weight: 600; color: var(--ink-mute);
   cursor: pointer; border-radius: 999px;
   transition: all .2s;
@@ -998,10 +988,7 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
   .emergency-card { grid-template-columns: 1fr; text-align: center; padding: 28px 24px; gap: 18px; }
   .emergency-card__icon { margin: 0 auto; }
   .emergency-card__numbers { flex-direction: row; justify-content: center; flex-wrap: wrap; }
-  .lang-switcher { padding: 10px 0; position: static; }
-  .lang-switcher .container { justify-content: center; }
-  .lang-switcher__label { width: 100%; text-align: center; }
-  .lang-switcher__tabs { overflow-x: auto; max-width: 100%; }
+  .rules-hero__tabs { margin-top: 22px; max-width: 100%; overflow-x: auto; }
   .lang-tab { padding: 7px 14px; font-size: 12px; white-space: nowrap; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1868,7 +1855,7 @@ def _parse_rules_text(raw: str):
     return rules
 
 
-def _render_noi_quy_panel(lang_code: str, raw_text: str, is_active: bool) -> str:
+def _render_noi_quy_panel(lang_code: str, raw_text: str, is_active: bool, all_langs) -> str:
     l10n = NOI_QUY_L10N[lang_code]
     rules = _parse_rules_text(raw_text)
 
@@ -1890,6 +1877,15 @@ def _render_noi_quy_panel(lang_code: str, raw_text: str, is_active: bool) -> str
   </div>
 </div>"""
 
+    # Inline tab bar — rendered inside each panel's hero, after the lede.
+    tabs_inline = ""
+    if len(all_langs) > 1:
+        buttons = "".join(
+            f'<button type="button" class="lang-tab{ " is-active" if code == lang_code else "" }" data-lang="{code}">{NOI_QUY_L10N[code]["label"]}</button>'
+            for code in all_langs
+        )
+        tabs_inline = f'<div class="rules-hero__tabs">{buttons}</div>'
+
     hidden = "" if is_active else " hidden"
     return f"""
 <div class="lang-panel" data-lang="{lang_code}"{hidden}>
@@ -1898,6 +1894,7 @@ def _render_noi_quy_panel(lang_code: str, raw_text: str, is_active: bool) -> str
       <span class="eyebrow">{escape(l10n['kicker'])}</span>
       <h1 class="display">{escape(l10n['h1_pre'])} <em>{escape(l10n['h1_main'])}</em></h1>
       <p class="rules-hero__lede">{l10n['lede']}</p>
+      {tabs_inline}
     </div>
   </section>
 
@@ -1927,7 +1924,7 @@ def _render_noi_quy_panel(lang_code: str, raw_text: str, is_active: bool) -> str
 
 
 def render_noi_quy(art):
-    """Nội quy tham quan — VI/EN/FR switcher at top, same card layout for each."""
+    """Nội quy tham quan — 3 self-contained panels (VI/EN/FR), tabs inside each hero."""
     raw_by_lang = {
         "vi": art.raw_text_vi or "",
         "en": getattr(art, "raw_text_en", "") or "",
@@ -1937,25 +1934,10 @@ def render_noi_quy(art):
     if not langs:
         langs = ["vi"]
 
-    # Switcher bar (pill-style, at top)
-    tabs_html = "".join(
-        f'<button type="button" class="lang-tab{ " is-active" if i == 0 else "" }" data-lang="{code}">{NOI_QUY_L10N[code]["label"]}</button>'
-        for i, code in enumerate(langs)
-    )
-
     panels_html = "".join(
-        _render_noi_quy_panel(code, raw_by_lang[code], is_active=(i == 0))
+        _render_noi_quy_panel(code, raw_by_lang[code], is_active=(i == 0), all_langs=langs)
         for i, code in enumerate(langs)
     )
-
-    switcher_html = f"""
-<div class="lang-switcher">
-  <div class="container">
-    <span class="lang-switcher__label">Ngôn ngữ · Language · Langue</span>
-    <div class="lang-switcher__tabs">{tabs_html}</div>
-  </div>
-</div>
-""" if len(langs) > 1 else ""
 
     tab_js = """
 <script>
@@ -1978,7 +1960,6 @@ def render_noi_quy(art):
 """ if len(langs) > 1 else ""
 
     return f"""
-{switcher_html}
 <div class="lang-panels">
 {panels_html}
 </div>
