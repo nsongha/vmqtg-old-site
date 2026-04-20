@@ -725,6 +725,88 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
 .booking-form__submit:hover { background: var(--brick-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
 .booking-form__submit svg { width: 16px; height: 16px; }
 
+/* Services list (replaces booking form — real contact info per service) */
+.services-list { display: flex; flex-direction: column; gap: 14px; }
+.service-row {
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: 20px; align-items: center;
+  padding: 20px 24px; background: #fff;
+  border: 1px solid var(--line); border-radius: var(--radius-md);
+  transition: border-color .2s;
+}
+.service-row:hover { border-color: var(--gold); }
+.service-row__icon {
+  flex: 0 0 44px; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--gold-pale); color: var(--brick);
+  display: flex; align-items: center; justify-content: center;
+}
+.service-row__icon svg { width: 20px; height: 20px; }
+.service-row__body h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 18px; font-weight: 500; color: var(--ink);
+  margin: 0 0 4px; letter-spacing: -.01em; line-height: 1.3;
+}
+.service-row__body p { font-size: 14px; color: var(--ink-soft); margin: 0; line-height: 1.55; }
+.service-row__cta {
+  display: flex; flex-direction: column; align-items: flex-end;
+  padding-left: 20px; border-left: 1px solid var(--line);
+  text-decoration: none; transition: color .2s;
+}
+.service-row__cta--info { cursor: default; }
+.service-row__cta:hover:not(.service-row__cta--info) .service-row__tel { color: var(--brick-dark); }
+.service-row__label {
+  font-size: 11px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-mute); margin-bottom: 2px;
+  white-space: nowrap;
+}
+.service-row__tel {
+  font-size: 15px; font-weight: 700; color: var(--brick);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.service-row__cta--info .service-row__tel { color: var(--ink); }
+
+/* Rules highlight callout */
+.rules-highlight {
+  margin-top: 72px;
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: 28px; align-items: center;
+  padding: 28px 32px;
+  background: linear-gradient(90deg, var(--gold-pale) 0%, #fff 65%);
+  border: 1px solid var(--gold-soft);
+  border-radius: var(--radius-lg);
+  text-decoration: none; color: inherit;
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+.rules-highlight:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md); color: inherit;
+  border-color: var(--gold);
+}
+.rules-highlight__icon {
+  flex: 0 0 56px; width: 56px; height: 56px; border-radius: 50%;
+  background: var(--brick); color: var(--gold-soft);
+  display: flex; align-items: center; justify-content: center;
+}
+.rules-highlight__icon svg { width: 24px; height: 24px; }
+.rules-highlight__eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: .15em;
+  text-transform: uppercase; color: var(--brick);
+}
+.rules-highlight__body h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 22px; font-weight: 500; color: var(--ink);
+  margin: 4px 0 6px; letter-spacing: -.01em;
+}
+.rules-highlight__body p { font-size: 14px; color: var(--ink-soft); margin: 0; line-height: 1.55; }
+.rules-highlight__cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 22px; background: var(--brick); color: #fff;
+  font-size: 14px; font-weight: 600; border-radius: 999px;
+  white-space: nowrap; transition: background .2s;
+}
+.rules-highlight:hover .rules-highlight__cta { background: var(--brick-dark); }
+.rules-highlight__cta svg { width: 14px; height: 14px; }
+
 /* Related docs (compact) */
 .docs-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
 .docs-list__item {
@@ -979,9 +1061,17 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
   .transport-grid, .amenities-grid { grid-template-columns: 1fr 1fr; }
   .directions-map iframe { height: 320px; }
   .booking-section { padding: 28px 22px; }
-  .booking-form { grid-template-columns: 1fr; }
-  .booking-form .field--full,
-  .booking-form__submit { grid-column: span 1; }
+  .service-row { grid-template-columns: auto 1fr; gap: 14px; padding: 18px 20px; }
+  .service-row__cta {
+    grid-column: 1 / -1;
+    flex-direction: row; align-items: center; justify-content: space-between;
+    border-left: 0; border-top: 1px solid var(--line);
+    padding: 12px 0 0; padding-left: 0; margin-top: 4px;
+  }
+  .rules-highlight {
+    grid-template-columns: 1fr; text-align: center; justify-items: center;
+    padding: 24px 22px; gap: 16px;
+  }
   .a11y-banner { flex-direction: column; text-align: center; align-items: center; }
   .rule-item { grid-template-columns: 1fr; gap: 12px; padding: 24px 0; }
   .rule-item__number { text-align: left; font-size: 48px; padding-top: 0; }
@@ -1762,6 +1852,8 @@ ICON_SHIRT     = _svg('<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0
 ICON_BAN       = _svg('<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>')
 ICON_SCALE     = _svg('<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>')
 ICON_SHIELD    = _svg('<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>')
+ICON_BOOK      = _svg('<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>')
+ICON_STAR      = _svg('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>')
 
 
 NOI_QUY_ICONS = {
@@ -1993,6 +2085,10 @@ def build_tham_quan():
                 if "fr" in langs:
                     art.content_fr = vm.text_to_html(langs["fr"])
                     art.raw_text_fr = langs["fr"]
+                # Clean up Nội quy title & slug (source filename has "6-2" suffix)
+                if "noi-quy" in art.slug or "nội quy" in art.title_vi.lower():
+                    art.title_vi = "Nội quy tham quan"
+                    art.slug = "noi-quy-tham-quan"
                 articles.append(art)
 
     hero_img = _find_image("kvc", "gieng") or _find_image("kvc") or "/assets/images/hero.jpg"
@@ -2040,15 +2136,8 @@ def build_tham_quan():
   <p>{desc}</p>
 </div>""" for icon, title, desc in amenities)
 
-    # (Section "Khám phá cùng chuyên gia" removed per user request —
-    # service info is still conveyed via the amenities grid and booking form.)
-
-    # Docs listing (existing 4 docx articles, compact)
-    doc_links = "".join(f"""
-<a class="docs-list__item" href="/tham-quan/{a.slug}/">
-  <span class="docs-list__icon">{ICON_DOC}</span>
-  <span class="docs-list__title">{escape(a.title_vi)}</span>
-</a>""" for a in articles)
+    # (Sections "Khám phá cùng chuyên gia" and "Tài liệu chi tiết" removed
+    # per user request — all content now lives on the tham-quan hub itself.)
 
     # -------- Assemble page --------
     body = f"""
@@ -2149,67 +2238,79 @@ def build_tham_quan():
       </div>
     </div>
 
-    <!-- FORM ĐẶT DỊCH VỤ -->
+    <!-- DỊCH VỤ THAM QUAN (từ dịch vụ tham quan.docx) -->
     <div class="booking-section" id="dat-dich-vu" style="margin-top:64px;">
-      <span class="eyebrow">Đặt dịch vụ thuyết minh</span>
-      <h2 class="section-title" style="margin:10px 0 4px;">Đăng ký nhanh</h2>
-      <p style="color:var(--ink-soft);max-width:620px;margin:0 0 12px;font-size:15px;">
-        Điền thông tin bên dưới, hoặc gọi trực tiếp <strong>024.3823.5601</strong> để đặt thuyết minh viên.
-        Cán bộ tại Quầy bán vé cũng tiếp nhận yêu cầu khi du khách đến di tích.
+      <span class="eyebrow">Dịch vụ tham quan</span>
+      <h2 class="section-title" style="margin:10px 0 4px;">Bốn dịch vụ hỗ trợ du khách</h2>
+      <p style="color:var(--ink-soft);max-width:620px;margin:0 0 24px;font-size:15px;">
+        Liên hệ trực tiếp qua số điện thoại hoặc cán bộ tại Quầy bán vé để đặt các dịch vụ sau.
       </p>
-      <form class="booking-form" action="mailto:vanmieuqtg@hanoi.gov.vn" method="post" enctype="text/plain">
-        <div class="field">
-          <label for="book-date">Ngày tham quan</label>
-          <input type="date" id="book-date" name="date" required>
+      <div class="services-list">
+
+        <div class="service-row">
+          <div class="service-row__icon">{ICON_USER_GUIDE}</div>
+          <div class="service-row__body">
+            <h3>Thuyết minh viên trực tiếp</h3>
+            <p>Bốn ngôn ngữ: Việt · Anh · Trung · Pháp — liên hệ trước hoặc hỏi cán bộ tại Quầy bán vé.</p>
+          </div>
+          <a href="tel:02438235601" class="service-row__cta">
+            <span class="service-row__label">Điện thoại đặt trước</span>
+            <span class="service-row__tel">024.3823.5601</span>
+          </a>
         </div>
-        <div class="field">
-          <label for="book-count">Số người</label>
-          <select id="book-count" name="guests" required>
-            <option value="1">1 người</option>
-            <option value="2" selected>2 người</option>
-            <option value="3-5">3 – 5 người</option>
-            <option value="6-10">6 – 10 người</option>
-            <option value="10+">Trên 10 người (đoàn)</option>
-          </select>
+
+        <div class="service-row">
+          <div class="service-row__icon">{ICON_HEADPHONE}</div>
+          <div class="service-row__body">
+            <h3>Thuyết minh tự động (audio guide)</h3>
+            <p>8 ngôn ngữ: VI · EN · FR · ES · KO · JA · ZH · TH. Phí: Tiếng Việt 30.000đ · tiếng nước ngoài 50.000đ.</p>
+          </div>
+          <div class="service-row__cta service-row__cta--info">
+            <span class="service-row__label">Nhận thiết bị tại</span>
+            <span class="service-row__tel">Quầy bán vé</span>
+          </div>
         </div>
-        <div class="field">
-          <label for="book-service">Dịch vụ</label>
-          <select id="book-service" name="service" required>
-            <option value="guide">Thuyết minh viên trực tiếp</option>
-            <option value="audio">Thuyết minh tự động (audio guide)</option>
-            <option value="khuyen-hoc">Chương trình khuyến học</option>
-            <option value="event">Tổ chức sự kiện tại di tích</option>
-            <option value="none">Tham quan tự do (chỉ mua vé)</option>
-          </select>
+
+        <div class="service-row">
+          <div class="service-row__icon">{ICON_BOOK}</div>
+          <div class="service-row__body">
+            <h3>Chương trình khuyến học</h3>
+            <p>Tổ chức cho trường học, đoàn học sinh — có chương trình riêng theo lứa tuổi.</p>
+          </div>
+          <a href="tel:0369087468" class="service-row__cta">
+            <span class="service-row__label">Điện thoại đặt dịch vụ</span>
+            <span class="service-row__tel">036.908.7468</span>
+          </a>
         </div>
-        <div class="field">
-          <label for="book-lang">Ngôn ngữ</label>
-          <select id="book-lang" name="language">
-            <option value="vi">Tiếng Việt</option>
-            <option value="en">Tiếng Anh</option>
-            <option value="zh">Tiếng Trung</option>
-            <option value="fr">Tiếng Pháp</option>
-            <option value="other">Khác (audio: ES/KO/JA/TH)</option>
-          </select>
+
+        <div class="service-row">
+          <div class="service-row__icon">{ICON_STAR}</div>
+          <div class="service-row__body">
+            <h3>Tổ chức sự kiện</h3>
+            <p>Sự kiện văn hoá, hội thảo, workshop tại khuôn viên di tích — liên hệ hotline chung.</p>
+          </div>
+          <a href="tel:02437471322" class="service-row__cta">
+            <span class="service-row__label">Hotline liên hệ</span>
+            <span class="service-row__tel">024.3747.1322</span>
+          </a>
         </div>
-        <div class="field field--full">
-          <label for="book-name">Họ tên &amp; liên hệ</label>
-          <input type="text" id="book-name" name="contact" placeholder="Nguyễn Văn A · 09xx xxx xxx" required>
-        </div>
-        <div class="field field--full">
-          <label for="book-note">Ghi chú</label>
-          <textarea id="book-note" name="note" placeholder="Số lượng đoàn, yêu cầu đặc biệt…"></textarea>
-        </div>
-        <button type="submit" class="booking-form__submit">{ICON_CHECK} Gửi yêu cầu</button>
-      </form>
+
+      </div>
     </div>
 
-    <!-- DOCS (compact link list) -->
-    {'''<div style="margin-top:72px;">
-      <span class="eyebrow">Tài liệu chi tiết</span>
-      <h2 class="section-title" style="margin:10px 0 24px;">Quy định &amp; tài liệu tham khảo</h2>
-    </div>
-    <div class="docs-list">''' + doc_links + '</div>' if articles else ''}
+    <!-- HIGHLIGHT NỘI QUY (replaces docs list) -->
+    <a class="rules-highlight" href="/tham-quan/noi-quy-tham-quan/">
+      <div class="rules-highlight__icon">{ICON_SHIELD}</div>
+      <div class="rules-highlight__body">
+        <span class="rules-highlight__eyebrow">Lưu ý quan trọng</span>
+        <h3>Vui lòng đọc nội quy trước khi tham quan</h3>
+        <p>8 điều Quý khách cần thực hiện để chuyến tham quan trọn vẹn và di tích được gìn giữ cho mai sau.</p>
+      </div>
+      <span class="rules-highlight__cta">
+        Đọc nội quy tại đây
+        {ICON_ARROW}
+      </span>
+    </a>
 
   </div>
 </div>

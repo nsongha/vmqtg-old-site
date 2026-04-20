@@ -208,83 +208,79 @@
       </div>
     </div>
 
-    <!-- FORM ĐẶT DỊCH VỤ -->
+    <!-- DỊCH VỤ THAM QUAN (từ dịch vụ tham quan.docx) -->
     <div class="booking-section" id="dat-dich-vu" style="margin-top:64px;">
-      <span class="eyebrow">Đặt dịch vụ thuyết minh</span>
-      <h2 class="section-title" style="margin:10px 0 4px;">Đăng ký nhanh</h2>
-      <p style="color:var(--ink-soft);max-width:620px;margin:0 0 12px;font-size:15px;">
-        Điền thông tin bên dưới, hoặc gọi trực tiếp <strong>024.3823.5601</strong> để đặt thuyết minh viên.
-        Cán bộ tại Quầy bán vé cũng tiếp nhận yêu cầu khi du khách đến di tích.
+      <span class="eyebrow">Dịch vụ tham quan</span>
+      <h2 class="section-title" style="margin:10px 0 4px;">Bốn dịch vụ hỗ trợ du khách</h2>
+      <p style="color:var(--ink-soft);max-width:620px;margin:0 0 24px;font-size:15px;">
+        Liên hệ trực tiếp qua số điện thoại hoặc cán bộ tại Quầy bán vé để đặt các dịch vụ sau.
       </p>
-      <form class="booking-form" action="mailto:vanmieuqtg@hanoi.gov.vn" method="post" enctype="text/plain">
-        <div class="field">
-          <label for="book-date">Ngày tham quan</label>
-          <input type="date" id="book-date" name="date" required>
+      <div class="services-list">
+
+        <div class="service-row">
+          <div class="service-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="service-row__body">
+            <h3>Thuyết minh viên trực tiếp</h3>
+            <p>Bốn ngôn ngữ: Việt · Anh · Trung · Pháp — liên hệ trước hoặc hỏi cán bộ tại Quầy bán vé.</p>
+          </div>
+          <a href="tel:02438235601" class="service-row__cta">
+            <span class="service-row__label">Điện thoại đặt trước</span>
+            <span class="service-row__tel">024.3823.5601</span>
+          </a>
         </div>
-        <div class="field">
-          <label for="book-count">Số người</label>
-          <select id="book-count" name="guests" required>
-            <option value="1">1 người</option>
-            <option value="2" selected>2 người</option>
-            <option value="3-5">3 – 5 người</option>
-            <option value="6-10">6 – 10 người</option>
-            <option value="10+">Trên 10 người (đoàn)</option>
-          </select>
+
+        <div class="service-row">
+          <div class="service-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 18 0v6a3 3 0 0 1-3 3h-2a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h5"/><path d="M3 18v-6h5a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H6a3 3 0 0 1-3-3z"/></svg></div>
+          <div class="service-row__body">
+            <h3>Thuyết minh tự động (audio guide)</h3>
+            <p>8 ngôn ngữ: VI · EN · FR · ES · KO · JA · ZH · TH. Phí: Tiếng Việt 30.000đ · tiếng nước ngoài 50.000đ.</p>
+          </div>
+          <div class="service-row__cta service-row__cta--info">
+            <span class="service-row__label">Nhận thiết bị tại</span>
+            <span class="service-row__tel">Quầy bán vé</span>
+          </div>
         </div>
-        <div class="field">
-          <label for="book-service">Dịch vụ</label>
-          <select id="book-service" name="service" required>
-            <option value="guide">Thuyết minh viên trực tiếp</option>
-            <option value="audio">Thuyết minh tự động (audio guide)</option>
-            <option value="khuyen-hoc">Chương trình khuyến học</option>
-            <option value="event">Tổ chức sự kiện tại di tích</option>
-            <option value="none">Tham quan tự do (chỉ mua vé)</option>
-          </select>
+
+        <div class="service-row">
+          <div class="service-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>
+          <div class="service-row__body">
+            <h3>Chương trình khuyến học</h3>
+            <p>Tổ chức cho trường học, đoàn học sinh — có chương trình riêng theo lứa tuổi.</p>
+          </div>
+          <a href="tel:0369087468" class="service-row__cta">
+            <span class="service-row__label">Điện thoại đặt dịch vụ</span>
+            <span class="service-row__tel">036.908.7468</span>
+          </a>
         </div>
-        <div class="field">
-          <label for="book-lang">Ngôn ngữ</label>
-          <select id="book-lang" name="language">
-            <option value="vi">Tiếng Việt</option>
-            <option value="en">Tiếng Anh</option>
-            <option value="zh">Tiếng Trung</option>
-            <option value="fr">Tiếng Pháp</option>
-            <option value="other">Khác (audio: ES/KO/JA/TH)</option>
-          </select>
+
+        <div class="service-row">
+          <div class="service-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          <div class="service-row__body">
+            <h3>Tổ chức sự kiện</h3>
+            <p>Sự kiện văn hoá, hội thảo, workshop tại khuôn viên di tích — liên hệ hotline chung.</p>
+          </div>
+          <a href="tel:02437471322" class="service-row__cta">
+            <span class="service-row__label">Hotline liên hệ</span>
+            <span class="service-row__tel">024.3747.1322</span>
+          </a>
         </div>
-        <div class="field field--full">
-          <label for="book-name">Họ tên &amp; liên hệ</label>
-          <input type="text" id="book-name" name="contact" placeholder="Nguyễn Văn A · 09xx xxx xxx" required>
-        </div>
-        <div class="field field--full">
-          <label for="book-note">Ghi chú</label>
-          <textarea id="book-note" name="note" placeholder="Số lượng đoàn, yêu cầu đặc biệt…"></textarea>
-        </div>
-        <button type="submit" class="booking-form__submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Gửi yêu cầu</button>
-      </form>
+
+      </div>
     </div>
 
-    <!-- DOCS (compact link list) -->
-    <div style="margin-top:72px;">
-      <span class="eyebrow">Tài liệu chi tiết</span>
-      <h2 class="section-title" style="margin:10px 0 24px;">Quy định &amp; tài liệu tham khảo</h2>
-    </div>
-    <div class="docs-list">
-<a class="docs-list__item" href="/vmqtg-old-site/vmqtg-new-site/tham-quan/cac-tien-ich/">
-  <span class="docs-list__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
-  <span class="docs-list__title">Các tiện ích</span>
-</a>
-<a class="docs-list__item" href="/vmqtg-old-site/vmqtg-new-site/tham-quan/noi-quy-tham-quan-6-2/">
-  <span class="docs-list__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
-  <span class="docs-list__title">Nội quy tham quan 6-2</span>
-</a>
-<a class="docs-list__item" href="/vmqtg-old-site/vmqtg-new-site/tham-quan/ve/">
-  <span class="docs-list__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
-  <span class="docs-list__title">Vé</span>
-</a>
-<a class="docs-list__item" href="/vmqtg-old-site/vmqtg-new-site/tham-quan/dich-vu-tham-quan/">
-  <span class="docs-list__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
-  <span class="docs-list__title">dịch vụ tham quan</span>
-</a></div>
+    <!-- HIGHLIGHT NỘI QUY (replaces docs list) -->
+    <a class="rules-highlight" href="/vmqtg-old-site/vmqtg-new-site/tham-quan/noi-quy-tham-quan/">
+      <div class="rules-highlight__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
+      <div class="rules-highlight__body">
+        <span class="rules-highlight__eyebrow">Lưu ý quan trọng</span>
+        <h3>Vui lòng đọc nội quy trước khi tham quan</h3>
+        <p>8 điều Quý khách cần thực hiện để chuyến tham quan trọn vẹn và di tích được gìn giữ cho mai sau.</p>
+      </div>
+      <span class="rules-highlight__cta">
+        Đọc nội quy tại đây
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </span>
+    </a>
 
   </div>
 </div>
