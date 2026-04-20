@@ -1,0 +1,1276 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dòng chảy 918 năm · Lịch sử Văn Miếu – Quốc Tử Giám</title>
+<meta name="description" content="Dòng chảy 918 năm lịch sử Văn Miếu – Quốc Tử Giám dưới dạng scrollytelling: một trục thời gian liên tục từ 1070 đến 1988, giới thiệu giai đoạn nằm ở khung bên trái, các mốc sự kiện chạy bên phải.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="/vmqtg-old-site/vmqtg-new-site/assets/css/style.css">
+<style>
+/* ============================================================
+   DÒNG CHẢY — scrollytelling (inline, scoped .dc-*)
+   ============================================================ */
+
+:root {
+  --dc-nav-h: 72px;
+  --dc-pin-top: 88px; /* offset from viewport top when left panel pins */
+  --dc-right-left: 33%; /* updated by JS for the image viewer */
+}
+
+.dc-intro {
+  background: linear-gradient(180deg, var(--cream) 0%, #fff 100%);
+  padding: 64px 0 40px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.dc-intro__title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(32px, 4.8vw, 60px);
+  line-height: 1.05;
+  letter-spacing: -.025em;
+  margin: 12px 0 16px;
+  color: var(--ink);
+  max-width: 920px;
+}
+.dc-intro__lede {
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 780px;
+  margin: 0 0 32px;
+}
+.dc-intro__lede strong { color: var(--brick); font-weight: 600; }
+.dc-intro__stats {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.dc-intro__stats li { padding: 20px 16px; border-right: 1px solid var(--line); }
+.dc-intro__stats li:last-child { border-right: 0; }
+.dc-intro__num {
+  display: block;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(26px, 3.2vw, 36px);
+  font-weight: 500; color: var(--brick);
+  line-height: 1; letter-spacing: -.015em;
+}
+.dc-intro__lab {
+  display: block; margin-top: 6px;
+  font-size: 11px; color: var(--ink-mute);
+  letter-spacing: .04em; text-transform: uppercase;
+}
+.dc-intro__cue {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-top: 28px;
+  font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.dc-intro__cue .arrow {
+  width: 22px; height: 1px; background: var(--gold);
+  position: relative;
+}
+.dc-intro__cue .arrow::after {
+  content: ""; position: absolute; right: -4px; top: -3px;
+  border-left: 6px solid var(--gold);
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+}
+
+/* ---- Shell ---- */
+.dc-shell { background: var(--paper); padding-bottom: 96px; }
+.dc-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(0, 2fr);
+  gap: 56px;
+  align-items: start;
+}
+
+/* ---- LEFT PANEL (sticky) ---- */
+.dc-left {
+  position: sticky;
+  top: var(--dc-pin-top);
+  max-height: calc(100vh - var(--dc-pin-top) - 24px);
+  padding: 28px 0;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dc-progress {
+  display: flex; gap: 6px; align-items: center;
+  padding: 0;
+}
+.dc-progress__step {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 0 0;
+  border-top: 2px solid var(--line);
+  cursor: pointer;
+  transition: border-color .3s;
+  background: transparent; text-align: left;
+}
+.dc-progress__step:hover { border-top-color: var(--gold-soft); }
+.dc-progress__step.is-active { border-top-color: var(--brick); }
+.dc-progress__step.is-done { border-top-color: var(--gold-soft); }
+.dc-progress__roman {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 14px; font-weight: 500; font-style: italic;
+  color: var(--ink-mute); line-height: 1;
+  letter-spacing: .02em;
+}
+.dc-progress__step.is-active .dc-progress__roman,
+.dc-progress__step.is-done .dc-progress__roman { color: var(--brick); }
+.dc-progress__year {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-mute); line-height: 1;
+}
+
+.dc-era-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.dc-era {
+  position: absolute; inset: 0;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity .55s ease, transform .55s ease;
+  pointer-events: none;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+.dc-era.is-active {
+  opacity: 1; transform: none;
+  pointer-events: auto;
+}
+.dc-era__kicker {
+  display: inline-flex; align-items: baseline; gap: 14px;
+  margin-bottom: 8px;
+}
+.dc-era__roman {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 48px; font-weight: 400; font-style: italic;
+  color: var(--gold); line-height: .8; letter-spacing: -.02em;
+}
+.dc-era__period {
+  font-size: 12px; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--brick);
+}
+.dc-era h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(24px, 2.6vw, 32px);
+  font-weight: 500;
+  color: var(--ink);
+  margin: 4px 0 14px;
+  letter-spacing: -.015em;
+  line-height: 1.2;
+}
+.dc-era p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  margin: 0 0 14px;
+}
+.dc-era p strong { color: var(--ink); font-weight: 600; }
+.dc-era p em { color: var(--brick); font-style: italic; }
+.dc-era__facts {
+  list-style: none; padding: 0; margin: 16px 0 0;
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.dc-era__facts li {
+  font-size: 12px;
+  padding: 8px 12px;
+  background: var(--cream);
+  border-radius: 999px;
+  color: var(--ink-soft);
+}
+.dc-era__facts li strong {
+  color: var(--brick); font-weight: 700;
+  font-family: "Playfair Display", Georgia, serif;
+  margin-right: 4px;
+}
+
+/* ---- RIGHT PANEL ---- */
+.dc-right {
+  position: relative;
+  padding: 28px 0 32px 60px;
+}
+.dc-right::before {
+  /* continuous rail */
+  content: "";
+  position: absolute;
+  left: 20px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg,
+    transparent 0,
+    var(--gold-soft) 3%,
+    var(--gold-soft) 97%,
+    transparent 100%);
+}
+
+/* Event base */
+.dc-event {
+  position: relative;
+  margin: 0 0 28px;
+  opacity: .3;
+  filter: saturate(.5);
+  transition: opacity .5s ease, filter .5s ease, transform .5s ease;
+}
+.dc-event.is-focus {
+  opacity: 1;
+  filter: none;
+  transform: translateX(0);
+}
+.dc-event.is-past { opacity: .55; filter: saturate(.85); }
+.dc-event__dot {
+  position: absolute;
+  left: -48px; top: 10px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--gold-soft);
+  transition: border-color .3s, background .3s, transform .3s;
+  z-index: 2;
+}
+.dc-event.is-focus .dc-event__dot {
+  background: var(--brick);
+  border-color: var(--gold);
+  transform: scale(1.25);
+  box-shadow: 0 0 0 4px rgba(201,161,74,.18);
+}
+.dc-event.is-past .dc-event__dot { background: var(--gold-soft); border-color: var(--gold-soft); }
+.dc-event__year {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 20px; font-weight: 600;
+  color: var(--brick);
+  line-height: 1.1;
+  margin-bottom: 6px;
+  letter-spacing: -.005em;
+}
+.dc-event__year small {
+  display: inline-block; margin-left: 6px;
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: var(--ink-mute);
+  letter-spacing: .02em;
+}
+.dc-event h3 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px; font-weight: 500;
+  color: var(--ink);
+  margin: 2px 0 8px;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+}
+.dc-event p {
+  margin: 0 0 8px;
+  font-size: 15px; line-height: 1.7;
+  color: var(--ink-soft);
+  max-width: 64ch;
+}
+.dc-event p:last-child { margin-bottom: 0; }
+.dc-event p em { color: var(--brick); font-style: italic; }
+.dc-event__tag {
+  display: inline-block;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--gold);
+  background: var(--gold-pale);
+  padding: 3px 9px;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+.dc-event--milestone .dc-event h3 { color: var(--brick); }
+.dc-event--milestone .dc-event__year { color: var(--brick-dark); }
+.dc-event--tragic .dc-event__tag {
+  color: var(--brick-dark); background: #fbeeed;
+}
+.dc-event__fig {
+  margin: 12px 0 0;
+  max-width: 560px;
+  position: relative;
+}
+.dc-event__fig img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  cursor: zoom-in;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .25s, transform .25s;
+}
+.dc-event__fig img:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.dc-event__fig figcaption {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--ink-mute);
+  font-style: italic;
+}
+
+/* Quote (inline, within right panel) */
+.dc-quote {
+  position: relative;
+  margin: 0 0 28px -12px;
+  padding: 24px 24px 24px 36px;
+  border-left: 3px solid var(--gold);
+  background: linear-gradient(90deg, var(--gold-pale) 0%, transparent 80%);
+  opacity: .3;
+  filter: saturate(.5);
+  transition: opacity .5s ease, filter .5s ease;
+  max-width: 640px;
+}
+.dc-quote.is-focus { opacity: 1; filter: none; }
+.dc-quote.is-past { opacity: .55; filter: saturate(.85); }
+.dc-quote::before {
+  content: "“";
+  position: absolute;
+  top: -6px; left: 8px;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 68px; color: var(--gold);
+  line-height: 1;
+  opacity: .6;
+}
+.dc-quote__yr {
+  display: block;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--brick);
+  margin-bottom: 10px;
+}
+.dc-quote blockquote {
+  margin: 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-size: 20px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.dc-quote__src {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--ink-mute);
+}
+
+/* Era divider */
+.dc-divider {
+  position: relative;
+  margin: 48px 0 32px -60px;
+  padding: 24px 0 24px 60px;
+  border-top: 1px dashed var(--line);
+  border-bottom: 1px dashed var(--line);
+  background: var(--cream);
+  transition: background .3s;
+}
+.dc-divider::before {
+  content: "";
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  width: 14px; height: 14px;
+  background: var(--gold);
+  border-radius: 50%;
+  border: 3px solid var(--cream);
+  z-index: 2;
+}
+.dc-divider__roman {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 36px; font-weight: 400; font-style: italic;
+  color: var(--gold);
+  line-height: 1;
+  margin-right: 14px;
+  vertical-align: middle;
+}
+.dc-divider__label {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px; font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -.005em;
+  vertical-align: middle;
+}
+.dc-divider__period {
+  display: block;
+  margin-top: 4px;
+  padding-left: 50px;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--brick);
+}
+
+/* ---- IMAGE VIEWER (constrained to right panel) ---- */
+.dc-viewer {
+  display: none;
+  position: fixed;
+  top: var(--dc-nav-h);
+  bottom: 0;
+  left: var(--dc-right-left);
+  right: 0;
+  background: rgba(28,25,23,.96);
+  z-index: 80;
+  padding: 32px;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.dc-viewer.is-open { display: flex; }
+.dc-viewer img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 80px rgba(0,0,0,.6);
+  cursor: zoom-out;
+}
+.dc-viewer__meta {
+  position: absolute;
+  bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,.72);
+  font-size: 13px;
+  letter-spacing: .04em;
+  text-align: center;
+  max-width: 80%;
+  pointer-events: none;
+}
+.dc-viewer__close {
+  position: absolute;
+  top: 16px; right: 20px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  font-size: 26px; line-height: 1;
+  border: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+.dc-viewer__close:hover { background: rgba(255,255,255,.22); }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 960px) {
+  .dc-grid { grid-template-columns: 1fr; gap: 0; }
+  .dc-left {
+    position: sticky;
+    top: 0;
+    max-height: none;
+    padding: 12px 0;
+    background: rgba(255,255,255,.96);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    z-index: 5;
+    margin: 0 -24px;
+    padding: 12px 24px;
+  }
+  .dc-progress { gap: 4px; }
+  .dc-progress__step { padding-top: 6px; }
+  .dc-era-stage { height: auto; min-height: 110px; }
+  .dc-era h2 { font-size: 20px; margin: 2px 0 6px; }
+  .dc-era p { font-size: 14px; margin-bottom: 6px; }
+  .dc-era__facts { gap: 6px; margin-top: 10px; }
+  .dc-era__facts li { font-size: 11px; padding: 5px 10px; }
+  .dc-era__kicker { gap: 10px; }
+  .dc-era__roman { font-size: 32px; }
+
+  .dc-right { padding: 24px 0 24px 44px; }
+  .dc-right::before { left: 14px; }
+  .dc-event__dot { left: -36px; }
+  .dc-event h3 { font-size: 19px; }
+  .dc-divider { margin-left: -44px; padding-left: 44px; }
+  .dc-divider::before { left: 8px; }
+  .dc-divider__period { padding-left: 40px; }
+
+  .dc-viewer { left: 0; }
+  .dc-intro__stats { grid-template-columns: repeat(2, 1fr); }
+  .dc-intro__stats li { border-right: 0; border-bottom: 1px solid var(--line); }
+  .dc-intro__stats li:nth-child(odd) { border-right: 1px solid var(--line); }
+}
+@media (max-width: 480px) {
+  .dc-progress__roman { display: none; }
+  .dc-progress__step { gap: 4px; }
+  .dc-era { padding-right: 4px; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-announce">
+  <div class="container">
+    <div class="announce-items">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Mở cửa hôm nay · 07:30 – 18:00</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> 58 Quốc Tử Giám, Đống Đa, Hà Nội</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 024.3747.1322</span>
+    </div>
+    <div class="lang-pick">
+      <a href="#" class="is-active">VI</a>
+      <a href="#">EN</a>
+      <a href="#">FR</a>
+    </div>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/vmqtg-old-site/vmqtg-new-site/">
+      <span class="brand-mark">VM</span>
+      <span class="brand-text">
+        <span class="name">Văn Miếu – Quốc Tử Giám</span>
+        <span class="sub">Di tích Quốc gia đặc biệt</span>
+      </span>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="/vmqtg-old-site/vmqtg-new-site/di-tich/" class="active">Di tích</a>
+      <a href="/vmqtg-old-site/vmqtg-new-site/tham-quan/" class="">Tham quan</a>
+      <a href="/vmqtg-old-site/vmqtg-new-site/hoat-dong/" class="">Hoạt động</a>
+      <a href="/vmqtg-old-site/vmqtg-new-site/giao-duc-di-san/" class="">Giáo dục di sản</a>
+      <a href="/vmqtg-old-site/vmqtg-new-site/ve-chung-toi/" class="">Về chúng tôi</a>
+      <a href="#mua-ve" class="nav-cta">Đặt vé</a>
+    </nav>
+    <button class="menu-toggle" aria-label="Mở menu" aria-expanded="false" aria-controls="mainNav">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+<div class="breadcrumbs"><div class="container"><a href="/vmqtg-old-site/vmqtg-new-site/">Trang chủ</a><span class="sep">›</span><a href="/vmqtg-old-site/vmqtg-new-site/di-tich/">Di tích</a><span class="sep">›</span><a href="/vmqtg-old-site/vmqtg-new-site/di-tich/lich-su/">Lịch sử</a><span class="sep">›</span><span>Dòng chảy 918 năm</span></div></div>
+
+<main>
+
+<!-- ============ INTRO ============ -->
+<section class="dc-intro">
+  <div class="container">
+    <span class="eyebrow">Dòng chảy · 1070 – nay</span>
+    <h1 class="dc-intro__title">918 năm Văn Miếu – Quốc Tử Giám<br>trong một trục liên tục</h1>
+    <p class="dc-intro__lede">Cuộn xuống để đi dọc dòng thời gian. Khung bên trái giữ <strong>bối cảnh giai đoạn</strong>, khung bên phải là <strong>dòng sự kiện</strong> nối liền từ 1070 đến 1988. Bấm vào ảnh để xem lớn.</p>
+
+    <ul class="dc-intro__stats">
+      <li><span class="dc-intro__num">918</span><span class="dc-intro__lab">năm lịch sử</span></li>
+      <li><span class="dc-intro__num">11</span><span class="dc-intro__lab">triều đại</span></li>
+      <li><span class="dc-intro__num">82</span><span class="dc-intro__lab">bia Tiến sĩ · UNESCO</span></li>
+      <li><span class="dc-intro__num">~6.000</span><span class="dc-intro__lab">giám sinh thời Lê</span></li>
+      <li><span class="dc-intro__num">1</span><span class="dc-intro__lab">đại học đầu tiên</span></li>
+    </ul>
+
+    <span class="dc-intro__cue">Cuộn để bắt đầu <span class="arrow"></span></span>
+  </div>
+</section>
+
+<!-- ============ SHELL ============ -->
+<section class="dc-shell">
+  <div class="dc-grid container">
+
+    <!-- =============== LEFT PANEL (sticky) =============== -->
+    <aside class="dc-left">
+      <div class="dc-progress" role="tablist" aria-label="Chuyển nhanh triều đại">
+        <button class="dc-progress__step is-active" data-jump="era-1" aria-label="Giai đoạn Lý, Trần, Hồ">
+          <span class="dc-progress__roman">I</span>
+          <span class="dc-progress__year">1070</span>
+        </button>
+        <button class="dc-progress__step" data-jump="era-2" aria-label="Giai đoạn Lê sơ, Mạc">
+          <span class="dc-progress__roman">II</span>
+          <span class="dc-progress__year">1428</span>
+        </button>
+        <button class="dc-progress__step" data-jump="era-3" aria-label="Lê Trung Hưng">
+          <span class="dc-progress__roman">III</span>
+          <span class="dc-progress__year">1600</span>
+        </button>
+        <button class="dc-progress__step" data-jump="era-4" aria-label="Nguyễn, Pháp thuộc">
+          <span class="dc-progress__roman">IV</span>
+          <span class="dc-progress__year">1802</span>
+        </button>
+        <button class="dc-progress__step" data-jump="era-5" aria-label="Cộng hòa, Di sản">
+          <span class="dc-progress__roman">V</span>
+          <span class="dc-progress__year">1945</span>
+        </button>
+      </div>
+
+      <div class="dc-era-stage">
+        <div class="dc-era is-active" data-era="era-1">
+          <div class="dc-era__kicker">
+            <span class="dc-era__roman">I</span>
+            <span class="dc-era__period">1070 – 1400 · Lý · Trần · Hồ</span>
+          </div>
+          <h2>Khởi lập · Đại Việt tự cường</h2>
+          <p>Văn Miếu dựng dưới thời <strong>Lý Thánh Tông</strong> (1070), Quốc Tử Giám lập sáu năm sau dưới <strong>Lý Nhân Tông</strong> — được coi là trường đại học đầu tiên của Việt Nam. Dù triều Trần bộn bề chiến tranh Mông – Nguyên, Nho học vẫn được vun bồi.</p>
+          <p>Nét riêng của thời kỳ này: <em>phối thờ ba danh nho người Việt</em> (Chu Văn An, Trương Hán Siêu, Đỗ Tử Bình) — thể hiện tư tưởng tự chủ của Đại Việt. Thời Hồ không có nhiều thay đổi.</p>
+          <ul class="dc-era__facts">
+            <li><strong>2</strong> vua khai lập</li>
+            <li><strong>3</strong> danh nho phối thờ</li>
+            <li><strong>72</strong> Thất thập nhị hiền</li>
+          </ul>
+        </div>
+
+        <div class="dc-era" data-era="era-2">
+          <div class="dc-era__kicker">
+            <span class="dc-era__roman">II</span>
+            <span class="dc-era__period">1428 – 1592 · Lê sơ · Mạc</span>
+          </div>
+          <h2>Cực thịnh Nho học</h2>
+          <p>Sau khi đánh đuổi quân Minh, vương triều Lê đưa Văn Miếu – Quốc Tử Giám vào thời kỳ phát triển rực rỡ nhất: <strong>đại trùng tu năm 1484</strong> dưới Lê Thánh Tông, <strong>dựng 10 bia Tiến sĩ đầu tiên</strong> khởi đầu truyền thống 82 bia, tổ chức Quốc Tử Giám thành <em>Thái học viện</em> có lúc đông <strong>~6.000 giám sinh</strong>.</p>
+          <p>Câu "Hiền tài là nguyên khí của quốc gia" của Thân Nhân Trung trên văn bia 1442 trở thành tuyên ngôn giáo dục. Nhà Mạc kế tiếp vẫn duy trì nếp cũ, dựng bia khoa 1529 và trùng tu một lần năm 1536.</p>
+          <ul class="dc-era__facts">
+            <li><strong>6.000</strong> giám sinh</li>
+            <li><strong>3</strong> xá × 100 người</li>
+            <li><strong>6</strong> chức học quan</li>
+          </ul>
+        </div>
+
+        <div class="dc-era" data-era="era-3">
+          <div class="dc-era__kicker">
+            <span class="dc-era__roman">III</span>
+            <span class="dc-era__period">1600 – 1788 · Lê Trung Hưng</span>
+          </div>
+          <h2>Quy mô hoàn thiện</h2>
+          <p>Hai biểu tượng ra đời còn đến nay: <strong>Phán Thủy Đường</strong> trên gò Kim Châu giữa hồ Văn (Phạm Công Trứ, 1662) và <strong>hai bia Hạ Mã</strong> ở cổng Văn Miếu (1771). Triều đình nhiều lần tu bổ, quy mô ngày càng hoàn thiện.</p>
+          <p>Lê Quý Đôn để lại mô tả chi tiết nhất diện mạo di tích trong <em>Kiến văn tiểu lục</em> (1762) sau lần trùng tu của chúa Trịnh Doanh. Chức <em>Tri Quốc Tử Giám</em> được đặt thêm, do các đại thần như Nguyễn Nghiễm, Nguyễn Công Thái đảm nhiệm.</p>
+          <ul class="dc-era__facts">
+            <li><strong>1662</strong> Phán Thủy Đường</li>
+            <li><strong>1771</strong> bia Hạ Mã</li>
+            <li><strong>3 + 3</strong> dãy nhà xá</li>
+          </ul>
+        </div>
+
+        <div class="dc-era" data-era="era-4">
+          <div class="dc-era__kicker">
+            <span class="dc-era__roman">IV</span>
+            <span class="dc-era__period">1802 – 1945 · Nguyễn · Pháp thuộc</span>
+          </div>
+          <h2>Biến động nhất · Khuê Văn Các sinh ra</h2>
+          <p>Thăng Long mất vị thế Kinh đô: Quốc Tử Giám thành trường phủ Hoài Đức, rồi chuyển thành đền Khải Thánh. Nhưng 1805, Tổng trấn Bắc Thành <strong>Nguyễn Văn Thành</strong> dựng <strong>Khuê Văn Các</strong> — biểu tượng sẽ gắn với Hà Nội mãi về sau.</p>
+          <p>Thời Pháp thuộc, sau Hiệp ước Patenôtre (1888), Văn Miếu có lúc bị biến thành <em>trại lính, trường bắn, khu cách ly dịch tả</em>; đất phía Bắc bị cắt để quy hoạch đường phố. Trước sự đấu tranh của nhân dân, quân Pháp trả lại. 1906: xếp hạng Di tích lịch sử, văn hóa lần đầu tiên.</p>
+          <ul class="dc-era__facts">
+            <li><strong>1805</strong> Khuê Văn Các</li>
+            <li><strong>12.300 m²</strong> đất được giữ</li>
+            <li><strong>1906</strong> xếp hạng di tích</li>
+          </ul>
+        </div>
+
+        <div class="dc-era" data-era="era-5">
+          <div class="dc-era__kicker">
+            <span class="dc-era__roman">V</span>
+            <span class="dc-era__period">1945 – nay · Cộng hòa · Di sản</span>
+          </div>
+          <h2>Cộng hòa &amp; Di sản thế giới</h2>
+          <p><strong>Chủ tịch Hồ Chí Minh</strong> đích thân chủ trì tế Thu tại Văn Miếu ngày 21/10/1945 — biểu tượng chuyển giao văn hóa vào kỷ nguyên mới. Kháng chiến 1946–47 gây tổn thất nặng: đền Khải Thánh, Đông vu, Tây vu bị phá hủy.</p>
+          <p>Từ 1954 tu sửa, 1962 xếp hạng Di tích quốc gia. Năm 1988, <strong>Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám</strong> thành lập, mở ra kỷ nguyên di sản. 2010–2011, <em>82 bia Tiến sĩ</em> được UNESCO vinh danh Di sản tư liệu thế giới.</p>
+          <ul class="dc-era__facts">
+            <li><strong>21/10/1945</strong> Bác Hồ tế Thu</li>
+            <li><strong>1988</strong> Trung tâm thành lập</li>
+            <li><strong>2011</strong> UNESCO</li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <!-- =============== RIGHT PANEL (continuous timeline) =============== -->
+    <div class="dc-right">
+
+      <!-- ===== ERA 1 ===== -->
+      <article class="dc-event" data-era="era-1" id="era-1">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1070</div>
+        <h3>Văn Miếu được lập</h3>
+        <p>Lý Thánh Tông cho dựng Văn Miếu năm Canh Tuất, niên hiệu Thần Vũ thứ 2, thờ Khổng Tử, Chu Công, Tứ Phối (Nhan Tử, Tăng Tử, Tử Tư, Mạnh Tử) và Thất thập nhị hiền. Hoàng Thái tử Lý Càn Đức tới đây học.</p>
+      </article>
+
+      <article class="dc-event dc-event--milestone" data-era="era-1">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1076</div>
+        <span class="dc-event__tag">★ Trường đại học đầu tiên</span>
+        <h3>Quốc Tử Giám ra đời</h3>
+        <p>Lý Nhân Tông (Anh Vũ Chiêu Thắng thứ 1) lập Quốc Tử Giám — nơi quan viên văn chức biết chữ và con em Hoàng gia, Đại thần ở Kinh đô tới học. Quy mô ban đầu còn khiêm tốn; theo đà phát triển của Nho giáo, di tích dần được mở rộng.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-1">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1236</div>
+        <h3>Phạm Ứng Thần · Đề điệu Quốc Tử viện</h3>
+        <p>Triều Trần cử Phạm Ứng Thần giữ chức Thượng thư kiêm Đề điệu Quốc Tử viện, trông nom việc học. Dù Phật giáo vẫn phát triển mạnh và nhà Trần bận kháng chiến Nguyên – Mông, các vua vẫn quan tâm Văn Miếu.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-1">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1243</div>
+        <h3>Trùng tu · đổi "Giám" thành "viện"</h3>
+        <p>Quốc Tử Giám được trùng tu. "Giám" (trường) đổi thành "viện" — đánh dấu sự trưởng thành và vai trò to lớn của di tích thời Trần.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-1">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1253</div>
+        <h3>Tô tượng · giảng Tứ thư Lục kinh</h3>
+        <p>Vua xuống chiếu cho tô tượng Chu Công, Khổng Tử, Mạnh Tử để thờ. Vời nho sĩ trong cả nước về Quốc Tử viện giảng Tứ thư, Lục kinh. Nền giáo dục khoa cử Nho học bắt đầu được định hình.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-1">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1272</div>
+        <h3>Chọn Tư nghiệp tài giỏi</h3>
+        <p>Vua xuống chiếu cho tìm người tài giỏi, đạo đức, thông hiểu Tứ thư, Ngũ kinh giữ chức Tư nghiệp Quốc Tử Giám — người đứng đầu trường.</p>
+      </article>
+
+      <article class="dc-event dc-event--milestone" data-era="era-1">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1314 <small>– 1329</small></div>
+        <span class="dc-event__tag">★ Nhân vật</span>
+        <h3>Chu Văn An · Tư nghiệp Quốc Tử Giám</h3>
+        <p>Người làng Thịnh Liệt (Thanh Trì, Hà Nội), được vua Trần Minh Tông cử giữ chức Tư nghiệp — hình mẫu thầy giáo mẫu mực của nền giáo dục Đại Việt. Bên cạnh ông, trường còn có các Trợ giáo như Đoàn Xuân Lôi.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-1">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1370 <small>· 1371 · 1380</small></div>
+        <h3>Phối thờ ba danh nho người Việt</h3>
+        <p>Chu Văn An (1370), Trương Hán Siêu (1371), Đỗ Tử Bình (1380) lần lượt được phối thờ tại Văn Miếu — trường hợp đặc biệt, thể hiện rõ tư tưởng tự chủ, tự cường của Đại Việt, cũng là nét rất riêng của di tích.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-1">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">~1400</div>
+        <h3>Thời Hồ · không nhiều thay đổi</h3>
+        <p>Dưới triều Hồ, Văn Miếu – Quốc Tử Giám không có nhiều thay đổi lớn.</p>
+      </article>
+
+      <!-- ===== DIVIDER 1 → 2 ===== -->
+      <div class="dc-divider" data-era-start="era-2" id="era-2">
+        <span class="dc-divider__roman">II</span>
+        <span class="dc-divider__label">Lê sơ · Mạc</span>
+        <span class="dc-divider__period">1428 – 1592 · Cực thịnh Nho học</span>
+      </div>
+
+      <!-- ===== ERA 2 ===== -->
+      <article class="dc-event" data-era="era-2">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1428</div>
+        <h3>Lê Thái Tổ mở nhà học</h3>
+        <p>Ngay những năm đầu lên ngôi, Lê Thái Tổ cho mở nhà học, dùng cỗ Thái lao (trâu, bò, dê) tế Khổng Tử. Chọn con cháu các quan và nhà thường dân tuấn tú vào Quốc Tử Giám làm Giám sinh; xuân thu nhị kỳ đích thân vua làm chủ tế tại Văn Miếu.</p>
+      </article>
+
+      <article class="dc-event dc-event--milestone" data-era="era-2">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1484</div>
+        <span class="dc-event__tag">★ Đại trùng tu Hồng Đức</span>
+        <h3>Quy mô lớn nhất lịch sử</h3>
+        <p>Dưới Lê Thánh Tông, triều đình đại trùng tu Văn Miếu – Quốc Tử Giám: <em>"Đằng trước nhà Thái học dựng Văn Miếu. Khu vũ của Văn Miếu có điện Đại Thành, Đông vũ, Tây vũ, điện Canh Phục; đằng sau nhà Thái học, dựng cửa Thái học, nhà Minh Luân. Giảng đường phía đông và giảng đường phía tây… bên đông, bên tây nhà Thái học làm nhà cho học sinh trong ba xá, mỗi bên ba dãy, mỗi dãy 25 gian."</em> (Đại Việt sử ký toàn thư). Kho Bí thư chứa ván khắc sách. Đây là khung kiến trúc các đời sau kế thừa.</p>
+        <figure class="dc-event__fig">
+          <img src="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/30-cong-thai-hoc.jpg" data-full="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/30-cong-thai-hoc.jpg" loading="lazy" alt="Cổng Thái Học">
+          <figcaption>Cổng Thái Học — khu đền thờ Tư nghiệp Chu Văn An</figcaption>
+        </figure>
+      </article>
+
+      <article class="dc-event dc-event--milestone" data-era="era-2">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1484</div>
+        <span class="dc-event__tag">★ Khởi đầu truyền thống</span>
+        <h3>10 bia Tiến sĩ đầu tiên</h3>
+        <p>Sau đại trùng tu, Lê Thánh Tông cho dựng 10 bia đá ghi các khoa thi Tiến sĩ từ 1442 đến 1484 cùng tên họ, quê quán người đỗ. Mở đầu cho truyền thống <strong>82 bia Tiến sĩ</strong> — sẽ được UNESCO vinh danh Di sản tư liệu thế giới năm 2011. Nhà vua chọn các nhà Nho tài năng soạn văn bia; Thân Nhân Trung soạn cho khoa thi 1442.</p>
+        <figure class="dc-event__fig">
+          <img src="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/10-nha-bia-tien-si-ben-tay.jpg" data-full="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/10-nha-bia-tien-si-ben-tay.jpg" loading="lazy" alt="Nhà bia Tiến sĩ bên Tây">
+          <figcaption>Nhà bia Tiến sĩ bên Tây</figcaption>
+        </figure>
+      </article>
+
+      <aside class="dc-quote" data-era="era-2">
+        <span class="dc-quote__yr">1484 · Thân Nhân Trung</span>
+        <blockquote>“Hiền tài là nguyên khí của quốc gia, nguyên khí thịnh thì thế nước mạnh và thịnh, nguyên khí suy thì thế nước kém và suy.”</blockquote>
+        <p class="dc-quote__src">Văn bia khoa thi 1442 · tấm bia Tiến sĩ đầu tiên</p>
+      </aside>
+
+      <article class="dc-event" data-era="era-2">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">thời Lê</div>
+        <h3>Thái học viện · 6.000 giám sinh</h3>
+        <p>Quốc Tử Giám được gọi là <em>Thái học viện</em>. Quy chế tuyển chọn: người thi Hội trúng ba kỳ sung <em>Thượng xá sinh</em>, trúng hai kỳ sung <em>Trung xá sinh</em>, trúng một kỳ sung <em>Hạ xá sinh</em>. Mỗi xá 100 người. Triều đình cho phép tuyển cả con em dân thường có tài. Hương cống từ các địa phương cả nước về Kinh đô theo học — chỉ cần ghi tên là được đến nghe giảng, tập văn như các Giám sinh. Học trò có lúc <strong>đông tới 6.000 người</strong>.</p>
+        <p>Đứng đầu là <em>Tế tửu</em>, sau đến <em>Tư nghiệp</em>. Chức quan giảng dạy còn có Trực giảng, Bác sỹ, Giáo thụ, Trợ giáo — thường do các danh nho, đại thần tài năng, đạo đức trong sáng đảm nhiệm. Sách học cơ bản là Tứ thư và Ngũ kinh; Giám sinh còn học câu đối, văn tế dùng trong đời sống.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-2">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">thời Lê</div>
+        <h3>Khảo hạch · bảo cử · khắc in sách</h3>
+        <p>Bốn tháng trọng (tháng 2, 5, 8, 11) quan Quốc Tử Giám khảo hạch Giám sinh; ai trúng thì đề cử để Bộ Lại tuyển dụng khi cần. Trường còn đảm trách việc khảo đính, biên soạn sách vở, đặc biệt là <em>in ấn các sách kinh điển Nho giáo</em> cung cấp cho nho sinh cả nước — kho Bí thư trong khu Thái học chính là nơi chứa ván khắc.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-2">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1510</div>
+        <h3>Trùng tu quy mô lớn</h3>
+        <p>Triều đình cho trùng tu Văn Miếu – Quốc Tử Giám quy mô lớn. Kiến trúc hoàn thiện gồm điện Đại Thành và Đông vu, Tây vu; điện Canh Phục (nơi đồ tế lễ và vua thay y phục trước tế); khu bia Tiến sĩ; nhà Minh Luân; hai dãy giảng đường đông – tây; phòng học của sinh viên ba xá; kho ván khắc in sách của trường Giám.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-2">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1527 <small>· 1529</small></div>
+        <h3>Nhà Mạc kế tiếp</h3>
+        <p>Nhà Mạc lên thay nhà Lê nhưng vẫn theo nếp cũ về giáo dục khoa cử Nho học. Nhà Mạc dựng bia Tiến sĩ khoa thi năm 1529.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-2">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1536 <small>· 1537</small></div>
+        <h3>Mạc Đăng Doanh · trùng tu &amp; tế lễ</h3>
+        <p>Năm Đại Chính thứ 7 (1536), Mạc Đăng Doanh sai Đông quân Tả đô đốc Khiêm quận công Mạc Đình Khoa trùng tu Quốc Tử Giám — lần duy nhất dưới triều Mạc. Mùa xuân năm sau, Mạc Đăng Doanh đích thân đến Văn Miếu làm lễ tế Tiên thánh, Tiên sư và thăm Quốc Tử Giám.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-2">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1586</div>
+        <h3>Đề nghị bị bác</h3>
+        <p>Lại bộ Thượng thư Nghĩa sơn hầu Trần Văn Tuyên dâng biểu xin tu sửa Quốc Tử Giám và hai giải vũ điện Đại Thành, nghi môn, tiền nghi môn các giảng đường. Mạc Mậu Hợp không đồng ý.</p>
+      </article>
+
+      <!-- ===== DIVIDER 2 → 3 ===== -->
+      <div class="dc-divider" data-era-start="era-3" id="era-3">
+        <span class="dc-divider__roman">III</span>
+        <span class="dc-divider__label">Lê Trung Hưng</span>
+        <span class="dc-divider__period">1600 – 1788 · Quy mô hoàn thiện</span>
+      </div>
+
+      <!-- ===== ERA 3 ===== -->
+      <article class="dc-event" data-era="era-3">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1645</div>
+        <h3>Chiếu lệnh mô tả hiện trạng</h3>
+        <p><em>"Lê triều chiếu lệnh thiện chính"</em> ghi: <em>"Điện Đại Thành ở Quốc Tử Giám có tả hữu ở phía đông, phía tây và 4 nghi môn. Nhà Minh Luân có 2 giảng đường phía đông và phía tây, và cửa nghi môn Sùng Nho 4 mặt xây tường."</em> Hàng năm việc tu bổ, xây dựng thêm, lát gạch và dọn cỏ theo lệ cũ do lính ở các huyện, xã và các phường hai huyện Thọ Xương, Quảng Đức thực hiện.</p>
+      </article>
+
+      <article class="dc-event dc-event--milestone" data-era="era-3">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1662</div>
+        <span class="dc-event__tag">★ Hồ Văn · Phán Thủy Đường</span>
+        <h3>Phạm Công Trứ dựng đường thủy đình</h3>
+        <p>Các công trình của Quốc Tử Giám nhiều chỗ sụt lở, dột nát. Lễ bộ Thượng thư kiêm Đông các đại học sĩ, Thiếu bảo Phạm Công Trứ được giao trùng tu. Ông cho xây <strong>Phán Thủy Đường</strong> trên gò Kim Châu ở hồ Văn, đồng thời làm 10 bài thơ vịnh ghi cảnh đẹp. Từ đó, mùng Một và ngày rằm hàng tháng, học trò lại tập trung về Quốc Tử Giám học tập.</p>
+        <figure class="dc-event__fig">
+          <img src="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/2-tu-tru-va-ho-van-phia-truoc-van-mieu-quoc-tu-giam.jpg" data-full="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/2-tu-tru-va-ho-van-phia-truoc-van-mieu-quoc-tu-giam.jpg" loading="lazy" alt="Tứ trụ và hồ Văn phía trước Văn Miếu – Quốc Tử Giám">
+          <figcaption>Tứ trụ và hồ Văn phía trước Văn Miếu – Quốc Tử Giám</figcaption>
+        </figure>
+      </article>
+
+      <article class="dc-event" data-era="era-3">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1693</div>
+        <h3>Quan được ở tại trường</h3>
+        <p>Vua cho phép các quan Quốc Tử Giám được ở ngay tại trường, tiện cho việc giảng dạy và quản lý Nho sinh.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-3">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1721</div>
+        <h3>Tế tửu, Tư nghiệp lên bục giảng</h3>
+        <p>Từ đời Lê Dụ Tông, Tế tửu và Tư nghiệp — trước chỉ quản lý — bắt đầu trực tiếp giảng dạy. Học quan thêm Giáo thụ, Trực giảng, Học chính. Triều đình cử một đại thần chuyên lo công việc Văn Miếu – Quốc Tử Giám với chức <em>Tri Quốc Tử Giám</em> (như Nguyễn Nghiễm, Nguyễn Công Thái).</p>
+      </article>
+
+      <article class="dc-event" data-era="era-3">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1760</div>
+        <h3>Hai cột đá hình bút lông</h3>
+        <p>Xuân năm Canh Thìn (Cảnh Hưng 21), triều đình sửa lại nhà Đại Bái và dựng <strong>hai cột đá hình bút lông</strong> phía trước — chi tiết đậm tính biểu tượng của nền văn hiến.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-3">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1762</div>
+        <h3>Lê Quý Đôn chép <em>Kiến văn tiểu lục</em></h3>
+        <p>Tháng 9 năm Cảnh Hưng 23, chúa Trịnh Doanh cho tu sửa Quốc Tử Giám. Không lâu sau, Lê Quý Đôn mô tả cụ thể diện mạo di tích trong sách <em>Kiến văn tiểu lục</em> — tư liệu đo đạc chi tiết nhất về Văn Miếu – Quốc Tử Giám thời Lê Trung Hưng.</p>
+      </article>
+
+      <aside class="dc-quote" data-era="era-3">
+        <span class="dc-quote__yr">1762 · Lê Quý Đôn · <em>Kiến văn tiểu lục</em></span>
+        <blockquote>“Cửa Đại Thành 3 gian 2 chái, lợp bằng ngói đồng. Đông vu và Tây vu mỗi dãy đều 7 gian… Phòng học của học sinh tam xá ở phía đông và phía tây đều 3 dãy, mỗi dãy 25 gian, mỗi gian 2 người.”</blockquote>
+        <p class="dc-quote__src">Mô tả chi tiết nhất thời Lê Trung Hưng</p>
+      </aside>
+
+      <article class="dc-event dc-event--milestone" data-era="era-3">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1771</div>
+        <span class="dc-event__tag">★ Bia Hạ Mã</span>
+        <h3>"Dù quan hay dân, xuống ngựa đi bộ"</h3>
+        <p>Hai bia Hạ Mã được dựng phía trước Văn Miếu với hàm ý: quan lại hay dân thường đi qua cổng đều phải xuống ngựa đi bộ, thể hiện sự tôn kính với các bậc Tiên thánh, Tiên hiền. Cùng năm, quan coi Quốc Tử Giám cho giải tỏa nhà dân xung quanh hồ Văn, mở rộng, trồng cây, lát đường — Văn Miếu trở lại trang nghiêm như xưa.</p>
+        <figure class="dc-event__fig">
+          <img src="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/5-bia-ha-ma.jpg" data-full="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/5-bia-ha-ma.jpg" loading="lazy" alt="Bia Hạ Mã trước cổng Văn Miếu">
+          <figcaption>Bia Hạ Mã trước cổng Văn Miếu</figcaption>
+        </figure>
+      </article>
+
+      <article class="dc-event" data-era="era-3">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1785</div>
+        <h3>Bùi Huy Bích trùng tu nhà Thái Học</h3>
+        <p>Lần trùng tu cuối cùng của triều Lê ở nhà Thái Học, trước khi vương triều kết thúc. Việc khảo đính, biên soạn và in ấn sách kinh điển vẫn được duy trì tại Quốc Tử Giám cho đến cuối thời Lê.</p>
+      </article>
+
+      <!-- ===== DIVIDER 3 → 4 ===== -->
+      <div class="dc-divider" data-era-start="era-4" id="era-4">
+        <span class="dc-divider__roman">IV</span>
+        <span class="dc-divider__label">Nguyễn · Pháp thuộc</span>
+        <span class="dc-divider__period">1802 – 1945 · Biến động nhất</span>
+      </div>
+
+      <!-- ===== ERA 4 ===== -->
+      <article class="dc-event" data-era="era-4">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">~1802</div>
+        <h3>Đổi tên · đổi vai trò</h3>
+        <p>Thăng Long không còn giữ vị trí Kinh đô mà trở thành thủ phủ phủ Hoài Đức (sau thuộc trấn Bắc Thành). Văn Miếu → <em>Văn Miếu trấn Bắc Thành</em> → <em>Văn Miếu Hà Nội</em>. Quốc Tử Giám trở thành trường học phủ Hoài Đức; về sau chuyển thành đền Khải Thánh thờ cha mẹ Khổng Tử.</p>
+      </article>
+
+      <article class="dc-event dc-event--milestone" data-era="era-4">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1805</div>
+        <span class="dc-event__tag">★ Khuê Văn Các</span>
+        <h3>Nguyễn Văn Thành dựng lầu sao Khuê</h3>
+        <p>Tổng trấn Bắc Thành Nguyễn Văn Thành cho dựng <strong>Khuê Văn Các</strong> — lầu vuông hai tầng, tám mái theo lối <em>trùng diêm</em>, trên nền lát gạch Bát Tràng. Tầng dưới 4 trụ gạch vuông, tầng trên kiến trúc gỗ lợp ngói ống; bốn cửa sổ tròn có thanh con tiện tỏa ra các phía, biểu tượng sao Khuê chủ về văn chương. Ngày nay là biểu tượng chính thức của Hà Nội.</p>
+        <figure class="dc-event__fig">
+          <img src="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/9-gieng-thien-quang-va-khue-van-cac.jpg" data-full="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/9-gieng-thien-quang-va-khue-van-cac.jpg" loading="lazy" alt="Khuê Văn Các và giếng Thiên Quang">
+          <figcaption>Khuê Văn Các &amp; giếng Thiên Quang</figcaption>
+        </figure>
+      </article>
+
+      <article class="dc-event" data-era="era-4">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1808</div>
+        <h3>Bỏ tượng · chỉ thờ thần vị</h3>
+        <p>Sau khi xây xong Văn Miếu tại Huế, nhà Nguyễn lệnh các Văn Miếu địa phương — trong đó có Văn Miếu Bắc Thành — chỉ thờ thần vị Tiên sư, không thờ tượng. Tượng cũ phải chọn chỗ đất sạch chôn đi. Từ đó, Văn Miếu Bắc Thành chỉ còn bài vị Khổng Tử và các Tiên hiền, tiên Nho.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-4">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1827</div>
+        <h3>Chuyển kho sách về Huế</h3>
+        <p>Vua Minh Mệnh lệnh chuyển các bản in Ngũ kinh, Tứ thư Đại Toàn và Võ kinh trực giảng lưu giữ ở Văn Miếu Bắc Thành về Quốc Tử Giám Huế — trung tâm học thuật di dời theo kinh đô.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-4">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1833</div>
+        <h3>Sơn lại &amp; xây lại tường bao</h3>
+        <p>Nhà Đại Bái và điện Đại Thành được sơn, sửa lại; tường bao quanh toàn khu Văn Miếu được xây dựng lại.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-4">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1858 <small>· 1863</small></div>
+        <h3>Nhà bia Tiến sĩ được xây</h3>
+        <p>1858: dựng hai dãy nhà bia Tiến sĩ bên Tả vu, Hữu vu, mỗi bên 11 gian. 1863: Bố chánh Hà Nội Hoàng giáp Lê Hữu Thanh cùng Án sát Đặng Tá quyên tiền xây lại — mỗi bên 2 tòa × 11 gian để bảo vệ bia Tiến sĩ.</p>
+      </article>
+
+      <article class="dc-event dc-event--milestone dc-event--tragic" data-era="era-4">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1888</div>
+        <span class="dc-event__tag">★ Biến động</span>
+        <h3>Trại lính · trường bắn · khu cách ly</h3>
+        <p>Sau hiệp ước Patenôtre, người Pháp hoàn toàn nắm quyền cai trị Hà Nội. Giai đoạn 1888–1945 là giai đoạn nhiều biến động nhất trong lịch sử Văn Miếu – Quốc Tử Giám. Di tích từng bị thực dân Pháp biến thành <em>trại lính, trường bắn</em>, có thời kỳ là <em>khu cách ly cho người mắc dịch tả</em>. Chính phủ bảo hộ cắt phần lớn đất phía Bắc để quy hoạch đường phố. Trước sự đấu tranh của nhân dân Hà Nội, quân đội Pháp trả lại di tích cho chính quyền sở tại quản lý; hoạt động tế lễ được khôi phục.</p>
+        <figure class="dc-event__fig">
+          <img src="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/1-toan-canh-van-mieu-quoc-tu-giam-dau-the-ky-xx-copy.jpg" data-full="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/1-toan-canh-van-mieu-quoc-tu-giam-dau-the-ky-xx-copy.jpg" loading="lazy" alt="Toàn cảnh Văn Miếu – Quốc Tử Giám đầu thế kỷ XX">
+          <figcaption>Toàn cảnh Văn Miếu – Quốc Tử Giám đầu thế kỷ XX</figcaption>
+        </figure>
+      </article>
+
+      <article class="dc-event" data-era="era-4">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1888 <small>– 1909</small></div>
+        <h3>Các đợt trùng tu · "Vạn thế sư biểu"</h3>
+        <p>Trùng tu các năm 1888 (lần lớn cuối cùng dưới thời phong kiến), 1897–1901, 1904–1909. Việc này ghi trên biển gỗ, hoành phi <em>"Đại Thành môn"</em>, <em>"Vạn thế sư biểu"</em>. Để vỗ về người Việt, Công sứ toàn quyền Bắc Kỳ cấp kinh phí sửa chữa các gian thờ, mua sắm đồ tế khí và xin cho giữ lợi tức thu được trên <strong>12.300 m²</strong> đất xung quanh để bảo quản và tu bổ.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-4">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1906</div>
+        <h3>Xếp hạng Di tích lịch sử, văn hóa</h3>
+        <p>Toàn quyền Đông Dương xếp hạng khu vực Văn Miếu – Quốc Tử Giám là Di tích lịch sử, văn hóa — công nhận chính thức đầu tiên.</p>
+      </article>
+
+      <!-- ===== DIVIDER 4 → 5 ===== -->
+      <div class="dc-divider" data-era-start="era-5" id="era-5">
+        <span class="dc-divider__roman">V</span>
+        <span class="dc-divider__label">Cộng hòa · Di sản</span>
+        <span class="dc-divider__period">1945 – nay · Kỷ nguyên di sản</span>
+      </div>
+
+      <!-- ===== ERA 5 ===== -->
+      <article class="dc-event dc-event--milestone" data-era="era-5">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">21/10/1945</div>
+        <span class="dc-event__tag">★ Chuyển giao</span>
+        <h3>Bác Hồ chủ trì tế Thu</h3>
+        <p>Chủ tịch Hồ Chí Minh đích thân đến Văn Miếu chủ trì buổi tế Thu — khẳng định vai trò và giá trị của Văn Miếu – Quốc Tử Giám đối với văn hóa dân tộc trong hoàn cảnh lịch sử mới.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-5">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">22/9/1946</div>
+        <h3>Huỳnh Thúc Kháng chủ trì tế Thu</h3>
+        <p>Bộ trưởng Bộ Nội vụ Nước Việt Nam Dân chủ Cộng hòa Huỳnh Thúc Kháng chủ trì buổi tế Thu — tiếp nối truyền thống sau một năm.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-5">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">sau 9/1946</div>
+        <h3>Nghi thức tế lễ đơn giản hóa</h3>
+        <p>Tổ chức tế lễ theo tinh thần dân chủ, tiến bộ của Chính phủ VNDCCH. Mỗi năm chỉ tế một lần vào ngày sinh Khổng Tử (27/8). Quy định đơn giản: <em>lên xuống gối thay cho phủ phục</em>; người dự có thể mặc âu phục; lễ vật chỉ cần hoa, quả.</p>
+      </article>
+
+      <article class="dc-event dc-event--milestone dc-event--tragic" data-era="era-5">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1946 <small>– 47</small></div>
+        <span class="dc-event__tag">★ Tổn thất</span>
+        <h3>Đền Khải Thánh, Đông &amp; Tây vu bị phá hủy</h3>
+        <p>Trong thời kỳ Kháng chiến chống Pháp, Văn Miếu – Quốc Tử Giám bị hư hại nhiều. Giai đoạn đầu Toàn quốc Kháng chiến (1946–1947), khu <strong>đền Khải Thánh</strong> cùng nhà <strong>Đông vu, Tây vu</strong> khu Điện Đại Thành bị phá hủy. Nền cũ của trường Giám sau khi đền Khải Thánh bị phá vẫn còn dấu tích đến ngày nay.</p>
+        <figure class="dc-event__fig">
+          <img src="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/38-nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy.jpg" data-full="/vmqtg-old-site/vmqtg-new-site/assets/images/di-tich/lich-su/38-nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy.jpg" loading="lazy" alt="Nền cũ của trường Giám sau khi đền Khải Thánh bị phá">
+          <figcaption>Nền cũ của trường Giám sau khi đền Khải Thánh bị phá</figcaption>
+        </figure>
+      </article>
+
+      <article class="dc-event" data-era="era-5">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">~1948</div>
+        <h3>"Văn Miếu học hiệp hội"</h3>
+        <p>Để bảo vệ di tích, một số người tâm huyết với văn hóa nước nhà đã đứng ra thành lập <em>Văn Miếu học hiệp hội</em> — góp phần quan trọng vào việc gìn giữ di tích này cho đến ngày giải phóng Thủ đô năm 1954.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-5">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">1954</div>
+        <h3>Trùng tu sau tiếp quản Thủ đô</h3>
+        <p>Sau khi tiếp quản, ngành Văn hóa Hà Nội tu sửa Văn Miếu, trùng tu hai dãy Đông vu, Tây vu hai bên sân Đại Bái.</p>
+      </article>
+
+      <article class="dc-event" data-era="era-5">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">28/4/1962</div>
+        <h3>Di tích lịch sử văn hóa cấp quốc gia</h3>
+        <p>Văn Miếu – Quốc Tử Giám được Bộ Văn hóa xếp hạng là Di tích lịch sử văn hóa cấp quốc gia.</p>
+      </article>
+
+      <article class="dc-event dc-event--milestone" data-era="era-5">
+        <span class="dc-event__dot"></span>
+        <div class="dc-event__year">25/4/1988</div>
+        <span class="dc-event__tag">★ Kỷ nguyên di sản</span>
+        <h3>Trung tâm Hoạt động Văn hóa Khoa học</h3>
+        <p><strong>Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám</strong> được thành lập, trụ sở đặt trong di tích. Nhiệm vụ: quản lý, tu bổ, tôn tạo và phát huy giá trị di tích — góp phần bảo tồn, xây dựng nền văn hóa mới của dân tộc.</p>
+      </article>
+
+      <aside class="dc-quote" data-era="era-5">
+        <span class="dc-quote__yr">2010 · 2011 · UNESCO</span>
+        <blockquote>82 bia Tiến sĩ được UNESCO vinh danh Di sản tư liệu thuộc Chương trình Ký ức thế giới — khu vực Châu Á – Thái Bình Dương (2010), rồi Di sản tư liệu thế giới (2011).</blockquote>
+        <p class="dc-quote__src">Truyền thống khởi đầu từ 10 bia đầu tiên năm 1484 đã đi trọn một vòng bảy thế kỷ.</p>
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer" id="mua-ve">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/vmqtg-old-site/vmqtg-new-site/">
+          <span class="brand-mark">VM</span>
+          <span class="brand-text">
+            <span class="name">Văn Miếu – Quốc Tử Giám</span>
+            <span class="sub">Di tích Quốc gia đặc biệt</span>
+          </span>
+        </a>
+        <p>Trung tâm Hoạt động Văn hoá Khoa học Văn Miếu – Quốc Tử Giám là đơn vị trực thuộc Sở Văn hoá và Thể thao Hà Nội, có chức năng quản lý và phát huy giá trị di tích.</p>
+        <div class="footer-contact">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> 58 Phố Quốc Tử Giám, Đống Đa, Hà Nội</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 024.3747.1322 · 024.3211.5793</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> vanmieuqtg@hanoi.gov.vn</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Tham quan</h4>
+        <ul>
+          <li><a href="/vmqtg-old-site/vmqtg-new-site/tham-quan/">Thông tin tham quan</a></li>
+          <li><a href="/vmqtg-old-site/vmqtg-new-site/tham-quan/">Giờ mở cửa · giá vé</a></li>
+          <li><a href="/vmqtg-old-site/vmqtg-new-site/tham-quan/">Nội quy tham quan</a></li>
+          <li><a href="/vmqtg-old-site/vmqtg-new-site/tham-quan/">Dịch vụ &amp; tiện ích</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Khám phá</h4>
+        <ul>
+          <li><a href="/vmqtg-old-site/vmqtg-new-site/di-tich/">Di tích</a></li>
+          <li><a href="/vmqtg-old-site/vmqtg-new-site/hoat-dong/">Hoạt động</a></li>
+          <li><a href="/vmqtg-old-site/vmqtg-new-site/giao-duc-di-san/">Giáo dục di sản</a></li>
+          <li><a href="/vmqtg-old-site/vmqtg-new-site/ve-chung-toi/">Về chúng tôi</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Kết nối</h4>
+        <ul>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">YouTube</a></li>
+          <li><a href="#">TripAdvisor</a></li>
+          <li><a href="/vmqtg-old-site/vmqtg-new-site/so-do-trang/">Sơ đồ trang</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 Trung tâm Hoạt động Văn hoá Khoa học Văn Miếu – Quốc Tử Giám</div>
+      <div class="legal">
+        <a href="#">Chính sách bảo mật</a>
+        <a href="#">Điều khoản sử dụng</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ IMAGE VIEWER (right-panel constrained) ============ -->
+<div class="dc-viewer" id="dcViewer" aria-hidden="true">
+  <img id="dcViewerImg" alt="">
+  <span class="dc-viewer__meta" id="dcViewerMeta"></span>
+  <button class="dc-viewer__close" id="dcViewerClose" aria-label="Đóng ảnh">×</button>
+</div>
+
+<script>
+(function(){
+  // Mobile menu toggle (standard)
+  var btn = document.querySelector('.menu-toggle');
+  var nav = document.getElementById('mainNav');
+  if (btn && nav) {
+    btn.addEventListener('click', function(){
+      var open = nav.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+
+  // -------- Progress + era sync --------
+  var erasEl = document.querySelectorAll('.dc-era');
+  var steps = document.querySelectorAll('.dc-progress__step');
+  var timelineNodes = document.querySelectorAll('.dc-event, .dc-divider, .dc-quote');
+  var eraById = {};
+  erasEl.forEach(function(e){ eraById[e.dataset.era] = e; });
+  var stepById = {};
+  steps.forEach(function(s){ stepById[s.dataset.jump] = s; });
+
+  var activeEra = 'era-1';
+  function setActiveEra(eraId) {
+    if (!eraId || eraId === activeEra) return;
+    activeEra = eraId;
+    erasEl.forEach(function(e){ e.classList.toggle('is-active', e.dataset.era === eraId); });
+    // progress marks
+    var order = ['era-1','era-2','era-3','era-4','era-5'];
+    var idx = order.indexOf(eraId);
+    steps.forEach(function(s, i){
+      s.classList.remove('is-active','is-done');
+      if (i < idx) s.classList.add('is-done');
+      else if (i === idx) s.classList.add('is-active');
+    });
+  }
+
+  // Jump nav
+  steps.forEach(function(s){
+    s.addEventListener('click', function(){
+      var target = document.getElementById(s.dataset.jump);
+      if (target) {
+        var rect = target.getBoundingClientRect();
+        var offset = (window.innerHeight < 700) ? 80 : 120;
+        window.scrollTo({ top: window.scrollY + rect.top - offset, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // Focus tracking via IO (center-band of viewport)
+  // Determine focus by distance to viewport center
+  function closestToFocus() {
+    var focusY = window.innerHeight * 0.45;
+    var best = null, bestDist = Infinity, bestEra = null;
+    var passedIds = [];
+    timelineNodes.forEach(function(node){
+      var r = node.getBoundingClientRect();
+      var center = r.top + r.height / 2;
+      // Mark past if below focus
+      if (r.top < 0) passedIds.push(node);
+      var d = Math.abs(center - focusY);
+      // prefer nodes whose top is above the bottom 70% of viewport
+      if (r.top < window.innerHeight * 0.9 && r.bottom > 0) {
+        if (d < bestDist) { bestDist = d; best = node; }
+      }
+    });
+    // Update focus state
+    var focusedEra = null;
+    timelineNodes.forEach(function(node){ node.classList.remove('is-focus', 'is-past'); });
+    passedIds.forEach(function(n){ if (n !== best) n.classList.add('is-past'); });
+    if (best) {
+      best.classList.add('is-focus');
+      best.classList.remove('is-past');
+      focusedEra = best.dataset.era || (best.dataset.eraStart);
+    }
+    if (focusedEra) setActiveEra(focusedEra);
+  }
+
+  var raf = null;
+  function onScroll() {
+    if (raf) return;
+    raf = requestAnimationFrame(function(){
+      closestToFocus();
+      raf = null;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  // initial
+  setTimeout(closestToFocus, 50);
+
+  // -------- Image viewer --------
+  var viewer = document.getElementById('dcViewer');
+  var viewerImg = document.getElementById('dcViewerImg');
+  var viewerMeta = document.getElementById('dcViewerMeta');
+  var viewerClose = document.getElementById('dcViewerClose');
+  var rightPanel = document.querySelector('.dc-right');
+
+  function updateViewerPos() {
+    if (!rightPanel) return;
+    var r = rightPanel.getBoundingClientRect();
+    // On desktop, left edge of right panel; on mobile (<960px) use 0
+    var left = (window.innerWidth <= 960) ? 0 : Math.max(0, r.left);
+    document.documentElement.style.setProperty('--dc-right-left', left + 'px');
+  }
+  updateViewerPos();
+  window.addEventListener('resize', updateViewerPos);
+  window.addEventListener('scroll', updateViewerPos, { passive: true });
+
+  function openViewer(src, caption) {
+    updateViewerPos();
+    viewerImg.src = src;
+    viewerImg.alt = caption || '';
+    viewerMeta.textContent = caption || '';
+    viewer.classList.add('is-open');
+    viewer.setAttribute('aria-hidden', 'false');
+  }
+  function closeViewer() {
+    viewer.classList.remove('is-open');
+    viewer.setAttribute('aria-hidden', 'true');
+    viewerImg.src = '';
+  }
+  document.addEventListener('click', function(e){
+    var img = e.target.closest('.dc-event__fig img');
+    if (img) {
+      e.preventDefault();
+      var full = img.getAttribute('data-full') || img.src;
+      var cap = (img.closest('figure') || {}).querySelector ? img.closest('figure').querySelector('figcaption') : null;
+      openViewer(full, cap ? cap.textContent : '');
+    }
+  });
+  viewer.addEventListener('click', function(e){
+    // Click anywhere inside viewer closes
+    closeViewer();
+  });
+  viewerClose.addEventListener('click', function(e){ e.stopPropagation(); closeViewer(); });
+  document.addEventListener('keydown', function(e){
+    if (viewer.classList.contains('is-open') && e.key === 'Escape') closeViewer();
+  });
+})();
+</script>
+</body></html>
