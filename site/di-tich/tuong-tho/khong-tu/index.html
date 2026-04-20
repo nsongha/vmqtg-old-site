@@ -44,7 +44,7 @@ Khổng Tử tên là Khâu, tự là Trọng Ni, sinh ngày 27 tháng 8 năm 55
           Năm 30 tuổi, Khổng Tử cùng học trò đi chu du nhiều nước để truyền bá tư tưởng của mình. Có nơi ông được trọng dụng nhưng cũng có nơi ông bị coi thường. Năm 51 tuổi, ông quay lại nước Lỗ và được giao coi thành Trung Đô, năm sau được thăng chức Đại Tư khấu (coi việc hình pháp). Sau này do bị ly gián, gièm pha, ông bèn từ quan, trở về tiếp tục dạy học và biên soạn sách.<br>
           Khổng Tử đã biên soạn và san định Kinh Thi, Thư, Lễ, nhạc, Dịch và Kinh Xuân Thu. Những trước tác của ông đã trở thành kinh điển của Nho giáo, được truyền bá và lưu truyền cho đến ngày nay. Về cơ bản, tư tưởng của Khổng Tử là bảo thủ, muốn duy trì và phát triển thế lực của giai cấp quý tộc cũ đang mất dần thực quyền, bị các đại phu và thế lực quý tộc mới chèn ép. Trung tâm học thuyết của ông là chữ “Nhân” với một phạm vi bao quát rộng lớn được tùy trường hợp mà giải thích khác nhau. Nhân gần với Lễ, là những quy phạm đạo đức lễ nghi để duy trì quan hệ trong xã hội. Có thể coi Lễ là phương thức giúp người ta đạt tới Nhân. Nhân và Lễ gắn bó với nhau và đó cũng là chuẩn đích trên con đường hoàn thiện phẩm cách của người Nho sỹ - quân tử. Khổng Tử chú trọng nhấn mạnh và đề cao thuyết chính danh, tam cương, ngũ thường làm kim chỉ nam hành động cho con người trong mọi sinh hoạt chính trị và an sinh xã hội. Tam cương gồm 3 mối quan hệ rường cột: &quot;cha - con&quot;, &quot;vua - tôi&quot;, &quot;vợ - chồng&quot; và Ngũ thường tức năm đạo lý mà người ta cần phải gìn giữ gồm: &quot;Nhân, Lễ, Nghĩa, Trí, Tín&quot;.Theo ông, một xã hội mà con người tuân thủ đầy đủ các quy tắc trên thì xã hội sẽ không bị rối loạn.<br>
            Năm 479 trước Công nguyên, Khổng Tử qua đời thọ 73 tuổi. Học trò gọi ông là Khổng Phu Tử, là thầy Khổng. Khổng Tử được vua Khang Hy (1654-1722) suy tôn là“Vạn thế sư biểu&quot; (Người thầy tiểu biểu của muôn đời).<br>
-           Những bài giảng của Khổng Tử sau này được các học trò của ông hệ thống thành một bộ văn bản tỉ mỉ về những quy định và các thức thực hiện nghi lễ, và trở thành những kinh điển của Nho giáo - một trong những học thuyết có sức sống lan tỏa mạnh mẽ và tầm ảnh hưởng rộng lớn suốt hơn 2.500 năm không chỉ ở Trung Quốc mà còn ở khắp vùng Đông Á và Đông Nam Á./.</p><h3>Hình ảnh</h3><div class="gallery"><img src="/vmqtg-old-site/assets/images/di-tich/tuong-tho/1-khongtu.jpg" loading="lazy" alt=""></div>
+           Những bài giảng của Khổng Tử sau này được các học trò của ông hệ thống thành một bộ văn bản tỉ mỉ về những quy định và các thức thực hiện nghi lễ, và trở thành những kinh điển của Nho giáo - một trong những học thuyết có sức sống lan tỏa mạnh mẽ và tầm ảnh hưởng rộng lớn suốt hơn 2.500 năm không chỉ ở Trung Quốc mà còn ở khắp vùng Đông Á và Đông Nam Á./.</p><h3>Hình ảnh</h3><div class="gallery"><a href="/vmqtg-old-site/assets/images/di-tich/tuong-tho/1-khongtu.jpg"><img src="/vmqtg-old-site/assets/images/di-tich/tuong-tho/1-khongtu-thumb.jpg" loading="lazy" alt=""></a></div>
 
 <details style="margin-top:30px;background:var(--cream);padding:18px 22px;border:1px solid var(--line);">
 <summary style="cursor:pointer;font-weight:600;color:var(--brick-dark);">English version</summary>
@@ -86,4 +86,55 @@ Confucius has been honored as the teacher of ten thousand generations.</p>
     <div class="copy">© Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám</div>
   </div>
 </footer>
+<div class="lightbox" id="lb" aria-hidden="true">
+  <span class="close" id="lb-close">×</span>
+  <span class="nav prev" id="lb-prev">‹</span>
+  <img id="lb-img" alt="">
+  <span class="nav next" id="lb-next">›</span>
+  <span class="counter" id="lb-counter"></span>
+</div>
+<script>
+(function(){
+  var lb = document.getElementById('lb');
+  var img = document.getElementById('lb-img');
+  var counter = document.getElementById('lb-counter');
+  var links = [];
+  var idx = 0;
+  function collect(){
+    links = Array.from(document.querySelectorAll('.gallery a[href]'));
+  }
+  function open(i){
+    idx = (i + links.length) % links.length;
+    img.src = links[idx].getAttribute('href');
+    counter.textContent = (idx+1) + ' / ' + links.length;
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function close(){
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
+    img.src = '';
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('.gallery a[href]');
+    if (a) {
+      e.preventDefault();
+      collect();
+      open(links.indexOf(a));
+    }
+  });
+  document.getElementById('lb-close').onclick = close;
+  document.getElementById('lb-prev').onclick = function(e){ e.stopPropagation(); open(idx-1); };
+  document.getElementById('lb-next').onclick = function(e){ e.stopPropagation(); open(idx+1); };
+  lb.onclick = function(e){ if (e.target === lb || e.target === img) close(); };
+  document.addEventListener('keydown', function(e){
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowLeft') open(idx-1);
+    else if (e.key === 'ArrowRight') open(idx+1);
+  });
+})();
+</script>
 </body></html>

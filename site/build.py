@@ -91,39 +91,52 @@ def collect_images(folder: Path):
                     add(q)
     return sorted(imgs)
 
-MAX_DIM = 1600
-JPG_QUALITY = 82
+FULL_DIM = 1600
+FULL_QUALITY = 82
+THUMB_DIM = 640
+THUMB_QUALITY = 72
+
+def _sips(src: Path, dest: Path, dim: int, quality: int):
+    subprocess.run(
+        [
+            "sips",
+            "-Z", str(dim),
+            "-s", "format", "jpeg",
+            "-s", "formatOptions", str(quality),
+            str(src), "--out", str(dest),
+        ],
+        capture_output=True, timeout=60, check=True,
+    )
 
 def copy_image(src: Path, dest_subdir: str) -> str:
-    """Copy + compress image into assets/images/<subdir>/, return public path."""
+    """Generate both full (<=1600px) and thumb (<=640px) JPG. Returns full URL.
+    Thumb URL is derived by replacing '.jpg' with '-thumb.jpg'."""
     dest_dir = IMG_DIR / dest_subdir
     dest_dir.mkdir(parents=True, exist_ok=True)
     base_slug = slugify(src.stem)
-    # All output is .jpg (smaller, broadly supported)
-    final = dest_dir / f"{base_slug}.jpg"
-    counter = 1
-    while final.exists() and final.stat().st_size > 0:
-        # already processed (assume cache hit by name)
-        return f"/assets/images/{dest_subdir}/{final.name}"
+    full = dest_dir / f"{base_slug}.jpg"
+    thumb = dest_dir / f"{base_slug}-thumb.jpg"
+    # cache by name
+    if full.exists() and full.stat().st_size > 0 and thumb.exists() and thumb.stat().st_size > 0:
+        return f"/assets/images/{dest_subdir}/{full.name}"
     try:
-        subprocess.run(
-            [
-                "sips",
-                "-Z", str(MAX_DIM),
-                "-s", "format", "jpeg",
-                "-s", "formatOptions", str(JPG_QUALITY),
-                str(src), "--out", str(final),
-            ],
-            capture_output=True, timeout=60, check=True,
-        )
-    except Exception as e:
-        # fallback: just copy
+        if not (full.exists() and full.stat().st_size > 0):
+            _sips(src, full, FULL_DIM, FULL_QUALITY)
+        if not (thumb.exists() and thumb.stat().st_size > 0):
+            _sips(src, thumb, THUMB_DIM, THUMB_QUALITY)
+    except Exception:
         try:
-            shutil.copy2(src, final.with_suffix(src.suffix.lower()))
-            final = final.with_suffix(src.suffix.lower())
+            shutil.copy2(src, full.with_suffix(src.suffix.lower()))
+            full = full.with_suffix(src.suffix.lower())
         except Exception:
             return ""
-    return f"/assets/images/{dest_subdir}/{final.name}"
+    return f"/assets/images/{dest_subdir}/{full.name}"
+
+def thumb_for(url: str) -> str:
+    """Given a full image URL, return the thumb variant URL."""
+    if url.endswith(".jpg"):
+        return url[:-4] + "-thumb.jpg"
+    return url
 
 # ---------- HTML template ----------
 
@@ -259,10 +272,56 @@ article.article-body img {
   border: 1px solid var(--line); padding: 4px; background: #fff;
 }
 article.article-body .gallery {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 10px; margin: 24px 0;
 }
-article.article-body .gallery img { margin: 0; height: 140px; object-fit: cover; }
+article.article-body .gallery a {
+  display: block; overflow: hidden; border: 1px solid var(--line);
+  background: var(--cream); cursor: zoom-in; position: relative;
+}
+article.article-body .gallery a::after {
+  content: "⤢"; position: absolute; right: 6px; bottom: 4px;
+  color: #fff; background: rgba(0,0,0,.55); padding: 2px 7px;
+  border-radius: 2px; font-size: 12px; opacity: 0; transition: opacity .15s;
+}
+article.article-body .gallery a:hover::after { opacity: 1; }
+article.article-body .gallery img {
+  margin: 0; padding: 0; border: 0;
+  width: 100%; height: 160px; object-fit: cover;
+  display: block; transition: transform .3s;
+}
+article.article-body .gallery a:hover img { transform: scale(1.04); }
+
+/* Lightbox */
+.lightbox {
+  position: fixed; inset: 0; background: rgba(0,0,0,.92);
+  display: none; align-items: center; justify-content: center;
+  z-index: 1000; cursor: zoom-out; padding: 20px;
+}
+.lightbox.open { display: flex; }
+.lightbox img {
+  max-width: 100%; max-height: 100%;
+  box-shadow: 0 0 60px rgba(255,255,255,.1);
+}
+.lightbox .close {
+  position: absolute; top: 14px; right: 18px; color: #fff;
+  font-size: 28px; cursor: pointer; line-height: 1; user-select: none;
+  background: rgba(255,255,255,.1); width: 40px; height: 40px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+.lightbox .nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  color: #fff; font-size: 40px; cursor: pointer; user-select: none;
+  padding: 14px 20px; background: rgba(255,255,255,.08);
+}
+.lightbox .nav:hover { background: rgba(255,255,255,.2); }
+.lightbox .prev { left: 12px; }
+.lightbox .next { right: 12px; }
+.lightbox .counter {
+  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  color: #fff; font-size: 13px; background: rgba(0,0,0,.5);
+  padding: 4px 12px; border-radius: 12px;
+}
 
 .lang-switch {
   margin: 20px 0 0; font-size: 13px;
@@ -375,6 +434,57 @@ def page(title: str, body: str, current_path: str = "/", breadcrumbs=None) -> st
     <div class="copy">© Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám</div>
   </div>
 </footer>
+<div class="lightbox" id="lb" aria-hidden="true">
+  <span class="close" id="lb-close">×</span>
+  <span class="nav prev" id="lb-prev">‹</span>
+  <img id="lb-img" alt="">
+  <span class="nav next" id="lb-next">›</span>
+  <span class="counter" id="lb-counter"></span>
+</div>
+<script>
+(function(){{
+  var lb = document.getElementById('lb');
+  var img = document.getElementById('lb-img');
+  var counter = document.getElementById('lb-counter');
+  var links = [];
+  var idx = 0;
+  function collect(){{
+    links = Array.from(document.querySelectorAll('.gallery a[href]'));
+  }}
+  function open(i){{
+    idx = (i + links.length) % links.length;
+    img.src = links[idx].getAttribute('href');
+    counter.textContent = (idx+1) + ' / ' + links.length;
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }}
+  function close(){{
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
+    img.src = '';
+    document.body.style.overflow = '';
+  }}
+  document.addEventListener('click', function(e){{
+    var a = e.target.closest('.gallery a[href]');
+    if (a) {{
+      e.preventDefault();
+      collect();
+      open(links.indexOf(a));
+    }}
+  }});
+  document.getElementById('lb-close').onclick = close;
+  document.getElementById('lb-prev').onclick = function(e){{ e.stopPropagation(); open(idx-1); }};
+  document.getElementById('lb-next').onclick = function(e){{ e.stopPropagation(); open(idx+1); }};
+  lb.onclick = function(e){{ if (e.target === lb || e.target === img) close(); }};
+  document.addEventListener('keydown', function(e){{
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowLeft') open(idx-1);
+    else if (e.key === 'ArrowRight') open(idx+1);
+  }});
+}})();
+</script>
 </body></html>"""
 
 _URL_ATTR_RE = re.compile(r'''((?:href|src)\s*=\s*["'])/(?!/)''')
@@ -455,7 +565,10 @@ def get_lead_num(name: str):
 def render_article(art: Article, breadcrumbs):
     body_parts = [art.content_vi]
     if art.images:
-        gallery = '\n'.join(f'<img src="{img}" loading="lazy" alt="">' for img in art.images)
+        gallery = '\n'.join(
+            f'<a href="{img}"><img src="{thumb_for(img)}" loading="lazy" alt=""></a>'
+            for img in art.images
+        )
         body_parts.append(f'<h3>Hình ảnh</h3><div class="gallery">{gallery}</div>')
 
     en_section = ""
@@ -888,7 +1001,10 @@ def render_program(p):
             parts.append(f'<h3 style="font-size:16px;color:var(--muted);">{escape(d["label"])}</h3>{d["html"]}')
 
     if p["images"]:
-        gallery = "\n".join(f'<img src="{img}" loading="lazy" alt="">' for img in p["images"])
+        gallery = "\n".join(
+            f'<a href="{img}"><img src="{thumb_for(img)}" loading="lazy" alt=""></a>'
+            for img in p["images"]
+        )
         parts.append(f'<h3>Hình ảnh chương trình</h3><div class="gallery">{gallery}</div>')
 
     parts.append("</article>")

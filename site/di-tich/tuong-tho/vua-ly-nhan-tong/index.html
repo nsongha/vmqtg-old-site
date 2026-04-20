@@ -42,7 +42,7 @@
  Lý Nhân Tông huý là Càn Đức, là con trưởng của vua Lý Thánh Tông và Linh Nhân Hoàng thái hậu (tức Nguyên phi Ỷ Lan), ở ngôi 56 năm (1072 - 1128).<br>
       Lý Nhân Tông là vị vua sáng suốt, hiếu nhân, thông âm luật, chế ca nhạc, là vị vua giỏi của thời Lý. Ông là người mộ đạo Phật, nhưng lại chăm lo mở mang nền Nho học Việt Nam. Vua Lý Nhân Tông (tức Thái tử Lý Càn Đức) là người học trò đầu tiên vào học tại Văn Miếu (1070).<br>
       Sau khi lên ngôi được 3 năm, năm 1075, Lý Nhân Tông cho tổ chức khoa thi đầu tiên trong lịch sử khoa cử Việt Nam, đó là khoa Minh kinh bác học và Nho học tam trường để kén chọn nhân tài. Một năm sau đó, năm 1076, vua cho lập Quốc Tử Giám,&quot;chọn quan viên văn chức, người nào biết chữ cho vào Quốc Tử Giám&quot;.<br>
-      Việc mở khoa thi đầu tiên năm 1075 và lập Quốc Tử Giám năm 1076 là những sự kiện quan trọng, đặt cơ sở cho sự ra đời của chế độ giáo dục, khoa cử Nho học ở Việt Nam.</p><h3>Hình ảnh</h3><div class="gallery"><img src="/vmqtg-old-site/assets/images/di-tich/tuong-tho/8-ly-nhan-tong.jpg" loading="lazy" alt=""></div>
+      Việc mở khoa thi đầu tiên năm 1075 và lập Quốc Tử Giám năm 1076 là những sự kiện quan trọng, đặt cơ sở cho sự ra đời của chế độ giáo dục, khoa cử Nho học ở Việt Nam.</p><h3>Hình ảnh</h3><div class="gallery"><a href="/vmqtg-old-site/assets/images/di-tich/tuong-tho/8-ly-nhan-tong.jpg"><img src="/vmqtg-old-site/assets/images/di-tich/tuong-tho/8-ly-nhan-tong-thumb.jpg" loading="lazy" alt=""></a></div>
 
 </article>
 
@@ -72,4 +72,55 @@
     <div class="copy">© Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám</div>
   </div>
 </footer>
+<div class="lightbox" id="lb" aria-hidden="true">
+  <span class="close" id="lb-close">×</span>
+  <span class="nav prev" id="lb-prev">‹</span>
+  <img id="lb-img" alt="">
+  <span class="nav next" id="lb-next">›</span>
+  <span class="counter" id="lb-counter"></span>
+</div>
+<script>
+(function(){
+  var lb = document.getElementById('lb');
+  var img = document.getElementById('lb-img');
+  var counter = document.getElementById('lb-counter');
+  var links = [];
+  var idx = 0;
+  function collect(){
+    links = Array.from(document.querySelectorAll('.gallery a[href]'));
+  }
+  function open(i){
+    idx = (i + links.length) % links.length;
+    img.src = links[idx].getAttribute('href');
+    counter.textContent = (idx+1) + ' / ' + links.length;
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function close(){
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
+    img.src = '';
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('.gallery a[href]');
+    if (a) {
+      e.preventDefault();
+      collect();
+      open(links.indexOf(a));
+    }
+  });
+  document.getElementById('lb-close').onclick = close;
+  document.getElementById('lb-prev').onclick = function(e){ e.stopPropagation(); open(idx-1); };
+  document.getElementById('lb-next').onclick = function(e){ e.stopPropagation(); open(idx+1); };
+  lb.onclick = function(e){ if (e.target === lb || e.target === img) close(); };
+  document.addEventListener('keydown', function(e){
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowLeft') open(idx-1);
+    else if (e.key === 'ArrowRight') open(idx+1);
+  });
+})();
+</script>
 </body></html>
