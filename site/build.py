@@ -12,7 +12,7 @@ import shutil
 import subprocess
 import unicodedata
 from pathlib import Path
-from html import escape
+from html import escape, unescape
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = Path(__file__).resolve().parent
@@ -294,6 +294,11 @@ article.article-body .gallery img {
   display: block; transition: transform .3s;
 }
 article.article-body .gallery a:hover img { transform: scale(1.04); }
+article.article-body .gallery .caption {
+  display: block; font-size: 12px; color: var(--muted);
+  padding: 6px 8px; line-height: 1.35; background: #fff;
+  border-top: 1px solid var(--line);
+}
 
 /* Lightbox */
 .lightbox {
@@ -345,12 +350,73 @@ footer.site-footer h4 { color: var(--gold); margin: 0 0 10px; font-size: 14px; t
 footer.site-footer a { color: var(--cream); }
 footer.site-footer .copy { text-align: center; padding-top: 22px; margin-top: 22px; border-top: 1px solid rgba(255,255,255,.15); font-size: 13px; opacity: .8; }
 
+/* Interactive sitemap */
+.sm-toolbar {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin: 18px 0 26px; padding: 14px 16px;
+  background: var(--cream); border: 1px solid var(--line); border-radius: 4px;
+}
+.sm-search {
+  flex: 1 1 260px; min-width: 180px;
+  padding: 10px 12px; font: inherit;
+  border: 1px solid var(--line); background: #fff; color: var(--ink);
+  border-radius: 2px;
+}
+.sm-search:focus { outline: 2px solid var(--gold); outline-offset: -1px; border-color: var(--gold); }
+.sm-btn {
+  padding: 8px 14px; border: 1px solid var(--brick); background: #fff;
+  color: var(--brick); font: inherit; font-size: 14px; cursor: pointer;
+  letter-spacing: .3px; border-radius: 2px;
+}
+.sm-btn:hover { background: var(--brick); color: var(--cream); }
+.sm-stats { color: var(--muted); font-size: 13px; font-style: italic; margin: -10px 0 16px; }
+.sm-tree, .sm-tree ul { list-style: none; padding: 0; margin: 0; }
+.sm-tree ul.sm-children {
+  padding-left: 22px; margin-left: 10px;
+  border-left: 1px dashed var(--line);
+}
+.sm-node { padding: 2px 0; }
+.sm-row { display: flex; align-items: center; gap: 2px; }
+.sm-toggle {
+  width: 22px; height: 22px; border: none; background: transparent;
+  cursor: pointer; color: var(--brick); font-size: 11px; line-height: 1;
+  padding: 0; display: inline-flex; align-items: center; justify-content: center;
+  transition: transform .15s; flex: 0 0 auto;
+}
+.sm-node.sm-open > .sm-row > .sm-toggle { transform: rotate(90deg); }
+.sm-dot {
+  display: inline-flex; width: 22px; justify-content: center;
+  color: var(--muted); flex: 0 0 auto; font-size: 12px;
+}
+.sm-link {
+  color: var(--ink); padding: 3px 8px; border-radius: 2px;
+  flex: 1 1 auto; min-width: 0;
+}
+.sm-link[href]:hover { background: var(--cream); color: var(--brick); text-decoration: none; }
+.sm-count {
+  display: inline-block; margin-left: 8px; padding: 1px 9px;
+  background: #fff; color: var(--muted); border: 1px solid var(--line);
+  border-radius: 12px; font-size: 12px; font-style: italic; flex: 0 0 auto;
+}
+.sm-tree > .sm-node > .sm-row > .sm-link {
+  font-weight: 700; color: var(--brick-dark); font-size: 18px;
+  padding: 6px 10px;
+}
+.sm-tree > .sm-node { padding: 6px 0; border-bottom: 1px dotted var(--line); }
+.sm-tree > .sm-node:last-child { border-bottom: none; }
+.sm-node.sm-has-children > .sm-children { display: none; }
+.sm-node.sm-open > .sm-children { display: block; }
+.sm-node.sm-filtered-out { display: none; }
+.sm-link mark { background: var(--gold); color: var(--ink); padding: 0 2px; border-radius: 2px; }
+.sm-empty { padding: 20px; color: var(--muted); font-style: italic; text-align: center; }
+
 @media (max-width: 720px) {
   .brand-text h1 { font-size: 18px; }
   nav.main-nav a { padding: 10px 12px; font-size: 12px; }
   .hero h2 { font-size: 26px; }
   article.article-body { padding: 22px; }
   footer.site-footer .row { grid-template-columns: 1fr; }
+  .sm-tree > .sm-node > .sm-row > .sm-link { font-size: 16px; }
 }
 """
 
@@ -430,7 +496,8 @@ def page(title: str, body: str, current_path: str = "/", breadcrumbs=None) -> st
       <div>
         <h4>Thông tin</h4>
         <p><a href="/giao-duc-di-san/">Giáo dục di sản</a><br>
-        <a href="/ve-chung-toi/">Về chúng tôi</a></p>
+        <a href="/ve-chung-toi/">Về chúng tôi</a><br>
+        <a href="/so-do-trang/">Sơ đồ trang</a></p>
       </div>
     </div>
     <div class="copy">© Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám</div>
@@ -507,14 +574,18 @@ def write_page(path: Path, html: str):
 
 class Article:
     def __init__(self, slug, title_vi, content_vi, images=None,
-                 title_en=None, content_en=None, raw_text_vi=""):
+                 title_en=None, content_en=None, raw_text_vi="",
+                 source_folder=None, captions=None, content_fr=None):
         self.slug = slug
         self.title_vi = title_vi
         self.title_en = title_en
         self.content_vi = content_vi
         self.content_en = content_en
+        self.content_fr = content_fr
         self.images = images or []
         self.raw_text_vi = raw_text_vi
+        self.source_folder = source_folder  # for cross-language matching
+        self.captions = captions or {}      # {image_url: caption_text}
 
     def excerpt(self):
         return excerpt(self.raw_text_vi)
@@ -536,12 +607,15 @@ def article_from_folder(folder: Path, img_subdir: str):
     html = text_to_html(raw)
     imgs = collect_images(folder)
     img_paths = [copy_image(im, img_subdir) for im in imgs]
+    captions = parse_caption_doc(folder, img_paths)
     return Article(
         slug=slugify(strip_lead_num(folder.name)),
         title_vi=title,
         content_vi=html,
         images=img_paths,
         raw_text_vi=raw,
+        source_folder=folder,
+        captions=captions,
     )
 
 def article_from_file(docx: Path, img_subdir: str, title_override=None):
@@ -550,13 +624,55 @@ def article_from_file(docx: Path, img_subdir: str, title_override=None):
     html = text_to_html(raw)
     imgs = collect_images(docx.parent)
     img_paths = [copy_image(im, img_subdir) for im in imgs]
+    captions = parse_caption_doc(docx.parent, img_paths)
     return Article(
         slug=slugify(title),
         title_vi=title,
         content_vi=html,
         images=img_paths,
         raw_text_vi=raw,
+        source_folder=docx.parent,
+        captions=captions,
     )
+
+def parse_caption_doc(folder: Path, img_paths):
+    """Look for 'Chú thích ảnh.docx' in folder/ảnh/ and extract per-image captions.
+    Convention: lines starting with 'N.' or 'N ' map to N-th image (1-indexed)."""
+    if not folder.exists() or not img_paths:
+        return {}
+    # Find caption doc
+    caption_doc = None
+    for sub in folder.iterdir():
+        if sub.is_dir() and is_image_folder(sub.name):
+            for f in sub.iterdir():
+                if f.is_file() and f.suffix.lower() == ".docx" and "chú thích" in _norm(f.stem):
+                    caption_doc = f
+                    break
+        if caption_doc: break
+    if not caption_doc:
+        return {}
+    raw = docx_to_text(caption_doc)
+    # Split by lines starting with "N." or "N " (numbered captions)
+    captions = {}
+    current_num = None
+    current_text = []
+    for line in raw.splitlines():
+        m = re.match(r"^\s*(\d+)\s*[\.\):]\s*(.*)$", line)
+        if m:
+            if current_num is not None and current_text:
+                captions[current_num] = " ".join(current_text).strip()
+            current_num = int(m.group(1))
+            current_text = [m.group(2).strip()] if m.group(2).strip() else []
+        elif current_num is not None and line.strip():
+            current_text.append(line.strip())
+    if current_num is not None and current_text:
+        captions[current_num] = " ".join(current_text).strip()
+    # Map to image URL (by 1-indexed position)
+    out = {}
+    for i, url in enumerate(img_paths, start=1):
+        if i in captions:
+            out[url] = captions[i]
+    return out
 
 def get_lead_num(name: str):
     m = re.match(r"^\s*(\d+)", name)
@@ -564,22 +680,34 @@ def get_lead_num(name: str):
 
 # ---------- Build pages ----------
 
+def _img_anchor(img, captions):
+    cap = captions.get(img, "") if captions else ""
+    if cap:
+        return (f'<a href="{img}" title="{escape(cap)}">'
+                f'<img src="{thumb_for(img)}" loading="lazy" alt="{escape(cap)}">'
+                f'<span class="caption">{escape(cap)}</span></a>')
+    return f'<a href="{img}"><img src="{thumb_for(img)}" loading="lazy" alt=""></a>'
+
 def render_article(art: Article, breadcrumbs):
     body_parts = [art.content_vi]
     if art.images:
-        gallery = '\n'.join(
-            f'<a href="{img}"><img src="{thumb_for(img)}" loading="lazy" alt=""></a>'
-            for img in art.images
-        )
+        gallery = '\n'.join(_img_anchor(img, art.captions) for img in art.images)
         body_parts.append(f'<h3>Hình ảnh</h3><div class="gallery">{gallery}</div>')
 
-    en_section = ""
+    extra_lang = ""
     if art.content_en:
-        en_section = f"""
-<details style="margin-top:30px;background:var(--cream);padding:18px 22px;border:1px solid var(--line);">
+        extra_lang += f"""
+<details style="margin-top:18px;background:var(--cream);padding:18px 22px;border:1px solid var(--line);">
 <summary style="cursor:pointer;font-weight:600;color:var(--brick-dark);">English version</summary>
 <h2 style="margin-top:14px;color:var(--brick-dark);">{escape(art.title_en or art.title_vi)}</h2>
 {art.content_en}
+</details>
+"""
+    if art.content_fr:
+        extra_lang += f"""
+<details style="margin-top:12px;background:var(--cream);padding:18px 22px;border:1px solid var(--line);">
+<summary style="cursor:pointer;font-weight:600;color:var(--brick-dark);">Version française</summary>
+{art.content_fr}
 </details>
 """
 
@@ -587,7 +715,7 @@ def render_article(art: Article, breadcrumbs):
 <article class="article-body">
 <h1>{escape(art.title_vi)}</h1>
 {"".join(body_parts)}
-{en_section}
+{extra_lang}
 </article>
 """
     return body
@@ -688,7 +816,12 @@ WRAPPER_NAMES = {_norm(x) for x in ("Bài viết và ảnh",)}
 
 def is_vn(name: str) -> bool: return _norm(name) in VN_NAMES
 def is_en(name: str) -> bool: return _norm(name) in EN_NAMES
-def is_image_folder(name: str) -> bool: return _norm(name) in SKIP_NAMES
+def is_image_folder(name: str) -> bool:
+    n = _norm(name)
+    if n in SKIP_NAMES:
+        return True
+    # custom variants like "ảnh Môi trường", "Ảnh Kiến trúc cổ lớp 7-12"
+    return n.startswith("ảnh ") or n.startswith("anh ")
 def is_wrapper(name: str) -> bool: return _norm(name) in WRAPPER_NAMES
 
 def find_lang_split(folder: Path):
@@ -747,8 +880,56 @@ def collect_articles_recursive(folder: Path, img_subdir: str):
         out.extend(collect_articles_recursive(c, img_subdir))
     return out
 
+def _walk_leaf_dirs_with_docx(root: Path):
+    """Walk root tree, yield every folder that directly contains a .docx file
+    (skipping folders inside an image-folder ancestor)."""
+    if not root or not root.exists():
+        return
+    for p in root.rglob("*"):
+        if not p.is_dir():
+            continue
+        if any(is_image_folder(parent.name) for parent in [p, *p.parents]):
+            continue
+        if has_own_docx(p):
+            yield p
+
+# Stop words that don't help cross-language topic matching (common fillers
+# in both Vietnamese folder names and English titles).
+_TOPIC_STOP = {
+    "the", "of", "and", "a", "to", "in", "with", "for", "by",
+    "va", "voi", "cua", "ve", "trong", "qua", "tai", "tu", "den",
+    "bai", "viet", "anh", "ban", "mot", "nay", "do", "no",
+    "hoc", "khoa", "thi", "danh", "nhan",  # too common in Tế tửu section
+}
+
+def _topic_tokens(name: str):
+    """ASCII-fold and tokenize a folder name (after stripping lead num).
+    Used for cross-language topic matching."""
+    s = unicodedata.normalize("NFD", strip_lead_num(name))
+    s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+    s = s.replace("đ", "d").replace("Đ", "d").lower()
+    return {t for t in re.split(r"[^a-z0-9]+", s) if t and t not in _TOPIC_STOP and len(t) > 1}
+
+def folder_topics(folder: Path, lang_root: Path):
+    """Union of topic tokens from every ancestor between lang_root and folder."""
+    topics = set()
+    cur = folder
+    while cur and cur != lang_root:
+        topics |= _topic_tokens(cur.name)
+        cur = cur.parent
+    return topics
+
 def merge_bilingual(vn_dir, en_dir, img_subdir: str):
-    """Merge VN articles with EN articles by leading number, then by sequence."""
+    """Merge VN articles with EN articles.
+
+    Strategy:
+      1. Build a flat index of EN leaf folders (any depth inside en_dir),
+         keyed by lead number. This handles asymmetric nesting (e.g. when VN
+         uses a 'Bài viết và ảnh' wrapper but EN doesn't, or when EN nests
+         deeper under a person-name folder).
+      2. Walk VN top items normally. For each resulting article, attach
+         matching EN by lead number (if not already used).
+    """
     def list_article_dirs(d):
         if not d:
             return []
@@ -756,7 +937,6 @@ def merge_bilingual(vn_dir, en_dir, img_subdir: str):
                       key=lambda p: (get_lead_num(p.name), p.name))
 
     def list_loose_docx(d):
-        """Loose .docx files directly inside d (not in a subfolder)."""
         if not d:
             return []
         return sorted(
@@ -765,52 +945,90 @@ def merge_bilingual(vn_dir, en_dir, img_subdir: str):
             key=lambda p: (get_lead_num(p.name), p.name),
         )
 
+    # Flat EN index with topic context for cross-language matching.
+    en_pool = []  # (lead_num, depth, folder, topic_set)
+    for f in _walk_leaf_dirs_with_docx(en_dir):
+        en_pool.append((get_lead_num(f.name), len(f.parts), f, folder_topics(f, en_dir)))
+    en_pool.sort(key=lambda t: (t[0], t[1]))
+    en_used = set()
+
+    # Count EN folders per lead_num — only enforce topic match when there's
+    # ambiguity (>1 EN with same num), otherwise the match is unambiguous.
+    en_count_by_num = {}
+    for lead, _, _, _ in en_pool:
+        en_count_by_num[lead] = en_count_by_num.get(lead, 0) + 1
+
+    def take_en(num, vn_topics=None):
+        """Find EN folder by lead num. When multiple EN share the same num,
+        require ≥1 shared topic token to disambiguate (handles wrapper-structure
+        cases like CVA). Single-candidate matches are accepted regardless of
+        topic (handles simple sections like Tượng thờ where person names don't
+        share tokens across languages, e.g. Khổng Tử / Confucius)."""
+        candidates = [t for t in en_pool if t[0] == num and t[2] not in en_used]
+        if not candidates:
+            return None
+        if len(candidates) == 1 or vn_topics is None:
+            lead, depth, folder, _ = candidates[0]
+            en_used.add(folder)
+            return folder
+        # Multiple candidates: prefer one with topic overlap
+        for lead, depth, folder, en_topics in candidates:
+            if en_topics and (en_topics & vn_topics):
+                en_used.add(folder)
+                return folder
+        # No topic match — refuse rather than guess wrong
+        return None
+
     vn_items = list_article_dirs(vn_dir)
-    en_items = list_article_dirs(en_dir)
-
-    # Match by leading number when available
-    en_by_num = {}
-    en_unmatched = []
-    for e in en_items:
-        n = get_lead_num(e.name)
-        if n != 999 and n not in en_by_num:
-            en_by_num[n] = e
-        else:
-            en_unmatched.append(e)
-
     articles = []
-    used_unmatched = 0
 
     for vn in vn_items:
-        # Recurse: vn folder might itself have nested articles (e.g. "2. Tư nghiep Chu Van An")
         sub = collect_articles_recursive(vn, img_subdir)
         if not sub:
             continue
 
-        # If the vn folder is a single-article leaf (returned 1 article from itself)
         if len(sub) == 1 and has_own_docx(vn):
             art = sub[0]
-            n = get_lead_num(vn.name)
-            en_match = en_by_num.get(n)
-            if not en_match and used_unmatched < len(en_unmatched):
-                en_match = en_unmatched[used_unmatched]
-                used_unmatched += 1
-            attach_en(art, en_match, img_subdir)
+            num = get_lead_num(vn.name)
+            vn_topics = folder_topics(vn, vn_dir)
+            en_folder = take_en(num, vn_topics) if num != 999 else None
+            attach_en(art, en_folder, img_subdir)
             articles.append(art)
         else:
-            # Hub folder with multiple sub-articles — append all, no EN merging at this level
+            # Hub: try to match each sub-article by its source folder's
+            # lead num + topic context (so VN #4 inside Nguyễn Duy Thì doesn't
+            # accidentally match EN #4 inside Chu Văn An).
+            for art in sub:
+                if art.source_folder:
+                    num = get_lead_num(art.source_folder.name)
+                    vn_topics = folder_topics(art.source_folder, vn_dir)
+                    en_folder = take_en(num, vn_topics) if num != 999 else None
+                    attach_en(art, en_folder, img_subdir)
             articles.extend(sub)
 
-    # Loose .docx files directly in vn_dir (not wrapped in a folder)
+    # Loose .docx directly in vn_dir
     for docx in list_loose_docx(vn_dir):
         art = article_from_file(docx, img_subdir)
+        num = get_lead_num(docx.stem)
+        vn_topics = _topic_tokens(docx.stem)
+        en_folder = take_en(num, vn_topics) if num != 999 else None
+        attach_en(art, en_folder, img_subdir)
         articles.append(art)
 
-    # Add unmatched VN-side EN articles as standalone (rare)
-    if not vn_items and en_items:
-        for en in en_items:
-            sub = collect_articles_recursive(en, img_subdir)
-            articles.extend(sub)
+    # Leftover EN folders not matched by num: surface as English-only articles
+    # (don't FIFO-attach to VN — would pair wrong content). User sees them in
+    # the section listing as separate EN entries.
+    for lead, depth, en_folder, _topics in en_pool:
+        if en_folder in en_used:
+            continue
+        art = article_from_folder(en_folder, img_subdir)
+        if not art:
+            continue
+        # Mark as EN-only (no VN content)
+        art.title_vi = strip_lead_num(en_folder.name)  # English title
+        art.content_en = art.content_vi
+        art.content_vi = '<p style="color:var(--muted);font-style:italic;">Bản tiếng Việt chưa có. Xem phiên bản tiếng Anh dưới đây.</p>'
+        articles.append(art)
 
     return articles
 
@@ -833,12 +1051,63 @@ def collect_di_tich_subsection(src_path: Path, img_subdir: str):
 
 # ---------- Trang 2 (Tham quan) ----------
 
+EN_MARKERS = (
+    "REGULATIONS", "WELCOME TO", "Welcome to", "Dear Guests",
+    "FOR THE SPECIAL", "VISITOR RULES", "GENERAL INFORMATION",
+    "ENTRANCE FEE", "ENTRANCE FEES", "ADMISSION", "OPENING HOURS",
+    "GUIDE SERVICE", "SERVICES",
+)
+FR_MARKERS = (
+    "CENTRE DES", "RÈGLEMENT", "BIENVENUE", "Bienvenue",
+    "Aux visiteurs", "Cher visiteur", "TARIF", "HORAIRES",
+    "SERVICES TOURISTIQUES",
+)
+
+def split_languages(text: str):
+    """Split a multilingual docx text into {lang: section_text} by heuristic markers.
+    Default language is 'vi'. Returns dict like {'vi': ..., 'en': ..., 'fr': ...}.
+    """
+    lines = text.splitlines()
+    boundaries = [(0, "vi")]  # (line_index, lang)
+    for i, raw in enumerate(lines):
+        s = raw.strip()
+        if not s: continue
+        if any(m in s for m in EN_MARKERS) and boundaries[-1][1] != "en":
+            boundaries.append((i, "en"))
+        elif any(m in s for m in FR_MARKERS) and boundaries[-1][1] != "fr":
+            boundaries.append((i, "fr"))
+    result = {}
+    for idx, (start, lang) in enumerate(boundaries):
+        end = boundaries[idx+1][0] if idx+1 < len(boundaries) else len(lines)
+        chunk = "\n".join(lines[start:end]).strip()
+        if chunk:
+            # Avoid overwriting if same lang appears twice (rare); keep first
+            result.setdefault(lang, chunk)
+    return result
+
 def build_tham_quan():
     src = ROOT / "Trang 2 Thăm quan"
     articles = []
     for f in sorted(src.iterdir()):
         if f.is_file() and f.suffix.lower() == ".docx":
-            art = article_from_file(f, "tham-quan")
+            raw = docx_to_text(f)
+            langs = split_languages(raw)
+            title = strip_lead_num(f.stem)
+            imgs = collect_images(f.parent)
+            img_paths = [copy_image(im, "tham-quan") for im in imgs]
+            art = Article(
+                slug=slugify(title),
+                title_vi=title,
+                content_vi=text_to_html(langs.get("vi", "")),
+                images=img_paths,
+                raw_text_vi=langs.get("vi", ""),
+                source_folder=f.parent,
+            )
+            if "en" in langs:
+                art.content_en = text_to_html(langs["en"])
+            if "fr" in langs:
+                # store as attribute on art for renderer
+                art.content_fr = text_to_html(langs["fr"])
             articles.append(art)
 
     items = [(a.slug, a.title_vi, a.excerpt(), a.images[0] if a.images else "") for a in articles]
@@ -963,7 +1232,7 @@ def build_program(prog_dir: Path, img_subdir: str):
     post_docs = []
     for sub in prog_dir.iterdir():
         if sub.is_dir():
-            n = sub.name.lower()
+            n = _norm(sub.name)  # NFC normalize for reliable Vietnamese matching
             if "trước" in n or "truoc" in n:
                 pre_docs = docx_in(sub)
             elif "sau" in n:
@@ -1003,10 +1272,7 @@ def render_program(p):
             parts.append(f'<h3 style="font-size:16px;color:var(--muted);">{escape(d["label"])}</h3>{d["html"]}')
 
     if p["images"]:
-        gallery = "\n".join(
-            f'<a href="{img}"><img src="{thumb_for(img)}" loading="lazy" alt=""></a>'
-            for img in p["images"]
-        )
+        gallery = "\n".join(_img_anchor(img, p.get("captions", {})) for img in p["images"])
         parts.append(f'<h3>Hình ảnh chương trình</h3><div class="gallery">{gallery}</div>')
 
     parts.append("</article>")
@@ -1091,12 +1357,290 @@ def build_home():
 """
     write_page(SITE / "index.html", page("Trang chủ", body, "/"))
 
+# ---------- Site map ----------
+
+_TITLE_RE = re.compile(r"<title>(.*?)</title>", re.S | re.I)
+_SUFFIX_RE = re.compile(r"\s*[—–-]\s*Văn Miếu.*$")
+
+SITEMAP_LABELS = {
+    "di-tich": "Di tích",
+    "tham-quan": "Tham quan",
+    "hoat-dong": "Hoạt động",
+    "giao-duc-di-san": "Giáo dục di sản",
+    "ve-chung-toi": "Về chúng tôi",
+    "kien-truc": "Kiến trúc",
+    "lich-su": "Lịch sử",
+    "bia-tien-si": "82 Bia Tiến sĩ",
+    "tuong-tho": "Hệ thống tượng thờ",
+    "danh-nhan": "Danh nhân & dòng họ",
+    "mam-non": "Mầm non",
+    "lop-1-3": "Lớp 1–3",
+    "lop-4-6": "Lớp 4–6",
+    "lop-7-12": "Lớp 7–12",
+}
+
+SITEMAP_TOP_ORDER = {
+    "di-tich": 0,
+    "tham-quan": 1,
+    "hoat-dong": 2,
+    "giao-duc-di-san": 3,
+    "ve-chung-toi": 4,
+}
+
+
+def _extract_title(html_path: Path, fallback: str) -> str:
+    try:
+        txt = html_path.read_text(encoding="utf-8", errors="ignore")
+    except Exception:
+        return fallback
+    m = _TITLE_RE.search(txt)
+    if not m:
+        return fallback
+    t = unescape(m.group(1).strip())
+    t = _SUFFIX_RE.sub("", t).strip()
+    return t or fallback
+
+
+def _collect_sitemap_pages():
+    pages = []
+    for html_file in SITE.rglob("index.html"):
+        rel = html_file.parent.relative_to(SITE)
+        parts = [] if str(rel) == "." else list(rel.parts)
+        if not parts:
+            continue
+        if parts[0] == "so-do-trang":
+            continue
+        url_path = "/" + "/".join(parts) + "/"
+        fallback = SITEMAP_LABELS.get(
+            parts[-1], strip_lead_num(parts[-1].replace("-", " ")).title()
+        )
+        title = _extract_title(html_file, fallback)
+        pages.append((parts, url_path, title))
+    return pages
+
+
+def _build_sitemap_tree(pages):
+    root = {"title": "", "url": None, "children": {}}
+    for parts, url_path, title in pages:
+        node = root
+        for i, part in enumerate(parts):
+            child = node["children"].get(part)
+            if child is None:
+                child = {
+                    "title": SITEMAP_LABELS.get(part, part.replace("-", " ").title()),
+                    "url": None,
+                    "children": {},
+                }
+                node["children"][part] = child
+            if i == len(parts) - 1:
+                child["title"] = title
+                child["url"] = url_path
+            node = child
+    return root
+
+
+def _count_sm_pages(node):
+    total = 1 if node.get("url") else 0
+    for c in node["children"].values():
+        total += _count_sm_pages(c)
+    return total
+
+
+def _sort_sm_children(children_dict, is_root: bool):
+    items = list(children_dict.items())
+    if is_root:
+        items.sort(key=lambda kv: SITEMAP_TOP_ORDER.get(kv[0], 99))
+    else:
+        items.sort(key=lambda kv: (kv[1]["url"] or "", kv[0]))
+    return [v for _, v in items]
+
+
+def _render_sm_node(node) -> str:
+    has_children = bool(node["children"])
+    cls = "sm-node" + (" sm-has-children" if has_children else "")
+    page_count = sum(_count_sm_pages(c) for c in node["children"].values())
+    toggle = (
+        '<button class="sm-toggle" type="button" aria-label="Mở rộng">▸</button>'
+        if has_children
+        else '<span class="sm-dot" aria-hidden="true">·</span>'
+    )
+    title = escape(node["title"])
+    if node["url"]:
+        link = f'<a class="sm-link" href="{node["url"]}">{title}</a>'
+    else:
+        link = f'<span class="sm-link">{title}</span>'
+    count_html = f'<span class="sm-count">{page_count}</span>' if page_count else ""
+    children_html = ""
+    if has_children:
+        kids = _sort_sm_children(node["children"], is_root=False)
+        children_html = (
+            '<ul class="sm-children">'
+            + "".join(_render_sm_node(c) for c in kids)
+            + "</ul>"
+        )
+    return (
+        f'<li class="{cls}"><div class="sm-row">{toggle}{link}{count_html}</div>'
+        f"{children_html}</li>"
+    )
+
+
+SITEMAP_JS = r"""
+(function(){
+  var tree = document.querySelector('.sm-tree');
+  if (!tree) return;
+  var search = document.getElementById('sm-search');
+  var expandBtn = document.getElementById('sm-expand');
+  var collapseBtn = document.getElementById('sm-collapse');
+  var stats = document.getElementById('sm-stats');
+
+  function normalize(s){
+    return (s || '').toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd').replace(/Đ/g, 'd');
+  }
+
+  tree.querySelectorAll('.sm-link').forEach(function(el){
+    el.dataset.text = el.textContent;
+  });
+
+  function openNode(n, open){ n.classList.toggle('sm-open', open); }
+  function setAll(open){
+    tree.querySelectorAll('.sm-has-children').forEach(function(n){ openNode(n, open); });
+  }
+
+  tree.addEventListener('click', function(e){
+    var btn = e.target.closest('.sm-toggle');
+    if (!btn) return;
+    e.preventDefault();
+    var node = btn.closest('.sm-node');
+    openNode(node, !node.classList.contains('sm-open'));
+  });
+
+  expandBtn.addEventListener('click', function(){ setAll(true); });
+  collapseBtn.addEventListener('click', function(){
+    setAll(false);
+    tree.querySelectorAll(':scope > .sm-node.sm-has-children').forEach(function(n){ openNode(n, true); });
+  });
+
+  function clearHighlights(){
+    tree.querySelectorAll('.sm-link').forEach(function(el){
+      if (el.dataset.text) el.textContent = el.dataset.text;
+    });
+  }
+  function highlight(el, q){
+    var text = el.dataset.text || el.textContent;
+    var idx = normalize(text).indexOf(q);
+    if (idx < 0) { el.textContent = text; return; }
+    el.innerHTML = '';
+    el.appendChild(document.createTextNode(text.slice(0, idx)));
+    var mark = document.createElement('mark');
+    mark.textContent = text.slice(idx, idx + q.length);
+    el.appendChild(mark);
+    el.appendChild(document.createTextNode(text.slice(idx + q.length)));
+  }
+
+  function filter(){
+    var q = normalize(search.value.trim());
+    var nodes = tree.querySelectorAll('.sm-node');
+    if (!q) {
+      nodes.forEach(function(n){ n.classList.remove('sm-filtered-out'); });
+      clearHighlights();
+      if (stats) stats.textContent = '';
+      return;
+    }
+    var matched = 0;
+    nodes.forEach(function(n){
+      var link = n.querySelector(':scope > .sm-row > .sm-link');
+      var text = normalize(link.dataset.text || link.textContent);
+      n._match = text.indexOf(q) !== -1;
+      if (n._match) matched++;
+    });
+    function anyDescMatches(n){
+      var kids = n.querySelectorAll(':scope > .sm-children > .sm-node');
+      for (var i = 0; i < kids.length; i++){
+        if (kids[i]._match || anyDescMatches(kids[i])) return true;
+      }
+      return false;
+    }
+    clearHighlights();
+    nodes.forEach(function(n){
+      var visible = n._match || anyDescMatches(n);
+      n.classList.toggle('sm-filtered-out', !visible);
+      if (visible && n.classList.contains('sm-has-children')) openNode(n, true);
+      if (n._match) highlight(n.querySelector(':scope > .sm-row > .sm-link'), q);
+    });
+    if (stats) {
+      stats.textContent = matched
+        ? 'Tìm thấy ' + matched + ' kết quả cho \u201c' + search.value.trim() + '\u201d.'
+        : 'Không có kết quả nào khớp với \u201c' + search.value.trim() + '\u201d.';
+    }
+  }
+
+  search.addEventListener('input', filter);
+  search.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') { search.value = ''; filter(); search.blur(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === '/' && document.activeElement !== search
+        && !/input|textarea/i.test(document.activeElement.tagName)) {
+      e.preventDefault();
+      search.focus();
+    }
+  });
+
+  tree.querySelectorAll(':scope > .sm-node.sm-has-children').forEach(function(n){
+    openNode(n, true);
+  });
+})();
+"""
+
+
+def build_site_map():
+    pages = _collect_sitemap_pages()
+    root = _build_sitemap_tree(pages)
+    total = len(pages)
+    top_nodes = _sort_sm_children(root["children"], is_root=True)
+    tree_html = "".join(_render_sm_node(n) for n in top_nodes)
+
+    body = f"""
+<h2 class="page-title">Sơ đồ trang</h2>
+<p class="page-sub">Toàn bộ {total} trang của website được sắp xếp theo cấu trúc phân cấp. Nhấn mũi tên để mở rộng, gõ vào ô tìm kiếm để lọc.</p>
+<div class="sm-toolbar">
+  <input type="search" id="sm-search" class="sm-search" placeholder="Tìm trong sơ đồ… (phím tắt: / )" autocomplete="off" aria-label="Tìm trong sơ đồ trang">
+  <button class="sm-btn" id="sm-expand" type="button">Mở rộng tất cả</button>
+  <button class="sm-btn" id="sm-collapse" type="button">Thu gọn</button>
+</div>
+<p class="sm-stats" id="sm-stats"></p>
+<ul class="sm-tree">
+{tree_html}
+</ul>
+<script>{SITEMAP_JS}</script>
+"""
+    write_page(
+        SITE / "so-do-trang" / "index.html",
+        page(
+            "Sơ đồ trang",
+            body,
+            "/so-do-trang/",
+            breadcrumbs=[("/", "Trang chủ"), (None, "Sơ đồ trang")],
+        ),
+    )
+    print(f"  → {total} trang trong sơ đồ.")
+
+
 # ---------- Main ----------
 
 def main():
     print("== Build VMQTG site ==")
     # Reset
-    for sub in ("di-tich", "tham-quan", "hoat-dong", "giao-duc-di-san", "ve-chung-toi"):
+    for sub in (
+        "di-tich",
+        "tham-quan",
+        "hoat-dong",
+        "giao-duc-di-san",
+        "ve-chung-toi",
+        "so-do-trang",
+    ):
         d = SITE / sub
         if d.exists():
             shutil.rmtree(d)
@@ -1119,6 +1663,8 @@ def main():
     build_ve_chung_toi()
     print("Building Home…")
     build_home()
+    print("Building Sơ đồ trang…")
+    build_site_map()
     print("Done. Output in:", SITE)
 
 if __name__ == "__main__":
