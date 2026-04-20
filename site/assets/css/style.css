@@ -35,7 +35,10 @@ header.site-header {
 .topbar a { color: var(--cream); margin-left: 14px; }
 .brand-row {
   display: flex; align-items: center; gap: 18px; padding: 18px 0;
+  color: var(--cream); text-decoration: none;
 }
+a.brand-row:hover { text-decoration: none; }
+a.brand-row:hover .brand-text h1 { color: var(--gold); }
 .brand-mark {
   width: 64px; height: 64px; border: 2px solid var(--gold);
   border-radius: 50%; display:flex; align-items:center; justify-content:center;
