@@ -742,6 +742,151 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
 .docs-list__icon svg { width: 18px; height: 18px; }
 .docs-list__title { font-size: 14px; font-weight: 600; line-height: 1.3; flex: 1; }
 
+/* ========== NỘI QUY (creative) ========== */
+.rules-hero {
+  background: radial-gradient(ellipse at top right, var(--gold-pale) 0%, var(--cream) 45%, #fff 100%);
+  padding: 72px 0 56px;
+  text-align: center;
+  border-bottom: 1px solid var(--line-soft);
+}
+.rules-hero .eyebrow { justify-content: center; margin-bottom: 14px; }
+.rules-hero .eyebrow::before,
+.rules-hero .eyebrow::after { content: ""; width: 28px; height: 1px; background: var(--gold); }
+.rules-hero .eyebrow { display: inline-flex; gap: 12px; }
+.rules-hero h1 {
+  font-family: "Playfair Display", serif; font-weight: 500;
+  font-size: clamp(32px, 4.4vw, 52px); line-height: 1.12;
+  letter-spacing: -.015em; margin: 0 auto 18px; color: var(--ink); max-width: 18ch;
+}
+.rules-hero h1 em { font-style: italic; color: var(--brick); font-weight: 500; }
+.rules-hero__lede { max-width: 640px; margin: 0 auto; font-size: 17px; color: var(--ink-soft); line-height: 1.65; }
+.rules-hero__lede strong { color: var(--brick); font-weight: 600; }
+
+.rules-grid {
+  display: grid; gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  margin-top: 4px;
+}
+.rule-card {
+  position: relative; background: #fff;
+  border: 1px solid var(--line); border-radius: var(--radius-md);
+  padding: 28px 28px 26px;
+  overflow: hidden;
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+.rule-card::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--gold); transform: scaleY(0); transform-origin: top; transition: transform .3s;
+}
+.rule-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.rule-card:hover::before { transform: scaleY(1); }
+.rule-card__number {
+  font-family: "Playfair Display", serif; font-style: italic;
+  font-size: 72px; font-weight: 400; line-height: .9;
+  color: var(--gold-soft);
+  position: absolute; top: 14px; right: 22px;
+  user-select: none; pointer-events: none;
+}
+.rule-card__icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--gold-pale); color: var(--brick);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.rule-card__icon svg { width: 22px; height: 22px; }
+.rule-card h3 {
+  font-family: "Playfair Display", serif; font-size: 20px; font-weight: 500;
+  color: var(--ink); margin: 0 0 10px; letter-spacing: -.01em; line-height: 1.25;
+  max-width: 18ch;
+}
+.rule-card p {
+  font-size: 14px; color: var(--ink-soft); line-height: 1.65; margin: 0;
+}
+
+/* Closing scholar-note */
+.rules-closing {
+  margin: 56px auto 0; max-width: 640px; text-align: center;
+  padding: 32px 24px;
+}
+.rules-closing__mark {
+  display: inline-block; font-family: "Playfair Display", serif;
+  font-size: 32px; color: var(--gold); line-height: 1; margin-bottom: 12px;
+}
+.rules-closing p {
+  font-family: "Playfair Display", serif; font-style: italic;
+  font-size: 22px; color: var(--ink); line-height: 1.5; margin: 0;
+}
+
+/* Emergency / hotline banner */
+.emergency-card {
+  margin-top: 48px;
+  background: linear-gradient(135deg, var(--brick-dark) 0%, var(--brick) 100%);
+  color: #fff; border-radius: var(--radius-lg);
+  padding: 32px 36px; display: grid;
+  grid-template-columns: auto 1fr auto; gap: 28px; align-items: center;
+  position: relative; overflow: hidden;
+}
+.emergency-card::before {
+  content: ""; position: absolute; top: -40%; right: -10%; width: 50%; height: 180%;
+  background: radial-gradient(circle, rgba(201,161,74,.28) 0%, transparent 60%);
+  pointer-events: none;
+}
+.emergency-card__icon {
+  flex: 0 0 64px; width: 64px; height: 64px; border-radius: 50%;
+  background: rgba(201,161,74,.22); color: var(--gold-soft);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; z-index: 1;
+}
+.emergency-card__icon svg { width: 28px; height: 28px; }
+.emergency-card__body { position: relative; z-index: 1; }
+.emergency-card__eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--gold-soft); display: block; margin-bottom: 4px;
+}
+.emergency-card__body h3 {
+  font-family: "Playfair Display", serif; font-size: 22px; font-weight: 500;
+  margin: 0 0 6px; color: #fff;
+}
+.emergency-card__body p { margin: 0; font-size: 14px; color: rgba(255,255,255,.85); line-height: 1.5; }
+.emergency-card__numbers {
+  display: flex; flex-direction: column; gap: 8px; position: relative; z-index: 1;
+}
+.emergency-card__tel {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px;
+  background: rgba(255,255,255,.12); color: #fff;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 999px; font-weight: 600; font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  text-decoration: none; transition: all .2s;
+}
+.emergency-card__tel:hover { background: #fff; color: var(--brick-dark); border-color: #fff; }
+
+/* Language tabs */
+.lang-tabs { margin-top: 64px; }
+.lang-tabs__bar {
+  display: flex; gap: 4px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+}
+.lang-tab {
+  padding: 12px 22px; background: transparent; border: 0;
+  font: inherit; font-size: 14px; font-weight: 600; color: var(--ink-mute);
+  cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: color .2s, border-color .2s;
+  letter-spacing: .02em;
+}
+.lang-tab:hover { color: var(--ink); }
+.lang-tab.is-active { color: var(--brick); border-bottom-color: var(--brick); }
+.lang-panel { font-size: 15px; color: var(--ink-soft); line-height: 1.75; }
+.lang-panel h2 {
+  font-family: "Playfair Display", serif; font-size: 22px; font-weight: 500;
+  margin: 0 0 16px; color: var(--ink);
+}
+.lang-panel p { margin: 0 0 14px; }
+.lang-panel ol { padding-left: 20px; margin: 0 0 16px; }
+.lang-panel ol li { margin-bottom: 10px; line-height: 1.7; }
+
 /* ========== FOOTER ========== */
 .site-footer { background: var(--brick-dark); color: var(--cream-soft); padding: 72px 0 24px; border-top: 4px solid var(--gold); margin-top: 0; }
 .site-footer a { color: var(--cream-soft); }
@@ -840,6 +985,14 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
   .booking-form .field--full,
   .booking-form__submit { grid-column: span 1; }
   .a11y-banner { flex-direction: column; text-align: center; align-items: center; }
+  .rules-grid { grid-template-columns: 1fr; }
+  .rule-card { padding: 22px 20px 20px; }
+  .rule-card__number { font-size: 56px; top: 10px; right: 16px; }
+  .emergency-card { grid-template-columns: 1fr; text-align: center; padding: 28px 24px; gap: 18px; }
+  .emergency-card__icon { margin: 0 auto; }
+  .emergency-card__numbers { flex-direction: row; justify-content: center; flex-wrap: wrap; }
+  .lang-tabs__bar { overflow-x: auto; }
+  .lang-tab { padding: 10px 14px; font-size: 13px; white-space: nowrap; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
@@ -1606,6 +1759,150 @@ ICON_CHECK     = _svg('<polyline points="20 6 9 17 4 12"/>')
 ICON_DOC       = _svg('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>')
 ICON_SUNRISE   = _svg('<path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="8 6 12 2 16 6"/>')
 ICON_MOON      = _svg('<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>')
+ICON_LEAF      = _svg('<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/>')
+ICON_FLAME     = _svg('<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>')
+ICON_SHIRT     = _svg('<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>')
+ICON_BAN       = _svg('<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>')
+ICON_SCALE     = _svg('<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>')
+ICON_SHIELD    = _svg('<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>')
+
+
+NOI_QUY_TITLES = [
+    ("Mua vé & xuất trình",         "ticket"),
+    ("Gìn giữ di tích & cảnh quan", "leaf"),
+    ("An ninh & phòng cháy",        "flame"),
+    ("Trang phục lịch sự",           "shirt"),
+    ("Không mê tín · cờ bạc",        "ban"),
+    ("Chịu trách nhiệm pháp lý",     "scale"),
+    ("Tuân thủ chỉ dẫn bảo vệ",      "shield"),
+    ("Báo tin khi phát hiện sự cố",  "phone"),
+]
+NOI_QUY_ICONS = {
+    "ticket": ICON_TICKET, "leaf": ICON_LEAF, "flame": ICON_FLAME,
+    "shirt": ICON_SHIRT,   "ban": ICON_BAN,   "scale": ICON_SCALE,
+    "shield": ICON_SHIELD, "phone": ICON_PHONE,
+}
+
+
+def _parse_noi_quy_rules(raw_vi: str):
+    """Extract (short_title, icon, full_text) triples from VI rules text."""
+    import re as _re
+    # Split on lines that start with "N." (up to 2 digits)
+    matches = _re.findall(
+        r'^\s*(\d{1,2})\.\s*(.+?)(?=(?:\n\s*\d{1,2}\.\s)|\Z)',
+        raw_vi, flags=_re.M | _re.S,
+    )
+    rules = []
+    for idx, (_, text) in enumerate(matches):
+        text = _re.sub(r'\s+', ' ', text).strip()
+        title, icon_key = NOI_QUY_TITLES[idx] if idx < len(NOI_QUY_TITLES) else (f"Điều {idx+1}", "shield")
+        rules.append((title, NOI_QUY_ICONS.get(icon_key, ICON_SHIELD), text))
+    return rules
+
+
+def render_noi_quy(art):
+    """Creative layout for Nội quy tham quan: 8 rule cards + hotline + VI/EN/FR tabs."""
+    rules = _parse_noi_quy_rules(art.raw_text_vi)
+
+    rule_cards_html = "".join(f"""
+<div class="rule-card">
+  <span class="rule-card__number">{i:02d}</span>
+  <div class="rule-card__icon">{icon}</div>
+  <h3>{escape(title)}</h3>
+  <p>{escape(text)}</p>
+</div>""" for i, (title, icon, text) in enumerate(rules, 1))
+
+    # Language tabs (EN/FR panels)
+    tab_buttons = '<button class="lang-tab is-active" type="button" data-lang="vi">Tiếng Việt</button>'
+    panels_html = ""
+    if art.content_en:
+        tab_buttons += '<button class="lang-tab" type="button" data-lang="en">English</button>'
+        panels_html += (
+            f'<div class="lang-panel" data-lang="en" hidden>'
+            f'<h2>{escape(art.title_en or "Regulations for the Special National Relic Văn Miếu – Quốc Tử Giám")}</h2>'
+            f'{art.content_en}</div>'
+        )
+    if art.content_fr:
+        tab_buttons += '<button class="lang-tab" type="button" data-lang="fr">Français</button>'
+        panels_html += (
+            f'<div class="lang-panel" data-lang="fr" hidden>'
+            f'<h2>Règlement intérieur du Văn Miếu – Quốc Tử Giám</h2>'
+            f'{art.content_fr}</div>'
+        )
+
+    vi_panel = (
+        '<div class="lang-panel" data-lang="vi">'
+        '<p style="color:var(--ink-mute);font-size:14px;font-style:italic;">'
+        'Nội dung gốc từ Trung tâm Hoạt động Văn hoá Khoa học Văn Miếu – Quốc Tử Giám · '
+        'bản tiếng Việt đã được trình bày thành 8 thẻ ở trên.</p>'
+        '</div>'
+    )
+
+    lang_tabs = (
+        '<div class="lang-tabs">'
+        '<div class="lang-tabs__bar">' + tab_buttons + '</div>'
+        '<div class="lang-tabs__panels">' + vi_panel + panels_html + '</div>'
+        '</div>'
+        if (art.content_en or art.content_fr) else ""
+    )
+
+    tab_js = """
+<script>
+(function(){
+  var root = document.querySelector('.lang-tabs');
+  if (!root) return;
+  var tabs = root.querySelectorAll('.lang-tab');
+  var panels = root.querySelectorAll('.lang-panel');
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){
+      var lang = t.dataset.lang;
+      tabs.forEach(function(x){ x.classList.toggle('is-active', x === t); });
+      panels.forEach(function(p){ p.hidden = p.dataset.lang !== lang; });
+    });
+  });
+})();
+</script>
+"""
+
+    return f"""
+<section class="rules-hero">
+  <div class="container">
+    <span class="eyebrow">Nội quy tham quan</span>
+    <h1 class="display">Chào mừng Quý khách đến với <em>Văn Miếu – Quốc Tử Giám</em></h1>
+    <p class="rules-hero__lede">Để gìn giữ Di tích Quốc gia đặc biệt và đảm bảo chuyến tham quan trọn vẹn cho mọi người, kính mời Quý khách cùng thực hiện <strong>8 điều sau</strong>.</p>
+  </div>
+</section>
+
+<div class="page-body">
+  <div class="container">
+
+    <div class="rules-grid">
+      {rule_cards_html}
+    </div>
+
+    <div class="rules-closing">
+      <span class="rules-closing__mark">❦</span>
+      <p>Kính chúc Quý khách một chuyến tham quan bổ ích và lý thú.</p>
+    </div>
+
+    <div class="emergency-card">
+      <div class="emergency-card__icon">{ICON_PHONE}</div>
+      <div class="emergency-card__body">
+        <span class="emergency-card__eyebrow">Báo tin khi cần</span>
+        <h3>Phát hiện sự việc bất thường?</h3>
+        <p>Thông báo ngay cho bộ phận bảo vệ di tích qua các số sau.</p>
+      </div>
+      <div class="emergency-card__numbers">
+        <a href="tel:02437471322" class="emergency-card__tel">024.3747.1322</a>
+        <a href="tel:02432115793" class="emergency-card__tel">024.3211.5793</a>
+      </div>
+    </div>
+
+    {lang_tabs}
+  </div>
+</div>
+{tab_js if lang_tabs else ""}
+"""
 
 
 def build_tham_quan():
@@ -1859,12 +2156,17 @@ def build_tham_quan():
              [("/", "Trang chủ"), (None, "Tham quan")])
     )
 
-    # Still generate individual article pages for each docx
+    # Still generate individual article pages for each docx.
+    # Nội quy gets a creative layout (8-card grid + hotline + lang tabs).
     for art in articles:
         bc = [("/", "Trang chủ"), ("/tham-quan/", "Tham quan"), (None, art.title_vi)]
+        if "noi-quy" in art.slug or "nội quy" in art.title_vi.lower():
+            page_body = render_noi_quy(art)
+        else:
+            page_body = render_article(art, bc)
         vm.write_page(
             vm.SITE / "tham-quan" / art.slug / "index.html",
-            page(art.title_vi, render_article(art, bc), "/tham-quan/", bc)
+            page(art.title_vi, page_body, "/tham-quan/", bc)
         )
 
 
