@@ -762,45 +762,46 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
 .rules-hero__lede { max-width: 640px; margin: 0 auto; font-size: 17px; color: var(--ink-soft); line-height: 1.65; }
 .rules-hero__lede strong { color: var(--brick); font-weight: 600; }
 
-.rules-grid {
-  display: grid; gap: 18px;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  margin-top: 4px;
+/* Editorial numbered list (not cards — these are readable content, not links) */
+.rules-list {
+  max-width: 860px; margin: 8px auto 0;
+  display: flex; flex-direction: column;
 }
-.rule-card {
-  position: relative; background: #fff;
-  border: 1px solid var(--line); border-radius: var(--radius-md);
-  padding: 28px 28px 26px;
-  overflow: hidden;
-  transition: transform .2s, border-color .2s, box-shadow .2s;
+.rule-item {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 32px;
+  align-items: flex-start;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--line-soft);
 }
-.rule-card::before {
-  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-  background: var(--gold); transform: scaleY(0); transform-origin: top; transition: transform .3s;
+.rule-item:last-child { border-bottom: 0; }
+.rule-item__number {
+  font-family: "Playfair Display", serif;
+  font-size: 64px; font-weight: 500; font-style: italic;
+  color: var(--gold); line-height: 1;
+  text-align: right;
+  font-variant-numeric: lining-nums;
+  user-select: none;
+  padding-top: 4px;
 }
-.rule-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: var(--shadow-md); }
-.rule-card:hover::before { transform: scaleY(1); }
-.rule-card__number {
-  font-family: "Playfair Display", serif; font-style: italic;
-  font-size: 72px; font-weight: 400; line-height: .9;
-  color: var(--gold-soft);
-  position: absolute; top: 14px; right: 22px;
-  user-select: none; pointer-events: none;
+.rule-item__header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 12px;
 }
-.rule-card__icon {
-  width: 48px; height: 48px; border-radius: 50%;
-  background: var(--gold-pale); color: var(--brick);
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 16px;
+.rule-item__icon {
+  flex: 0 0 auto; color: var(--brick);
+  display: inline-flex;
 }
-.rule-card__icon svg { width: 22px; height: 22px; }
-.rule-card h3 {
-  font-family: "Playfair Display", serif; font-size: 20px; font-weight: 500;
-  color: var(--ink); margin: 0 0 10px; letter-spacing: -.01em; line-height: 1.25;
-  max-width: 18ch;
+.rule-item__icon svg { width: 22px; height: 22px; }
+.rule-item h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 22px; font-weight: 500; color: var(--ink);
+  margin: 0; letter-spacing: -.01em; line-height: 1.25;
 }
-.rule-card p {
-  font-size: 14px; color: var(--ink-soft); line-height: 1.65; margin: 0;
+.rule-item p {
+  font-size: 16px; color: var(--ink-soft); line-height: 1.75; margin: 0;
+  max-width: 65ch;
 }
 
 /* Closing scholar-note */
@@ -985,9 +986,8 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
   .booking-form .field--full,
   .booking-form__submit { grid-column: span 1; }
   .a11y-banner { flex-direction: column; text-align: center; align-items: center; }
-  .rules-grid { grid-template-columns: 1fr; }
-  .rule-card { padding: 22px 20px 20px; }
-  .rule-card__number { font-size: 56px; top: 10px; right: 16px; }
+  .rule-item { grid-template-columns: 1fr; gap: 12px; padding: 24px 0; }
+  .rule-item__number { text-align: left; font-size: 48px; padding-top: 0; }
   .emergency-card { grid-template-columns: 1fr; text-align: center; padding: 28px 24px; gap: 18px; }
   .emergency-card__icon { margin: 0 auto; }
   .emergency-card__numbers { flex-direction: row; justify-content: center; flex-wrap: wrap; }
@@ -1805,11 +1805,15 @@ def render_noi_quy(art):
     rules = _parse_noi_quy_rules(art.raw_text_vi)
 
     rule_cards_html = "".join(f"""
-<div class="rule-card">
-  <span class="rule-card__number">{i:02d}</span>
-  <div class="rule-card__icon">{icon}</div>
-  <h3>{escape(title)}</h3>
-  <p>{escape(text)}</p>
+<div class="rule-item">
+  <div class="rule-item__number">{i:02d}</div>
+  <div class="rule-item__content">
+    <div class="rule-item__header">
+      <span class="rule-item__icon">{icon}</span>
+      <h3>{escape(title)}</h3>
+    </div>
+    <p>{escape(text)}</p>
+  </div>
 </div>""" for i, (title, icon, text) in enumerate(rules, 1))
 
     # Language tabs (EN/FR panels)
@@ -1876,7 +1880,7 @@ def render_noi_quy(art):
 <div class="page-body">
   <div class="container">
 
-    <div class="rules-grid">
+    <div class="rules-list">
       {rule_cards_html}
     </div>
 
