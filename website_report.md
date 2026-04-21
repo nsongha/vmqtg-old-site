@@ -8,9 +8,7 @@
 
 Kính gửi Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám,
 
-Sau khi tiếp nhận bộ tư liệu quý báu mà Trung tâm đã dày công biên soạn và gửi qua email, chúng tôi đã hệ thống hóa lại toàn bộ nội dung. Báo cáo này ghi nhận những gì hiện có trong tay chúng tôi, nhằm giúp hai bên cùng nhìn rõ bức tranh tổng thể trước khi bắt tay vào xây dựng trang web mới.
-
-Phần đề xuất về cấu trúc và tính năng cho trang web mới được trình bày trong tài liệu riêng: **website_proposal.md**.
+Sau khi tiếp nhận bộ tư liệu Trung tâm đã gửi qua email, chúng tôi đã hệ thống hóa lại toàn bộ nội dung. Báo cáo này ghi nhận hiện trạng tư liệu để hai bên thống nhất trước khi tiến hành các bước tiếp theo, đồng thời nêu những nội dung đề nghị Trung tâm hỗ trợ bổ sung.
 
 ---
 
@@ -23,7 +21,7 @@ Phần đề xuất về cấu trúc và tính năng cho trang web mới đượ
 | Thư mục được tổ chức sẵn | 220 thư mục |
 | Tổng dung lượng | Khoảng 1,2 GB |
 
-Bộ tư liệu được sắp xếp theo năm khu vực chính, tương ứng với năm trang của website cũ. Dưới đây là phần liệt kê đầy đủ.
+Bộ tư liệu được sắp xếp theo năm khu vực chính, tương ứng với năm trang của website cũ.
 
 ---
 
@@ -31,11 +29,9 @@ Bộ tư liệu được sắp xếp theo năm khu vực chính, tương ứng v
 
 ### 2.1. Khu vực 1 — Di tích (65 bài, 144 ảnh)
 
-Đây là khu vực có khối lượng tư liệu lớn nhất và chất lượng chuyên môn cao nhất. Bao gồm năm nhóm nội dung:
+Khu vực có khối lượng tư liệu lớn nhất, gồm năm nhóm nội dung.
 
-#### Nhóm Kiến trúc (10 bài, có Tiếng Việt)
-
-Mười bài viết về mười khu vực trong quần thể kiến trúc:
+#### Nhóm Kiến trúc (10 bài, Tiếng Việt)
 
 1. Tổng thể quần thể Văn Miếu – Quốc Tử Giám
 2. Hồ Văn và vườn Giám
@@ -82,7 +78,7 @@ Kèm theo hai bản chú thích ảnh (Tiếng Việt và Tiếng Anh) cho các 
 
 #### Nhóm Hệ thống tượng thờ
 
-Tiếng Việt (10 bài) giới thiệu về các vị được thờ:
+Tiếng Việt (10 bài):
 
 1. Bài giới thiệu chung về các vị
 2. Khổng Tử
@@ -120,7 +116,7 @@ Bài tổng quan (Tiếng Việt, 1 bài):
 
 1. Quan Tế tửu, Tư nghiệp Quốc Tử Giám
 
-Về danh nhân Chu Văn An (Tiếng Việt, 6 bài):
+Về danh nhân Chu Văn An (Tiếng Việt, 10 bài):
 
 1. Tư nghiệp Quốc Tử Giám Chu Văn An (1292 – 1370)
 2. Tư nghiệp Quốc Tử Giám Chu Văn An với Văn Miếu – Quốc Tử Giám Thăng Long
@@ -133,7 +129,7 @@ Về danh nhân Chu Văn An (Tiếng Việt, 6 bài):
 9. Đóng góp của Chu Văn An đối với văn hóa Việt Nam
 10. Chu Văn An trong tâm thức người dân Thanh Trì
 
-(Phần Chu Văn An có 11 số thứ tự trong thư mục, một vài số chưa có bài viết kèm theo, chỉ có hình ảnh.)
+(Phần Chu Văn An có 11 số thứ tự trong thư mục. Một vài số chưa có bài viết kèm theo, chỉ có hình ảnh.)
 
 Về danh nhân Chu Văn An (Tiếng Anh, 5 bài):
 
@@ -169,11 +165,9 @@ Các danh nhân khác, mỗi vị một bài Tiếng Việt:
 
 ### 2.2. Khu vực 2 — Thăm quan (4 bài)
 
-Bốn bài viết về thông tin thăm quan:
-
 1. Giá vé thăm quan
-2. Nội quy tham quan (có đủ cả Tiếng Việt, Tiếng Anh và Tiếng Pháp trong cùng một tập tin)
-3. Dịch vụ tham quan (thuyết minh, thuyết minh tự động nhiều ngôn ngữ)
+2. Nội quy tham quan (có cả Tiếng Việt, Tiếng Anh và Tiếng Pháp trong cùng một tập tin)
+3. Dịch vụ tham quan
 4. Các tiện ích (bãi đỗ xe, café, hàng ăn, đồ lưu niệm)
 
 ### 2.3. Khu vực 3 — Các hoạt động (2 bài, 13 ảnh)
@@ -181,58 +175,49 @@ Bốn bài viết về thông tin thăm quan:
 1. Trưng bày, triển lãm thường xuyên
 2. Chú thích ảnh cho bộ sưu tập trưng bày
 
-Kèm theo 13 ảnh minh họa.
-
 ### 2.4. Khu vực 4 — Giáo dục di sản (192 bài, 51 ảnh)
 
-Đây là khu vực có số lượng bài viết lớn nhất, chia theo bốn cấp học. Mỗi chương trình thường bao gồm các phần:
-
-- Nội dung chương trình
-- Dặn dò trẻ em
-- Nội quy di tích
-- Đặt dịch vụ
-- Hoạt động trước thăm quan (tài liệu dành cho cha mẹ, và tài liệu dành cho giáo viên và học sinh)
-- Hoạt động sau thăm quan (tài liệu dành cho cha mẹ, và tài liệu dành cho giáo viên và học sinh)
+Khu vực có số lượng bài viết lớn nhất, chia theo bốn cấp học. Mỗi chương trình thường gồm các phần: nội dung chương trình, dặn dò trẻ em, nội quy di tích, đặt dịch vụ, hoạt động trước thăm quan (tài liệu cho cha mẹ, tài liệu cho giáo viên và học sinh), hoạt động sau thăm quan (tài liệu cho cha mẹ, tài liệu cho giáo viên và học sinh).
 
 #### Cấp Mầm non (3 chương trình)
 
-1. Mãnh hổ hạ sơn (mầm non)
-2. Ô kìa con nghê (mầm non)
-3. Đi tìm linh vật trên kiến trúc cổ (mầm non)
+1. Mãnh hổ hạ sơn
+2. Ô kìa con nghê
+3. Đi tìm linh vật trên kiến trúc cổ
 
 #### Cấp Lớp 1 – Lớp 3 (6 chương trình)
 
-1. Lớp học xưa lớp 1 – 3
-2. Khám phá Bia Tiến sĩ lớp 1 – 3
-3. Mãnh hổ hạ sơn lớp 1 – 3
-4. Ô kìa con nghê lớp 1 – 3
-5. Đi tìm linh vật trên kiến trúc cổ lớp 1 – 3
-6. Khám phá công trình kiến trúc nghệ thuật Khuê Văn Các lớp 1 – 3
+1. Lớp học xưa
+2. Khám phá Bia Tiến sĩ
+3. Mãnh hổ hạ sơn
+4. Ô kìa con nghê
+5. Đi tìm linh vật trên kiến trúc cổ
+6. Khám phá công trình kiến trúc nghệ thuật Khuê Văn Các
 
 #### Cấp Lớp 4 – Lớp 6 (5 chương trình)
 
-1. Lớp học xưa lớp 4 – 6
-2. Khám phá Bia Tiến sĩ lớp 4 – 6
-3. Ô kìa con nghê lớp 4 – 6
-4. Đi tìm linh vật trên kiến trúc cổ Văn Miếu lớp 4 – 6
-5. Khám phá công trình kiến trúc nghệ thuật Khuê Văn Các lớp 4 – 6
+1. Lớp học xưa
+2. Khám phá Bia Tiến sĩ
+3. Ô kìa con nghê
+4. Đi tìm linh vật trên kiến trúc cổ Văn Miếu
+5. Khám phá công trình kiến trúc nghệ thuật Khuê Văn Các
 
 #### Cấp Lớp 7 – Lớp 12 (10 chương trình)
 
-1. Vinh quy bái tổ lớp 7 – 12
-2. Văn Miếu – Quốc Tử Giám xưa và nay lớp 7 – 12
-3. Tìm hiểu kiến trúc cổ Văn Miếu lớp 7 – 12
-4. Tìm hiểu Quốc Tử Giám ở Thăng Long lớp 7 – 12
-5. Thi Hương, thi Hội, thi Đình lớp 7 – 12
-6. Khám phá Bia Tiến sĩ lớp 7 – 12
-7. Khám phá sách học và ván khắc in sách của trường Quốc Tử Giám lớp 7 – 12
-8. Ô kìa con nghê lớp 7 – 12
-9. Đi tìm linh vật trên kiến trúc cổ Văn Miếu lớp 7 – 12
-10. Môi trường lớp 7 – 12
+1. Vinh quy bái tổ
+2. Văn Miếu – Quốc Tử Giám xưa và nay
+3. Tìm hiểu kiến trúc cổ Văn Miếu
+4. Tìm hiểu Quốc Tử Giám ở Thăng Long
+5. Thi Hương, thi Hội, thi Đình
+6. Khám phá Bia Tiến sĩ
+7. Khám phá sách học và ván khắc in sách của trường Quốc Tử Giám
+8. Ô kìa con nghê
+9. Đi tìm linh vật trên kiến trúc cổ Văn Miếu
+10. Môi trường
 
 ### 2.5. Khu vực 5 — Về chúng tôi (1 bài)
 
-1. Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám (giới thiệu quá trình hình thành và phát triển của Trung tâm)
+1. Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám
 
 ---
 
@@ -242,131 +227,116 @@ Kèm theo 13 ảnh minh họa.
 |---|---:|---|
 | Tiếng Việt | 249 bài | Có mặt trong cả năm khu vực |
 | Tiếng Anh | 15 bài | Tập trung ở khu vực Di tích (Lịch sử, 82 bia Tiến sĩ, Hệ thống tượng thờ, danh nhân Chu Văn An) |
-| Tiếng Pháp | 1 phần nội dung | Nằm trong bài Nội quy tham quan, phần sau bản Tiếng Việt và Tiếng Anh |
-
-Trung tâm đã đầu tư nghiêm túc cho phần Tiếng Việt. Đây chính là nền tảng nội dung vững vàng để phát triển trang web mới.
+| Tiếng Pháp | 1 phần | Nằm trong bài Nội quy tham quan, phần sau bản Tiếng Việt và Tiếng Anh |
 
 ---
 
-## 4. Những điểm mạnh nổi bật của bộ tư liệu
+## 4. Các nội dung đề nghị Trung tâm bổ sung
 
-Trước khi nêu các điểm có thể hoàn thiện thêm, chúng tôi xin ghi nhận một số điểm mạnh đáng quý:
+### 4.1. Hình ảnh
 
-**Một là**, khối lượng và chất lượng chuyên môn của các bài viết rất đáng nể. 264 bài Tiếng Việt được biên soạn bởi đội ngũ chuyên môn của Trung tâm, nhiều bài mang giá trị học thuật cao, khó tìm thấy ở những nguồn khác trên mạng.
+Bộ ảnh hiện có 208 tệp, chất lượng chưa đồng đều, phần lớn chưa đạt chuẩn dùng cho website giới thiệu di tích quốc gia đặc biệt. Chúng tôi kính đề nghị Trung tâm cung cấp thêm:
 
-**Hai là**, bộ tư liệu giáo dục di sản cho bốn cấp học là một kho tàng ít di tích nào có được. 192 tài liệu được thiết kế bài bản với cấu trúc trước – sau thăm quan, có phần riêng cho phụ huynh và phần cho giáo viên. Đây là tài sản quý cho hợp tác với ngành giáo dục.
+- Ảnh các công trình kiến trúc ở nhiều góc độ khác nhau, đủ để lựa chọn khi thiết kế giao diện: ảnh tổng thể, ảnh chi tiết, ảnh cận cảnh chạm khắc, ảnh theo các thời điểm khác nhau trong ngày và trong năm
+- Ảnh có độ phân giải cao, đủ để in ấn và phóng to trên màn hình lớn
+- Ảnh các sự kiện, lễ tế, hoạt động giáo dục, triển lãm đã diễn ra
+- Ảnh chân dung các cán bộ chuyên môn (nếu có bài giới thiệu)
+- Ảnh các hiện vật, tư liệu quý thuộc bộ sưu tập của Trung tâm
 
-**Ba là**, các bài viết về danh nhân được nghiên cứu kỹ lưỡng. Riêng về Chu Văn An đã có tới mười bài ở nhiều góc độ khác nhau (cuộc đời, sự nghiệp, đóng góp giáo dục, tín ngưỡng dân gian, tâm thức người dân Thanh Trì) — đủ để xây dựng một chuyên mục riêng trên trang web mới.
+Nếu Trung tâm hiện chưa có kho ảnh đạt chuẩn, có thể xem xét phương án tổ chức một đợt chụp ảnh chuyên nghiệp dành riêng cho website.
 
-**Bốn là**, nhóm Kiến trúc đã có bài đầy đủ cho cả mười công trình trong quần thể. Đây là xương sống cho bất cứ tour tham quan nào, thực tế hay ảo.
+### 4.2. Video
 
-**Năm là**, phần 82 Bia Tiến sĩ có bài tổng quan, bài về giá trị, và bài về câu chuyện được UNESCO công nhận là Di sản Tư liệu thế giới. Đây là một trong những điểm nhấn thu hút du khách quốc tế.
+Chúng tôi chưa nhận được tệp video nào trong bộ tư liệu. Đề nghị Trung tâm chia sẻ các video hiện có, ví dụ:
 
----
+- Video giới thiệu khái quát về di tích
+- Video ghi lại các lễ tế, lễ vinh danh, sự kiện đặc biệt
+- Video ghi lại chương trình giáo dục di sản
+- Video đoàn làm phim, đoàn báo chí đã thực hiện tại Văn Miếu
 
-## 5. Một số nội dung có thể bổ sung và hoàn thiện thêm
+Nếu không có sẵn video đạt yêu cầu, website vẫn có thể triển khai mà không bắt buộc có video, tuy nhiên phần này sẽ giúp tăng sức hấp dẫn đáng kể cho trang web mới.
 
-Phần này liệt kê những hạng mục mà trang web mới sẽ cần đến, và xin đề xuất với Trung tâm hướng bổ sung để trang web phục vụ du khách trọn vẹn hơn.
+### 4.3. Bài viết có trên website cũ nhưng chưa có trong bộ tư liệu
 
-### 5.1. Thông tin dành cho khách thăm quan
+Trong quá trình rà soát, chúng tôi thấy một số bài viết hiện đang hiển thị trên website cũ của Văn Miếu nhưng chưa xuất hiện trong bộ tệp Trung tâm đã gửi. Đề nghị Trung tâm rà soát và gửi bổ sung các bài còn thiếu, để trang web mới đầy đủ nội dung ngang với phiên bản hiện hành.
 
-Bộ tư liệu hiện tập trung chủ yếu vào nội dung lịch sử và văn hóa. Để trang web phục vụ tốt khách thăm quan, đặc biệt là khách du lịch quốc tế lần đầu đến, trang web sẽ cần thêm những thông tin thực tế sau:
+Chúng tôi sẵn sàng gửi kèm danh sách đối chiếu chi tiết khi Trung tâm cần.
 
-- Giờ mở cửa cập nhật theo mùa và ngày lễ
-- Bản đồ chỉ đường, cách di chuyển bằng các phương tiện khác nhau
-- Số điện thoại và email liên hệ được cập nhật mới
+### 4.4. Thông tin thực tế phục vụ khách thăm quan
+
+Để trang web phục vụ được khách thăm quan, đề nghị Trung tâm cung cấp hoặc xác nhận các thông tin sau, cập nhật theo năm 2026:
+
+- Giờ mở cửa theo mùa, theo ngày trong tuần, theo ngày lễ
+- Giá vé hiện hành cho các đối tượng: người lớn, học sinh – sinh viên, người trên 60 tuổi, trẻ dưới 15 tuổi, đoàn thể, khách quốc tế
+- Số điện thoại liên hệ và địa chỉ email đang sử dụng
 - Bản đồ bên trong khu di tích
-- Thời gian thăm quan đề xuất cho các loại khách khác nhau
-- Các gợi ý về lộ trình thăm quan theo chủ đề
+- Lộ trình thăm quan đề xuất theo thời gian có sẵn của khách
 
-Chúng tôi dự kiến phần này sẽ do Trung tâm trực tiếp cung cấp thông tin mới nhất.
+### 4.5. Lịch hoạt động và sự kiện
 
-### 5.2. Lịch hoạt động và sự kiện
+Đề nghị Trung tâm cung cấp:
 
-Bộ tư liệu hiện có bài về trưng bày thường xuyên. Trang web mới nên có thêm chuyên mục cập nhật thường xuyên về:
+- Lịch các lễ lớn trong năm (lễ tế Khổng Tử, lễ vinh danh thủ khoa, lễ xin chữ đầu năm, các lễ theo mùa)
+- Thông tin về các triển lãm đặc biệt đang diễn ra và đã xếp lịch
+- Thông tin về các hoạt động giáo dục, hội thảo, tọa đàm trong năm
 
-- Các lễ lớn trong năm (lễ tế Khổng Tử, lễ vinh danh thủ khoa, lễ xin chữ đầu năm)
-- Các triển lãm đặc biệt theo đợt
-- Các hoạt động giáo dục, hội thảo, tọa đàm
-- Các chương trình hợp tác với trường học, đơn vị văn hóa khác
+Trang web mới sẽ có mục cập nhật thường xuyên các nội dung này. Nếu Trung tâm chỉ định một đầu mối phụ trách cập nhật, chúng tôi sẽ đào tạo sử dụng hệ thống quản trị nội dung.
 
-Trung tâm có thể giúp cung cấp lịch hoạt động trong năm và các năm tới, cùng với thông tin về các sự kiện tiêu biểu đã tổ chức.
+### 4.6. Bản dịch Tiếng Anh còn thiếu
 
-### 5.3. Kho dữ liệu về 82 bia Tiến sĩ
+Hiện bản Tiếng Anh mới có mặt ở một số nhóm nội dung thuộc khu vực Di tích. Các nhóm sau đây chưa có bản Tiếng Anh:
 
-Bộ tư liệu hiện có bốn bài Tiếng Việt và hai bài Tiếng Anh tổng quan về hệ thống 82 bia. Đây là nội dung giới thiệu rất tốt.
-
-Để xứng tầm với giá trị Di sản Tư liệu thế giới, chúng tôi xin đề xuất xây dựng thêm một mục dữ liệu tra cứu về:
-
-- Từng bia trong 82 bia (năm khoa thi, triều đại, số người đỗ)
-- Danh sách 1.304 vị Tiến sĩ được khắc tên (họ tên, quê quán, học vị)
-- Hình ảnh từng tấm bia ở độ phân giải cao
-
-Đây có thể là một dự án dài hơi, cần sự phối hợp của các chuyên gia Hán Nôm. Nếu Trung tâm đã có sẵn một phần dữ liệu này dưới dạng khác (sách in, tài liệu nghiên cứu, bản thảo), xin vui lòng chia sẻ để chúng tôi cân nhắc đưa lên trang web.
-
-### 5.4. Bản dịch Tiếng Anh và các ngôn ngữ khác
-
-Về bản dịch Tiếng Anh, hiện tại nhóm Lịch sử có ba bài, nhóm 82 bia có hai bài, nhóm Tượng thờ có năm bài, và nhóm danh nhân Chu Văn An có năm bài. Các nhóm sau đây chưa có bản Tiếng Anh:
-
-- Kiến trúc (mười công trình)
-- Lịch sử giai đoạn Lê sơ – Mạc và Lê Trung hưng (hai giai đoạn)
-- Hệ thống tượng thờ: bốn vị Tứ Phối (Nhan Tử, Tăng Tử, Tử Tư, Mạnh Tử)
-- Các Tiến sĩ (sáu bài)
-- Các Tế tửu – Tư nghiệp khác Chu Văn An (Ngô Sĩ Liên, Phùng Khắc Khoan, Nguyễn Trực, Nguyễn Công Thái, Nguyễn Trí Vị, Nguyễn Nghiễm, Nguyễn Bá Lân, Vũ Miên, Nguyễn Duy Thì — tổng cộng chín danh nhân)
+- Nhóm Kiến trúc (10 công trình)
+- Lịch sử giai đoạn Lê sơ – Mạc và Lê Trung hưng (2 giai đoạn)
+- Bốn vị Tứ Phối thuộc hệ thống tượng thờ (Nhan Tử, Tăng Tử, Tử Tư, Mạnh Tử)
+- Các Tiến sĩ (6 bài)
+- Các Tế tửu – Tư nghiệp khác ngoài Chu Văn An (9 danh nhân: Ngô Sĩ Liên, Phùng Khắc Khoan, Nguyễn Trực, Nguyễn Công Thái, Nguyễn Trí Vị, Nguyễn Nghiễm, Nguyễn Bá Lân, Vũ Miên, Nguyễn Duy Thì)
 - Dòng họ khoa bảng
-- Khu vực 2 Thăm quan (giá vé, dịch vụ, tiện ích — hiện mới có Nội quy)
+- Khu vực 2 Thăm quan (mới có Nội quy, còn thiếu giá vé, dịch vụ, tiện ích)
 - Khu vực 3 Các hoạt động
-- Khu vực 4 Giáo dục di sản (toàn bộ)
+- Khu vực 4 Giáo dục di sản
 - Khu vực 5 Về chúng tôi
 
-Về các ngôn ngữ khác, Trung tâm đã có thiết bị thuyết minh tự động hỗ trợ tám ngôn ngữ (Tiếng Việt, Tiếng Anh, Tiếng Pháp, Tiếng Tây Ban Nha, Tiếng Hàn, Tiếng Nhật, Tiếng Trung, Tiếng Thái). Nếu có thể chia sẻ nội dung bản ghi âm hoặc bản viết của hệ thống thuyết minh tự động, chúng tôi có thể tận dụng để tạo phần nội dung đa ngôn ngữ trên trang web.
+Nếu Trung tâm đã có bản dịch cho một phần các nhóm trên, xin gửi bổ sung. Phần còn lại, chúng tôi có thể đề xuất phương án dịch thuật trong buổi làm việc tới.
 
-### 5.5. Một vài thư mục chỉ có hình ảnh, chưa có bài viết đi kèm
+### 4.7. Một số thư mục chỉ có hình ảnh, chưa có bài viết đi kèm
 
-Trong quá trình rà soát, chúng tôi ghi nhận một số thư mục đã có sẵn hình ảnh rất đẹp, nhưng chưa có bài viết tương ứng. Nếu Trung tâm có thể bổ sung bài, các hình ảnh này sẽ có dịp phát huy hết giá trị:
+Trong bộ tư liệu hiện có, chúng tôi ghi nhận một số thư mục đã có sẵn hình ảnh nhưng chưa có bài viết tương ứng:
 
-1. Thư mục bài thứ 1 về Tư nghiệp Quốc Tử Giám Chu Văn An — có một ảnh đẹp, chưa có bài
-2. Thư mục bài thứ 2 về Tư nghiệp Quốc Tử Giám Chu Văn An với Văn Miếu – Quốc Tử Giám Thăng Long — có một ảnh, chưa có bài
-3. Thư mục bài thứ 6 (Thân thế, sự nghiệp Chu Văn An qua chính sử và tư sử) — có một ảnh, chưa có bài
-4. Thư mục bài thứ 11 (Chu Văn An trong tâm thức người dân Thanh Trì) — có một ảnh, chưa có bài
-5. Thư mục bài Hoàng giáp Tế tửu Nguyễn Duy Thì — con người và sự nghiệp — có hai ảnh, chưa có bài
-6. Thư mục bài Hoàng giáp Nguyễn Duy Thì với Văn Miếu – Quốc Tử Giám Thăng Long — có một ảnh, chưa có bài
+1. Thư mục bài thứ 1 về Tư nghiệp Quốc Tử Giám Chu Văn An — có 1 ảnh
+2. Thư mục bài thứ 2 về Tư nghiệp Quốc Tử Giám Chu Văn An với Văn Miếu – Quốc Tử Giám Thăng Long — có 1 ảnh
+3. Thư mục bài thứ 6 (Thân thế, sự nghiệp Chu Văn An qua chính sử và tư sử) — có 1 ảnh
+4. Thư mục bài thứ 11 (Chu Văn An trong tâm thức người dân Thanh Trì) — có 1 ảnh
+5. Thư mục bài Hoàng giáp Tế tửu Nguyễn Duy Thì — con người và sự nghiệp — có 2 ảnh
+6. Thư mục bài Hoàng giáp Nguyễn Duy Thì với Văn Miếu – Quốc Tử Giám Thăng Long — có 1 ảnh
 
-Tổng cộng có khoảng bảy bài Tiếng Việt và hai bài Tiếng Anh dạng này. Nếu bận, xin Trung tâm cho biết thư mục nào là quan trọng nhất để chúng tôi ưu tiên.
-
-### 5.6. Một số bài cùng chủ đề có thể gộp lại để tránh lặp
-
-Một số nội dung xuất hiện ở nhiều nơi trong bộ tư liệu. Đây là chuyện hoàn toàn bình thường khi biên soạn theo nhiều đợt khác nhau. Khi đưa lên trang web mới, chúng tôi đề xuất gộp lại thành một trang chính rồi từ đó liên kết ra các trang phụ, giúp người đọc dễ theo dõi:
-
-- Danh nhân Chu Văn An hiện xuất hiện ở ba chỗ: Hệ thống tượng thờ, Danh nhân – Tế tửu, và một số trang giáo dục di sản. Chúng tôi đề xuất có một trang chủ đề về Chu Văn An, từ đó dẫn sang các khía cạnh chi tiết.
-- Danh nhân Nguyễn Trực có hai bài song song — "Trạng nguyên Nguyễn Trực" và "Tế tửu Quốc Tử Giám Nguyễn Trực". Hai bài bổ sung cho nhau, có thể trình bày thành một trang duy nhất chia hai phần.
-- Chương trình "Khám phá công trình kiến trúc nghệ thuật Khuê Văn Các" có cho cả lớp 1 – 3 và lớp 4 – 6 với nội dung gần tương tự. Có thể để chung một trang chương trình, bên trong phân cấp độ phù hợp.
-- Chương trình "Ô kìa con nghê" hiện có ở cả bốn cấp học (Mầm non, Lớp 1 – 3, Lớp 4 – 6, Lớp 7 – 12). Tương tự, "Đi tìm linh vật trên kiến trúc cổ" có ở bốn cấp. Có thể gộp thành một trang chương trình với bốn phiên bản theo lứa tuổi.
-
-Việc gộp này giúp trang web gọn gàng hơn, người đọc không bị rối giữa nhiều bài giống nhau.
-
-### 5.7. Một số tên thư mục chưa đồng nhất
-
-Tại thời điểm nhận bàn giao, chúng tôi ghi nhận một vài khác biệt nhỏ trong cách đặt tên thư mục — ví dụ "Tiếng Việt" ở chỗ này, "Tieng Viet" (không dấu) ở chỗ kia; hoặc có thư mục đặt tên "ảnh", có thư mục đặt "Ảnh", hoặc "ảnh Môi trường". Điều này hoàn toàn không ảnh hưởng đến giá trị nội dung. Chúng tôi đã tự xử lý kỹ thuật để chuẩn hóa mà không cần Trung tâm phải điều chỉnh lại.
+Tương ứng khoảng 7 bài viết còn thiếu bản Tiếng Việt và 2 bài bản Tiếng Anh. Đề nghị Trung tâm cho biết có thể bổ sung được các bài nào, hoặc đề xuất phương án khác (ví dụ gộp các bài liên quan thành một bài duy nhất).
 
 ---
 
-## 6. Kết luận phần rà soát
+## 5. Một số ghi nhận khác trong quá trình rà soát
 
-Bộ tư liệu Trung tâm bàn giao có giá trị rất lớn, vừa đủ đầy để xây dựng trang web mới, vừa là nguồn sử liệu quý cho công tác nghiên cứu lâu dài.
+### 5.1. Một số bài cùng chủ đề có thể cân nhắc gộp lại
 
-Những điểm có thể bổ sung được nêu trong phần 5 không phải là thiếu sót của Trung tâm, mà là những hạng mục mở rộng tự nhiên khi chuyển từ tư liệu lưu trữ sang một trang web phục vụ đông đảo công chúng — trong đó có cả du khách trong nước và quốc tế.
+Một số nội dung xuất hiện ở nhiều nơi trong bộ tư liệu. Khi đưa lên trang web mới, có thể gộp thành một trang chính và liên kết sang các trang phụ để tránh lặp và giúp người đọc dễ theo dõi:
 
-Ba hạng mục chúng tôi kính đề nghị Trung tâm cân nhắc hỗ trợ thêm (nếu điều kiện cho phép):
+- Danh nhân Chu Văn An xuất hiện ở cả nhóm Hệ thống tượng thờ, nhóm Danh nhân – Tế tửu, và một số trang giáo dục di sản. Có thể xây một trang chủ đề về Chu Văn An rồi dẫn sang các khía cạnh chi tiết.
+- Danh nhân Nguyễn Trực có hai bài song song — "Trạng nguyên Nguyễn Trực" và "Tế tửu Quốc Tử Giám Nguyễn Trực". Có thể trình bày thành một trang duy nhất chia hai phần.
+- Chương trình "Khám phá công trình kiến trúc nghệ thuật Khuê Văn Các" có cho cả lớp 1 – 3 và lớp 4 – 6 với nội dung gần tương tự. Có thể để chung một trang chương trình, phân cấp độ bên trong.
+- Chương trình "Ô kìa con nghê" có mặt ở cả bốn cấp học. Chương trình "Đi tìm linh vật trên kiến trúc cổ" cũng ở bốn cấp. Có thể gộp thành một trang chương trình với các phiên bản theo lứa tuổi.
 
-1. Thông tin cập nhật về giờ mở cửa, giá vé, lịch các sự kiện văn hóa
-2. Chia sẻ phần nội dung của hệ thống thuyết minh tự động tám ngôn ngữ (nếu có sẵn bản viết)
-3. Bất kỳ dữ liệu nào Trung tâm đã có về 82 bia Tiến sĩ và 1.304 vị Tiến sĩ (sách, bản thảo, bản số hóa — ở bất cứ dạng nào)
+Chúng tôi sẽ xin ý kiến Trung tâm cụ thể cho từng trường hợp trước khi thực hiện.
 
-Phần đề xuất về cấu trúc trang web mới, đối tượng người dùng, các tính năng hiện đại (như bán vé trực tuyến, bảo tàng ảo, dòng thời gian lịch sử tương tác) được trình bày chi tiết trong tài liệu **website_proposal.md** đi kèm báo cáo này.
+### 5.2. Tên thư mục chưa đồng nhất
 
-Chúng tôi xin trân trọng cảm ơn Trung tâm vì đã dành thời gian chuẩn bị bộ tư liệu công phu này, và mong được đồng hành cùng Trung tâm trong hành trình đưa kho tàng văn hóa của Văn Miếu – Quốc Tử Giám đến gần hơn với du khách trên khắp thế giới.
+Một số tên thư mục có cách viết khác nhau — ví dụ có chỗ viết "Tiếng Việt", có chỗ viết "Tieng Viet" (không dấu); có thư mục đặt tên "ảnh", có thư mục đặt "Ảnh", hoặc "ảnh Môi trường". Điều này không ảnh hưởng đến giá trị nội dung. Chúng tôi đã chuẩn hóa phần xử lý kỹ thuật, Trung tâm không cần điều chỉnh lại phía mình.
 
 ---
 
-*Báo cáo này chỉ tập trung mô tả hiện trạng tư liệu. Mọi đề xuất về cấu trúc, tính năng và thiết kế cho trang web mới được trình bày trong tài liệu **website_proposal.md**.*
+## 6. Kết luận
+
+Bộ tư liệu Trung tâm đã gửi đủ làm cơ sở để triển khai giai đoạn đầu của website. Các nội dung đề nghị bổ sung được tổng hợp ở phần 4 bao gồm: hình ảnh chất lượng cao với nhiều góc độ, video (nếu có), các bài viết có trên website cũ nhưng chưa nằm trong bộ tư liệu này, thông tin thực tế cho khách thăm quan, lịch hoạt động sự kiện, và phần dịch Tiếng Anh còn thiếu.
+
+Trong buổi làm việc tới, chúng tôi sẽ trình bày đề xuất về cấu trúc, tính năng và thiết kế của trang web mới. Mong nhận được phản hồi và trao đổi thêm từ phía Trung tâm về nội dung báo cáo này.
+
+Trân trọng.
