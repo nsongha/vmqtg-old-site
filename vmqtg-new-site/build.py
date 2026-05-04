@@ -1085,6 +1085,273 @@ article.article-body details.lang-block h2 { font-size: 22px; margin: 16px 0 10p
   * { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
 }
+
+/* ========================================================================
+   GIÁO DỤC DI SẢN — hub, filter, program pages
+   ======================================================================== */
+
+.page-hero--gduc { padding: 56px 0 40px; }
+.hstats {
+  display: flex; gap: 40px; margin-top: 28px; flex-wrap: wrap;
+  padding-top: 22px; border-top: 1px solid var(--line-soft);
+}
+.hstat { display: flex; flex-direction: column; gap: 4px; }
+.hstat__num {
+  font-family: "Playfair Display", serif; font-size: 34px; font-weight: 600;
+  color: var(--brick); line-height: 1;
+}
+.hstat__lbl { font-size: 13px; color: var(--ink-soft); letter-spacing: .02em; }
+
+.filter-bar {
+  position: sticky; top: var(--nav-h); z-index: 20;
+  background: rgba(255,255,255,.94);
+  backdrop-filter: saturate(180%) blur(10px);
+  -webkit-backdrop-filter: saturate(180%) blur(10px);
+  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--line-soft);
+}
+.filter-inner { display: flex; flex-direction: column; gap: 10px; padding: 14px 24px; }
+.filter-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.filter-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-mute); min-width: 64px;
+}
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  border: 1px solid var(--line); background: #fff; color: var(--ink-soft);
+  padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 6px; transition: all .15s;
+}
+.chip:hover { border-color: var(--gold); color: var(--brick); }
+.chip.is-active { background: var(--brick); color: #fff; border-color: var(--brick); }
+.chip.is-active:hover { background: var(--brick-dark); border-color: var(--brick-dark); color: #fff; }
+.chip-icon { font-size: 14px; }
+.filter-meta { font-size: 12px; color: var(--ink-mute); padding-top: 4px; border-top: 1px dashed var(--line-soft); }
+.filter-meta #filterCount { font-weight: 700; color: var(--brick); }
+.filter-empty { text-align: center; padding: 60px 20px; color: var(--ink-mute); font-size: 15px; }
+
+.pcard-grid {
+  display: grid; gap: 22px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+.pcard {
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md);
+  overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit;
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+.pcard:hover { transform: translateY(-3px); border-color: var(--gold); box-shadow: var(--shadow-md); color: inherit; }
+.pcard__thumb {
+  width: 100%; aspect-ratio: 16/10; background: var(--cream-soft) center/cover no-repeat;
+  border-bottom: 1px solid var(--line-soft);
+}
+.pcard__thumb--empty {
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--brick) 0%, var(--brick-dark) 100%);
+  color: var(--gold-soft); font-size: 52px;
+}
+.pcard__body { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.pcard__theme {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--brick); margin-bottom: 2px; align-self: flex-start;
+}
+.pcard__theme-icon { font-size: 14px; letter-spacing: 0; text-transform: none; }
+.pcard__title {
+  margin: 0; font-family: "Playfair Display", serif; font-size: 20px; font-weight: 500;
+  color: var(--ink); line-height: 1.25; letter-spacing: -.01em;
+}
+.pcard__tag { margin: 0; font-size: 14px; color: var(--ink-soft); line-height: 1.5; flex: 1; }
+.pcard__grades {
+  display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px;
+  padding-top: 12px; border-top: 1px dashed var(--line-soft);
+}
+.badge { font-size: 11px; font-weight: 600; letter-spacing: .04em; padding: 3px 8px; border-radius: 3px; line-height: 1.4; }
+.badge.is-on { background: var(--gold-pale); color: var(--brick-dark); }
+.badge.is-off { background: transparent; color: var(--ink-mute); opacity: .45; border: 1px dashed var(--line); }
+
+.shared-info { background: var(--cream); padding: 72px 0 80px; border-top: 1px solid var(--line); }
+.shared-info__head { max-width: 640px; margin-bottom: 32px; }
+.shared-info__head .eyebrow { margin-bottom: 10px; }
+.acc { max-width: 820px; display: flex; flex-direction: column; gap: 10px; }
+.acc-item { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; }
+.acc-item.is-open { border-color: var(--gold); box-shadow: var(--shadow-sm); }
+.acc-summary {
+  width: 100%; background: none; border: 0; padding: 18px 22px;
+  display: flex; align-items: center; gap: 14px;
+  text-align: left; cursor: pointer;
+  font-size: 16px; font-weight: 500; color: var(--ink);
+}
+.acc-summary:hover { background: var(--cream-soft); }
+.acc-icon {
+  flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--gold-pale); font-size: 16px;
+}
+.acc-title { flex: 1; font-family: "Playfair Display", serif; font-size: 18px; font-weight: 500; }
+.acc-chev {
+  width: 10px; height: 10px;
+  border-right: 2px solid var(--brick); border-bottom: 2px solid var(--brick);
+  transform: rotate(45deg); transition: transform .2s;
+}
+.acc-item.is-open .acc-chev { transform: rotate(-135deg); }
+.acc-body { display: none; padding: 4px 22px 22px 72px; font-size: 15px; line-height: 1.7; color: var(--ink-soft); }
+.acc-body p { margin: 0 0 10px; }
+.acc-body ul { margin: 0; padding-left: 20px; }
+.acc-body li { margin: 0 0 8px; }
+.acc-item.is-open .acc-body { display: block; }
+
+.prog-hero {
+  background: linear-gradient(180deg, var(--cream) 0%, #fff 100%);
+  padding: 44px 0 0; border-bottom: 1px solid var(--line-soft);
+}
+.prog-theme {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--brick); margin-bottom: 12px;
+}
+.prog-theme__icon {
+  display: inline-flex; width: 30px; height: 30px; border-radius: 50%;
+  background: var(--gold-pale); align-items: center; justify-content: center;
+  font-size: 15px; letter-spacing: 0; text-transform: none;
+}
+.prog-title {
+  font-family: "Playfair Display", serif; font-weight: 500;
+  font-size: clamp(32px, 4.8vw, 52px); line-height: 1.1; letter-spacing: -.02em;
+  color: var(--ink); margin: 0 0 14px;
+}
+.prog-tag { font-size: 18px; color: var(--ink-soft); margin: 0 0 32px; max-width: 720px; line-height: 1.55; }
+
+.grade-switch {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
+  padding: 20px 0; border-top: 1px solid var(--line-soft);
+}
+.grade-switch__label {
+  font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.grade-switch__btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.grade-btn {
+  border: 1px solid var(--line); background: #fff; color: var(--ink);
+  padding: 10px 18px; border-radius: 6px; font-size: 14px; font-weight: 500;
+  transition: all .15s;
+}
+.grade-btn:hover:not([disabled]) { border-color: var(--gold); color: var(--brick); }
+.grade-btn.is-active { background: var(--brick); color: #fff; border-color: var(--brick); font-weight: 600; }
+.grade-btn.is-off { color: var(--ink-mute); border-style: dashed; cursor: not-allowed; opacity: .55; }
+.grade-btn[disabled] { cursor: not-allowed; }
+
+.prog-body { padding: 48px 0 80px; background: #fff; }
+.grade-panel { display: none; }
+.grade-panel.is-active { display: block; }
+
+.gp-intro {
+  max-width: 780px; margin: 0 0 56px;
+  padding: 24px 28px; border-left: 3px solid var(--gold);
+  background: var(--cream); border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+.gp-kicker {
+  display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--brick); margin-bottom: 10px;
+}
+.gp-desc { font-size: 16px; line-height: 1.7; color: var(--ink); }
+.gp-desc p { margin: 0 0 12px; color: var(--ink); }
+.gp-desc p:last-child { margin-bottom: 0; }
+
+.gp-section { margin-top: 56px; }
+.gp-section__head { margin-bottom: 28px; }
+.gp-section__head .eyebrow { margin-bottom: 8px; }
+.gp-section__title {
+  font-family: "Playfair Display", serif; font-size: clamp(24px, 3vw, 32px);
+  font-weight: 500; color: var(--ink); margin: 0; letter-spacing: -.01em;
+}
+
+.phases { position: relative; padding-left: 0; }
+.phase {
+  display: grid; grid-template-columns: 60px 1fr; gap: 24px;
+  padding: 0 0 36px; position: relative;
+}
+.phase:not(:last-child)::before {
+  content: ""; position: absolute;
+  left: 22px; top: 52px; bottom: 0; width: 2px;
+  background: linear-gradient(180deg, var(--gold) 0%, var(--gold-soft) 100%);
+}
+.phase__marker { position: relative; z-index: 1; padding-top: 6px; }
+.phase__num {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--brick); color: var(--gold-soft);
+  font-family: "Playfair Display", serif; font-weight: 600; font-size: 18px;
+  box-shadow: 0 0 0 4px #fff, 0 0 0 5px var(--gold);
+}
+.phase--middle .phase__num { background: var(--gold); color: var(--brick-dark); box-shadow: 0 0 0 4px #fff, 0 0 0 5px var(--gold-soft); }
+.phase__body {
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md);
+  padding: 22px 26px 24px;
+}
+.phase__head { margin-bottom: 14px; }
+.phase__kicker { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mute); }
+.phase__title { margin: 4px 0 6px; font-family: "Playfair Display", serif; font-size: 22px; font-weight: 500; color: var(--ink); }
+.phase__sub { margin: 0; font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+.phase--middle .phase__body { background: var(--cream); border-style: dashed; }
+
+.aud-tabs {
+  display: inline-flex; gap: 0; margin: 16px 0 14px;
+  border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--cream);
+}
+.aud-btn {
+  border: 0; background: none; color: var(--ink-soft);
+  padding: 7px 16px; border-radius: 999px; font-size: 13px; font-weight: 500;
+  transition: all .15s;
+}
+.aud-btn:hover { color: var(--brick); }
+.aud-btn.is-active { background: #fff; color: var(--brick); box-shadow: var(--shadow-sm); font-weight: 600; }
+.aud-panel { display: none; font-size: 15px; line-height: 1.75; color: var(--ink-soft); }
+.aud-panel.is-active { display: block; }
+.aud-panel p { margin: 0 0 12px; }
+.aud-panel p:last-child { margin-bottom: 0; }
+.aud-panel strong, .aud-panel b { color: var(--ink); }
+
+.grade-panel .gallery {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px; margin: 20px 0 0;
+}
+.grade-panel .gallery a {
+  display: block; overflow: hidden; border-radius: var(--radius-sm);
+  background: var(--cream-soft); cursor: zoom-in; position: relative;
+  border: 1px solid var(--line-soft);
+}
+.grade-panel .gallery a::after {
+  content: "⤢"; position: absolute; right: 6px; bottom: 4px;
+  color: #fff; background: rgba(0,0,0,.55); padding: 2px 7px;
+  border-radius: 2px; font-size: 12px; opacity: 0; transition: opacity .15s;
+}
+.grade-panel .gallery a:hover::after { opacity: 1; }
+.grade-panel .gallery img {
+  width: 100%; height: 180px; object-fit: cover;
+  display: block; transition: transform .3s;
+}
+.grade-panel .gallery a:hover img { transform: scale(1.04); }
+
+.related { background: var(--cream); padding: 72px 0; border-top: 1px solid var(--line); }
+
+@media (max-width: 768px) {
+  .hstats { gap: 24px; }
+  .hstat__num { font-size: 28px; }
+  .filter-inner { padding: 12px 16px; }
+  .filter-row { gap: 10px; }
+  .filter-label { min-width: 0; }
+  .pcard-grid { grid-template-columns: 1fr; gap: 16px; }
+  .acc-body { padding-left: 22px; }
+  .prog-hero { padding: 32px 0 0; }
+  .phase { grid-template-columns: 44px 1fr; gap: 14px; }
+  .phase:not(:last-child)::before { left: 16px; top: 44px; }
+  .phase__num { width: 32px; height: 32px; font-size: 14px; }
+  .phase__body { padding: 18px 18px 20px; }
+  .gp-intro { padding: 18px 20px; }
+  .grade-switch { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .grade-btn { padding: 8px 14px; font-size: 13px; }
+  .shared-info { padding: 56px 0 64px; }
+}
 """
 
 
@@ -1410,6 +1677,610 @@ def render_program(p):
 
     parts.append("</article></div></div>")
     return "".join(parts)
+
+
+# =========================================================================
+# GIÁO DỤC DI SẢN — consolidated 1 hub + 13 program pages
+# =========================================================================
+GD_GRADES = [
+    ("mam-non",  "Mầm non",   "Mầm non"),
+    ("lop-1-3",  "Lớp 1–3",   "lớp 1-lớp 3"),
+    ("lop-4-6",  "Lớp 4–6",   "lớp 4-lớp 6"),
+    ("lop-7-12", "Lớp 7–12",  "lớp 7-lớp 12"),
+]
+
+GD_THEMES = {
+    "linh-vat":   ("Linh vật & biểu tượng",   "🐲"),
+    "kien-truc":  ("Kiến trúc di tích",       "🏛"),
+    "khoa-cu":    ("Khoa cử & đạo học",       "📜"),
+    "truong-hoc": ("Trường học xưa & nay",    "🏫"),
+}
+
+# 13 canonical programs, with per-grade source folder name aliases.
+GD_PROGRAMS = [
+    {
+        "slug": "o-kia-con-nghe",
+        "title": "Ô kìa con nghê",
+        "tagline": "Nghê — linh vật thuần Việt canh giữ cửa đền, biểu tượng của đạo học.",
+        "theme": "linh-vat",
+        "aliases": {
+            "mam-non":  "Ô kìa con nghê (mầm non)",
+            "lop-1-3":  "Ô kìa con nghê lớp 1-3",
+            "lop-4-6":  "ô kìa con Nghê lớp 4-6",
+            "lop-7-12": "ô kìa con Nghê lớp 7-12",
+        },
+    },
+    {
+        "slug": "di-tim-linh-vat-kien-truc-co",
+        "title": "Đi tìm linh vật trên kiến trúc cổ",
+        "tagline": "Rồng, phượng, rùa, nghê — nhận diện linh vật qua mái đình, cổng tam quan.",
+        "theme": "linh-vat",
+        "aliases": {
+            "mam-non":  "đi tìm linh vật trên kiến trúc cổ (mầm non)",
+            "lop-1-3":  "đi tìm linh vật trên kiến trúc cổ lớp 1-3",
+            "lop-4-6":  "đi tìm linh vật trên kiến trúc cổ VM lớp 4-6",
+            "lop-7-12": "đi tìm linh vật trên kiến trúc cổ VM lớp 7-12",
+        },
+    },
+    {
+        "slug": "manh-ho-ha-son",
+        "title": "Mãnh hổ hạ sơn",
+        "tagline": "Khám phá linh vật Hổ qua bức phù điêu cổ — câu chuyện về dũng khí và trí tuệ.",
+        "theme": "linh-vat",
+        "aliases": {
+            "mam-non": "Mãnh hổ hạ sơn (mầm non)",
+            "lop-1-3": "Mãnh hổ hạ sơn lớp 1-3",
+        },
+    },
+    {
+        "slug": "kham-pha-khue-van-cac",
+        "title": "Khám phá Khuê Văn Các",
+        "tagline": "Công trình kiến trúc nghệ thuật — biểu tượng của Hà Nội.",
+        "theme": "kien-truc",
+        "aliases": {
+            "lop-1-3": "Khám phá Công trình KTNT Khuê Văn Các lớp 1-3",
+            "lop-4-6": "khám phá công trình KTNT KVC lớp 4-6",
+        },
+    },
+    {
+        "slug": "tim-hieu-kien-truc-co-vm",
+        "title": "Tìm hiểu kiến trúc cổ Văn Miếu",
+        "tagline": "Đọc di tích qua ngôn ngữ của mái ngói, cột gỗ, chạm khắc.",
+        "theme": "kien-truc",
+        "aliases": {"lop-7-12": "Tìm hiểu Kiến trúc cổ VM  lớp 7-12"},
+    },
+    {
+        "slug": "kham-pha-bia-tien-si",
+        "title": "Khám phá Bia Tiến sĩ",
+        "tagline": "82 tấm bia — di sản tư liệu thế giới của UNESCO.",
+        "theme": "khoa-cu",
+        "aliases": {
+            "lop-1-3":  "Khám phá Bia Tiến sĩ lớp 1- 3",
+            "lop-4-6":  "khám phá Bia Tiến sĩ lớp 4-6",
+            "lop-7-12": "khám phá bia Tiến sĩ lớp 7-12",
+        },
+    },
+    {
+        "slug": "thi-huong-hoi-dinh",
+        "title": "Thi Hương · Thi Hội · Thi Đình",
+        "tagline": "Ba vòng thi của nền khoa cử Việt Nam thời phong kiến.",
+        "theme": "khoa-cu",
+        "aliases": {"lop-7-12": "Thi Hương, thi Hội, thi Đình lớp 7-12"},
+    },
+    {
+        "slug": "vinh-quy-bai-to",
+        "title": "Vinh quy bái tổ",
+        "tagline": "Nghi lễ trở về quê của Tân khoa — đỉnh cao của danh dự học đường.",
+        "theme": "khoa-cu",
+        "aliases": {"lop-7-12": "Vinh quy bái tổ lớp 7-12"},
+    },
+    {
+        "slug": "qtg-thang-long",
+        "title": "Quốc Tử Giám ở Thăng Long",
+        "tagline": "Trường đại học đầu tiên của Việt Nam — dấu ấn trong lịch sử giáo dục.",
+        "theme": "khoa-cu",
+        "aliases": {"lop-7-12": "tìm hiểu QTG ở Thăng Long lớp 7-12"},
+    },
+    {
+        "slug": "sach-hoc-van-khac",
+        "title": "Sách học & văn khắc in sách",
+        "tagline": "Nghiên cứu tư liệu gốc của trường Quốc Tử Giám xưa.",
+        "theme": "khoa-cu",
+        "aliases": {"lop-7-12": "khám phá sách học và ván khắc in sách trường QTG lớp 7-12"},
+    },
+    {
+        "slug": "lop-hoc-xua",
+        "title": "Lớp học xưa",
+        "tagline": "Trải nghiệm một tiết học thời phong kiến — bút lông, mực tàu, giấy dó.",
+        "theme": "truong-hoc",
+        "aliases": {
+            "lop-1-3": "lớp học xưa lớp 1-3",
+            "lop-4-6": "lớp học xưa lớp 4-6",
+        },
+    },
+    {
+        "slug": "vm-qtg-xua-va-nay",
+        "title": "Văn Miếu – Quốc Tử Giám xưa & nay",
+        "tagline": "Từ trường quốc học đến di tích quốc gia đặc biệt — 1.000 năm biến thiên.",
+        "theme": "truong-hoc",
+        "aliases": {"lop-7-12": "VM-QTG xưa và nay lớp 7-12"},
+    },
+    {
+        "slug": "moi-truong-di-tich",
+        "title": "Môi trường di tích",
+        "tagline": "Cây xanh, không gian, cảnh quan — bảo tồn sinh thái di sản.",
+        "theme": "truong-hoc",
+        "aliases": {"lop-7-12": "môi trường lớp 7-12"},
+    },
+]
+
+GD_SHARED_INFO_HTML = """
+<section class="shared-info">
+  <div class="container">
+    <div class="shared-info__head">
+      <span class="eyebrow">Thông tin chung</span>
+      <h2 class="section-title">Chuẩn bị cho chuyến tham quan</h2>
+      <p class="section-lede">Những hướng dẫn chung áp dụng cho tất cả chương trình giáo dục di sản.</p>
+    </div>
+    <div class="acc">
+      <div class="acc-item">
+        <button class="acc-summary" aria-expanded="false">
+          <span class="acc-icon">🎒</span>
+          <span class="acc-title">Dặn dò trẻ em khi đến di tích</span>
+          <span class="acc-chev" aria-hidden="true"></span>
+        </button>
+        <div class="acc-body">
+          <ul>
+            <li>Các bạn hãy mang mũ, nón, bút viết.</li>
+            <li>Mùa hè mặc quần áo thoáng mát.</li>
+            <li>Mùa đông mặc ấm áp, thuận tiện cho các hoạt động ngoài trời.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-summary" aria-expanded="false">
+          <span class="acc-icon">📜</span>
+          <span class="acc-title">Nội quy di tích</span>
+          <span class="acc-chev" aria-hidden="true"></span>
+        </button>
+        <div class="acc-body">
+          <ul>
+            <li>Tôn trọng di tích: không xâm hại di vật, cảnh quan; không xoa đầu rùa, viết, vẽ, đứng, ngồi lên bia Tiến sĩ.</li>
+            <li>Trang phục sạch sẽ, gọn gàng. Không hút thuốc, đội nón, đội mũ trong khu vực Điện thờ, nhà trưng bày.</li>
+            <li>Thực hiện nếp sống văn minh nơi thờ tự; mỗi người chỉ thắp một nén hương; dâng lễ, thắp hương đúng nơi quy định.</li>
+            <li>Nghiêm cấm các hoạt động mê tín dị đoan, cờ bạc, lừa đảo trong khu di tích.</li>
+            <li>Giữ gìn vệ sinh, bảo vệ cảnh quan: không trèo tường, trèo cây, bẻ cành, hái hoa, giẫm lên thảm cỏ, câu cá, bơi lội, vứt rác bừa bãi.</li>
+            <li>Không mang vũ khí, chất nổ, chất dễ cháy vào khu di tích.</li>
+            <li>Để xe đúng nơi quy định, tự quản lý tư trang.</li>
+            <li>Các hoạt động quay phim chỉ thực hiện khi có sự đồng ý của lãnh đạo khu di tích.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-summary" aria-expanded="false">
+          <span class="acc-icon">☎</span>
+          <span class="acc-title">Đặt dịch vụ</span>
+          <span class="acc-chev" aria-hidden="true"></span>
+        </button>
+        <div class="acc-body">
+          <p>Liên hệ đặt chương trình giáo dục di sản:</p>
+          <ul>
+            <li><strong>Thời gian:</strong> Thứ Hai đến Chủ nhật, 08:00 – 16:30</li>
+            <li><strong>Điện thoại:</strong> (024) 3823 5601</li>
+            <li><strong>Email:</strong> <a href="mailto:vanmieuqtg@hanoi.gov.vn">vanmieuqtg@hanoi.gov.vn</a></li>
+            <li><strong>Địa chỉ:</strong> 58 Quốc Tử Giám, Đống Đa, Hà Nội</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+"""
+
+GD_SCRIPT = """
+<script>
+(function(){
+  // Accordion
+  document.querySelectorAll('.acc-item').forEach(function(item){
+    var sum = item.querySelector('.acc-summary');
+    if (!sum) return;
+    sum.addEventListener('click', function(){
+      var open = item.classList.toggle('is-open');
+      sum.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  });
+  // Grade switch
+  document.querySelectorAll('.grade-switch').forEach(function(sw){
+    var buttons = sw.querySelectorAll('.grade-btn[data-grade]');
+    var panels = document.querySelectorAll('.grade-panel');
+    buttons.forEach(function(b){
+      b.addEventListener('click', function(){
+        if (b.hasAttribute('disabled')) return;
+        var g = b.getAttribute('data-grade');
+        buttons.forEach(function(x){ x.classList.toggle('is-active', x === b); });
+        panels.forEach(function(p){ p.classList.toggle('is-active', p.getAttribute('data-grade') === g); });
+      });
+    });
+  });
+  // Audience sub-tab
+  document.querySelectorAll('.aud-tabs').forEach(function(tabs){
+    var buttons = tabs.querySelectorAll('.aud-btn');
+    var phase = tabs.closest('.phase');
+    if (!phase) return;
+    buttons.forEach(function(b){
+      b.addEventListener('click', function(){
+        var a = b.getAttribute('data-aud');
+        buttons.forEach(function(x){ x.classList.toggle('is-active', x === b); });
+        phase.querySelectorAll('.aud-panel').forEach(function(p){
+          p.classList.toggle('is-active', p.getAttribute('data-aud') === a);
+        });
+      });
+    });
+  });
+  // Hub filter
+  var state = { grade: 'all', theme: 'all' };
+  function update(){
+    var cards = document.querySelectorAll('[data-pcard]');
+    var visible = 0;
+    cards.forEach(function(c){
+      var grades = (c.getAttribute('data-grades')||'').split(',');
+      var theme  = c.getAttribute('data-theme');
+      var gOk = state.grade === 'all' || grades.indexOf(state.grade) >= 0;
+      var tOk = state.theme === 'all' || theme === state.theme;
+      var show = gOk && tOk;
+      c.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    var count = document.getElementById('filterCount');
+    if (count) count.textContent = visible;
+    var empty = document.getElementById('filterEmpty');
+    if (empty) empty.style.display = visible ? 'none' : 'block';
+  }
+  document.querySelectorAll('.chip[data-grade]').forEach(function(b){
+    b.addEventListener('click', function(){
+      state.grade = b.getAttribute('data-grade');
+      document.querySelectorAll('.chip[data-grade]').forEach(function(x){ x.classList.toggle('is-active', x === b); });
+      update();
+    });
+  });
+  document.querySelectorAll('.chip[data-theme]').forEach(function(b){
+    b.addEventListener('click', function(){
+      state.theme = b.getAttribute('data-theme');
+      document.querySelectorAll('.chip[data-theme]').forEach(function(x){ x.classList.toggle('is-active', x === b); });
+      update();
+    });
+  });
+  if (document.querySelector('[data-pcard]')) update();
+})();
+</script>
+"""
+
+
+def _gd_theme_label(key):
+    return GD_THEMES[key][0]
+
+
+def _gd_theme_icon(key):
+    return GD_THEMES[key][1]
+
+
+def _gd_grade_badges_html(prog):
+    parts = []
+    for key, label, _ in GD_GRADES:
+        has = key in prog["grades_data"]
+        cls = "is-on" if has else "is-off"
+        parts.append(f'<span class="badge {cls}">{escape(label)}</span>')
+    return "".join(parts)
+
+
+def _gd_pcard_html(prog):
+    grades_csv = ",".join(prog["grades_data"].keys())
+    thumb = prog.get("thumb")
+    if thumb:
+        thumb_html = f'<div class="pcard__thumb" style="background-image:url(\'{escape(thumb)}\')"></div>'
+    else:
+        thumb_html = f'<div class="pcard__thumb pcard__thumb--empty"><span>{_gd_theme_icon(prog["theme"])}</span></div>'
+    icon = _gd_theme_icon(prog["theme"])
+    return (
+        f'<a class="pcard" data-pcard data-grades="{grades_csv}" data-theme="{prog["theme"]}" '
+        f'href="/giao-duc-di-san/{prog["slug"]}/">'
+        f'{thumb_html}'
+        f'<div class="pcard__body">'
+        f'<span class="pcard__theme"><span class="pcard__theme-icon">{icon}</span>{escape(_gd_theme_label(prog["theme"]))}</span>'
+        f'<h3 class="pcard__title">{escape(prog["title"])}</h3>'
+        f'<p class="pcard__tag">{escape(prog["tagline"])}</p>'
+        f'<div class="pcard__grades" aria-label="Cấp học có chương trình">{_gd_grade_badges_html(prog)}</div>'
+        f'</div></a>'
+    )
+
+
+def _gd_audience_split(docs):
+    """Given a list of `{label, html, raw}` from build_program's pre/post, split into parent vs teacher HTML."""
+    parent_html = []
+    teacher_html = []
+    for d in docs:
+        lbl_norm = vm._norm(d.get("label", "")).lower()
+        if "cha mẹ" in lbl_norm or "cha me" in lbl_norm:
+            parent_html.append(d.get("html", ""))
+        elif "giáo viên" in lbl_norm or "giao vien" in lbl_norm:
+            teacher_html.append(d.get("html", ""))
+        else:
+            # unclassified — show in teacher panel as fallback
+            teacher_html.append(d.get("html", ""))
+    return "\n".join(parent_html), "\n".join(teacher_html)
+
+
+def _gd_phase_block(num, label, sub, parent_html, teacher_html):
+    parts = [
+        f'<div class="phase">'
+        f'<div class="phase__marker"><span class="phase__num">{num}</span></div>'
+        f'<div class="phase__body">'
+        f'<header class="phase__head">'
+        f'<span class="phase__kicker">Giai đoạn {num}</span>'
+        f'<h3 class="phase__title">{escape(label)}</h3>'
+        f'<p class="phase__sub">{escape(sub)}</p>'
+        f'</header>'
+    ]
+    if parent_html or teacher_html:
+        parts.append(
+            '<div class="aud-tabs" role="tablist">'
+            '<button class="aud-btn is-active" data-aud="parent" role="tab">Phụ huynh</button>'
+            '<button class="aud-btn" data-aud="teacher" role="tab">Giáo viên &amp; Học sinh</button>'
+            '</div>'
+        )
+        parts.append(
+            f'<div class="aud-panel is-active" data-aud="parent">'
+            f'{parent_html or "<p><em>Nội dung đang cập nhật.</em></p>"}'
+            f'</div>'
+            f'<div class="aud-panel" data-aud="teacher">'
+            f'{teacher_html or "<p><em>Nội dung đang cập nhật.</em></p>"}'
+            f'</div>'
+        )
+    parts.append('</div></div>')
+    return "".join(parts)
+
+
+def _gd_grade_panel_html(prog, grade_key, grade_label, data, is_active):
+    desc_html = ""
+    for d in data.get("main", []):
+        desc_html += d.get("html", "")
+    if not desc_html:
+        desc_html = "<p><em>Nội dung đang được cập nhật.</em></p>"
+
+    pre_p, pre_t = _gd_audience_split(data.get("pre", []))
+    post_p, post_t = _gd_audience_split(data.get("post", []))
+
+    images = data.get("images", [])
+    gallery_html = ""
+    if images:
+        from html import escape as _e
+        items = []
+        for img in images:
+            items.append(f'<a href="{_e(img)}"><img src="{_e(img)}" loading="lazy" alt=""></a>')
+        gallery_html = (
+            '<div class="gp-section">'
+            '<header class="gp-section__head"><span class="eyebrow">Khoảnh khắc</span>'
+            '<h2 class="gp-section__title">Thư viện ảnh</h2></header>'
+            f'<div class="gallery">{"".join(items)}</div></div>'
+        )
+
+    middle_note = "<p><em>Diễn ra trực tiếp tại khu di tích dưới sự hướng dẫn của cán bộ giáo dục.</em></p>"
+
+    cls = "grade-panel is-active" if is_active else "grade-panel"
+    return (
+        f'<div class="{cls}" data-grade="{grade_key}">'
+        f'<div class="gp-intro">'
+        f'<span class="gp-kicker">Dành cho {escape(grade_label)}</span>'
+        f'<div class="gp-desc">{desc_html}</div>'
+        f'</div>'
+        f'<div class="gp-section">'
+        f'<header class="gp-section__head"><span class="eyebrow">Hành trình</span>'
+        f'<h2 class="gp-section__title">Ba giai đoạn của chương trình</h2></header>'
+        f'<div class="phases">'
+        f'{_gd_phase_block(1, "Trước tham quan", "Chuẩn bị tại nhà hoặc tại lớp học trước buổi trải nghiệm.", pre_p, pre_t)}'
+        f'<div class="phase phase--middle">'
+        f'<div class="phase__marker"><span class="phase__num">2</span></div>'
+        f'<div class="phase__body">'
+        f'<header class="phase__head"><span class="phase__kicker">Giai đoạn 2</span>'
+        f'<h3 class="phase__title">Tại di tích</h3>'
+        f'<p class="phase__sub">Trải nghiệm trực tiếp ở Văn Miếu – Quốc Tử Giám.</p></header>'
+        f'{middle_note}'
+        f'</div></div>'
+        f'{_gd_phase_block(3, "Sau tham quan", "Sáng tạo, chia sẻ và đúc kết sau buổi học.", post_p, post_t)}'
+        f'</div></div>'
+        f'{gallery_html}'
+        f'</div>'
+    )
+
+
+def build_giao_duc():
+    """Consolidated build: walk all 4 grade folders, group programs by canonical slug,
+    emit 1 hub with filter + 13 program pages with grade tabs and 3-phase stepper."""
+    src_root = vm.ROOT / "trang 4 Trang Giáo dục di sản"
+
+    # Build alias → (slug, grade_key) lookup
+    alias_lookup = {}
+    for prog in GD_PROGRAMS:
+        for grade_key, alias in prog.get("aliases", {}).items():
+            alias_lookup[alias] = (prog["slug"], grade_key)
+
+    # Initialise data store
+    data_by_slug = {p["slug"]: {} for p in GD_PROGRAMS}
+
+    # Walk source tree
+    for grade_key, grade_label, dirname in GD_GRADES:
+        src = src_root / dirname
+        if not src.exists():
+            continue
+        for prog_dir in sorted([p for p in src.iterdir() if p.is_dir()]):
+            entry = alias_lookup.get(prog_dir.name)
+            if not entry:
+                # try normalised match
+                from unicodedata import normalize as _u
+                folder_norm = _u("NFC", prog_dir.name)
+                for alias, info in alias_lookup.items():
+                    if _u("NFC", alias) == folder_norm:
+                        entry = info
+                        break
+            if not entry:
+                print(f"  ⚠ unknown program folder: {prog_dir.name} (in {dirname})")
+                continue
+            slug, gkey = entry
+            parsed = vm.build_program(prog_dir, f"giao-duc-di-san/{slug}")
+            if not parsed:
+                continue
+            data_by_slug[slug][gkey] = parsed
+
+    # Hero stats
+    total_programs = sum(1 for p in GD_PROGRAMS if data_by_slug[p["slug"]])
+    hero_stats = [
+        (str(total_programs), "Chương trình"),
+        ("4", "Cấp học"),
+        ("3", "Giai đoạn trải nghiệm"),
+    ]
+
+    # Build hub cards (skip programs with no source data)
+    cards_html = []
+    enriched_programs = []
+    for prog in GD_PROGRAMS:
+        gd = data_by_slug[prog["slug"]]
+        if not gd:
+            continue
+        # pick representative thumb (first available grade)
+        thumb = ""
+        for grade_key, _, _ in GD_GRADES:
+            d = gd.get(grade_key)
+            if d and d.get("images"):
+                thumb = d["images"][0]
+                break
+        enriched = dict(prog)
+        enriched["grades_data"] = gd
+        enriched["thumb"] = thumb
+        enriched_programs.append(enriched)
+        cards_html.append(_gd_pcard_html(enriched))
+
+    # Filter chips
+    grade_chips_html = (
+        '<button class="chip is-active" data-grade="all">Tất cả</button>'
+        + "".join(
+            f'<button class="chip" data-grade="{k}">{escape(l)}</button>'
+            for k, l, _ in GD_GRADES
+        )
+    )
+    theme_chips_html = (
+        '<button class="chip is-active" data-theme="all">Tất cả</button>'
+        + "".join(
+            f'<button class="chip" data-theme="{k}"><span class="chip-icon">{v[1]}</span>{escape(v[0])}</button>'
+            for k, v in GD_THEMES.items()
+        )
+    )
+
+    stat_html = "".join(
+        f'<div class="hstat"><span class="hstat__num">{escape(n)}</span><span class="hstat__lbl">{escape(l)}</span></div>'
+        for n, l in hero_stats
+    )
+
+    # Compose hub body
+    hub_body = (
+        f'<section class="page-hero page-hero--gduc">'
+        f'<div class="container">'
+        f'<span class="eyebrow">Chuyên mục</span>'
+        f'<h1>Giáo dục di sản</h1>'
+        f'<p class="lede">Mang không gian di tích vào lớp học — {total_programs} chương trình được thiết kế cho từng lứa tuổi, mỗi chương trình là một hành trình ba giai đoạn từ chuẩn bị đến sáng tạo sau trải nghiệm.</p>'
+        f'<div class="hstats">{stat_html}</div>'
+        f'</div></section>'
+        f'<div class="filter-bar" role="region" aria-label="Lọc chương trình">'
+        f'<div class="container filter-inner">'
+        f'<div class="filter-row"><span class="filter-label">Cấp học</span><div class="chips">{grade_chips_html}</div></div>'
+        f'<div class="filter-row"><span class="filter-label">Chủ đề</span><div class="chips">{theme_chips_html}</div></div>'
+        f'<div class="filter-meta"><span id="filterCount">{total_programs}</span> chương trình</div>'
+        f'</div></div>'
+        f'<section class="page-body"><div class="container">'
+        f'<div class="pcard-grid">{"".join(cards_html)}</div>'
+        f'<div id="filterEmpty" class="filter-empty" style="display:none">'
+        f'<p>Không có chương trình nào khớp với bộ lọc hiện tại.</p>'
+        f'</div></div></section>'
+        f'{GD_SHARED_INFO_HTML}'
+        f'{GD_SCRIPT}'
+    )
+
+    vm.write_page(
+        vm.SITE / "giao-duc-di-san" / "index.html",
+        page("Giáo dục di sản", hub_body, "/giao-duc-di-san/",
+             [("/", "Trang chủ"), (None, "Giáo dục di sản")]),
+    )
+
+    # Render each program page
+    for prog in enriched_programs:
+        gd = prog["grades_data"]
+        # First available grade is default active
+        first_available = None
+        for gk, _, _ in GD_GRADES:
+            if gk in gd:
+                first_available = gk
+                break
+
+        # Grade buttons
+        btns_html = []
+        for gk, glabel, _ in GD_GRADES:
+            has = gk in gd
+            cls = "grade-btn"
+            attrs = f'data-grade="{gk}"'
+            if gk == first_available:
+                cls += " is-active"
+            if not has:
+                cls += " is-off"
+                attrs += ' disabled aria-disabled="true" title="Chưa có chương trình cho cấp này"'
+            btns_html.append(f'<button class="{cls}" {attrs}>{escape(glabel)}</button>')
+
+        # Grade panels
+        panels_html = []
+        for gk, glabel, _ in GD_GRADES:
+            if gk not in gd:
+                continue
+            panels_html.append(
+                _gd_grade_panel_html(prog, gk, glabel, gd[gk], gk == first_available)
+            )
+
+        # Related programs (same theme, exclude self)
+        related = [p for p in enriched_programs if p["theme"] == prog["theme"] and p["slug"] != prog["slug"]]
+        related_html = ""
+        if related:
+            rel_cards = "".join(_gd_pcard_html(rp) for rp in related[:6])
+            related_html = (
+                f'<section class="related"><div class="container">'
+                f'<header class="gp-section__head">'
+                f'<span class="eyebrow">Cùng chủ đề</span>'
+                f'<h2 class="gp-section__title">Chương trình {escape(_gd_theme_label(prog["theme"]))}</h2>'
+                f'</header>'
+                f'<div class="pcard-grid">{rel_cards}</div>'
+                f'</div></section>'
+            )
+
+        body = (
+            f'<section class="prog-hero"><div class="container">'
+            f'<span class="prog-theme"><span class="prog-theme__icon">{_gd_theme_icon(prog["theme"])}</span>{escape(_gd_theme_label(prog["theme"]))}</span>'
+            f'<h1 class="prog-title">{escape(prog["title"])}</h1>'
+            f'<p class="prog-tag">{escape(prog["tagline"])}</p>'
+            f'<div class="grade-switch" role="tablist" aria-label="Chọn cấp học">'
+            f'<span class="grade-switch__label">Chọn cấp học</span>'
+            f'<div class="grade-switch__btns">{"".join(btns_html)}</div>'
+            f'</div></div></section>'
+            f'<section class="prog-body"><div class="container">'
+            f'{"".join(panels_html)}'
+            f'</div></section>'
+            f'{GD_SHARED_INFO_HTML}'
+            f'{related_html}'
+            f'{GD_SCRIPT}'
+        )
+
+        bc = [("/", "Trang chủ"), ("/giao-duc-di-san/", "Giáo dục di sản"), (None, prog["title"])]
+        vm.write_page(
+            vm.SITE / "giao-duc-di-san" / prog["slug"] / "index.html",
+            page(prog["title"], body, f'/giao-duc-di-san/{prog["slug"]}/', bc),
+        )
+
+    print(f"  → {total_programs} chương trình giáo dục.")
 
 
 # =========================================================================
@@ -2392,6 +3263,7 @@ vm.render_section_index = render_section_index
 vm.render_program = render_program
 vm.build_home = build_home
 vm.build_tham_quan = build_tham_quan
+vm.build_giao_duc = build_giao_duc
 vm.build_site_map = build_site_map
 
 
