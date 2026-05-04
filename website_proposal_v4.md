@@ -58,7 +58,63 @@ Toàn bộ nội dung Văn Miếu hiện có — hơn 54 bài về di tích, 192
 
 ---
 
-## III. Nội dung chi tiết từng mục
+## III. Sơ đồ tổng thể
+
+Dưới đây là toàn bộ cấu trúc trang web nhìn từ trên xuống, trước khi đi vào mô tả chi tiết từng mục.
+
+```
+[Logo Văn Miếu]
+│
+├── Di tích
+│   ├── Lịch sử
+│   │   Lý–Trần–Hồ · Lê sơ–Mạc · Lê Trung hưng · 1802–1945 · 1945–nay
+│   ├── Kiến trúc
+│   │   10 công trình trên bản đồ tương tác
+│   ├── 82 Bia Tiến sĩ
+│   │   3 bài chuyên sâu + tra cứu 1.304 vị Tiến sĩ (giai đoạn 2)
+│   ├── Hệ thống tượng thờ
+│   │   Khổng Tử · Tứ phối · Chu Văn An · 3 vị vua
+│   └── Danh nhân khoa bảng
+│       Tế tửu & Tư nghiệp · Tiến sĩ tiêu biểu · Chu Văn An chuyên đề · Dòng họ
+│
+├── Sự kiện & Trưng bày
+│   ├── Lịch sự kiện (lịch tháng, có thể lọc theo loại)
+│   ├── Trưng bày thường xuyên (3 không gian cố định)
+│   ├── Triển lãm & Sự kiện chuyên đề (theo thời vụ)
+│   └── Lễ hội truyền thống (xin chữ · lễ tế · vinh danh thủ khoa)
+│
+├── Khám phá
+│   ├── Khám phá số
+│   │   ├── Thư viện số (bài nghiên cứu, tư liệu học thuật)
+│   │   ├── Tra cứu Tiến sĩ (giai đoạn 2)
+│   │   ├── Thuyết minh âm thanh trực tuyến (8 ngôn ngữ)
+│   │   └── Bảo tàng ảo (mô hình tương tác, văn bia, bản đồ số)
+│   └── Giáo dục di sản
+│       ├── Các chương trình (12 chương trình × 4 lứa tuổi)
+│       ├── Học sinh trải nghiệm (ảnh, video thực tế)
+│       ├── → Đăng ký tham gia
+│       ├── → Phối hợp tổ chức
+│       └── → Kết quả & Tác động
+│
+├── [🎟 Mua vé] ← nút luôn hiển thị trên mọi trang
+│   ├── Mua vé nhanh (đầu trang)
+│   ├── Giờ mở cửa & Giá vé
+│   ├── Bản đồ & Hướng dẫn di chuyển
+│   ├── Dịch vụ tại di tích
+│   ├── Tiện ích
+│   └── Nội quy tham quan
+│
+└── Về chúng tôi ← phần cuối trang, hiển thị trên mọi trang
+    ├── Giới thiệu Trung tâm
+    ├── Cơ cấu tổ chức
+    ├── Liên hệ & Hợp tác
+    ├── Tin tức & Báo chí
+    └── Cửa hàng lưu niệm (giai đoạn 2)
+```
+
+---
+
+## IV. Nội dung chi tiết từng mục
 
 ---
 
@@ -131,7 +187,7 @@ Mười bài viết về các nhân vật được thờ phụng tại Văn Mi�
 
 **Danh nhân khoa bảng**
 
-Hiện tại, 21 bài viết về danh nhân được xếp lẫn lộn không phân loại, gây khó khăn khi tra cứu. Chúng tôi đề xuất sắp xếp lại thành bốn nhóm rõ ràng:
+Trung tâm hiện có 21 bài viết công phu về các danh nhân gắn với Văn Miếu – Quốc Tử Giám. Để giúp du khách tìm đúng nhân vật mình quan tâm một cách nhanh nhất, chúng tôi đề xuất sắp xếp 21 bài này thành bốn nhóm theo tính chất:
 
 **Nhóm 1 — Tế tửu và Tư nghiệp Quốc Tử Giám** (11 vị)
 Những người đứng đầu trường Quốc Tử Giám qua các thời kỳ: Chu Văn An, Nguyễn Trực, Ngô Sĩ Liên, Phùng Khắc Khoan, Nguyễn Duy Thì, Nguyễn Công Thái, Nguyễn Trí Vị, Nguyễn Nghiễm, Nguyễn Bá Lân, Vũ Miên và bài tổng quan.
@@ -169,7 +225,7 @@ Mỗi sự kiện có trang riêng với đầy đủ thông tin. Du khách có 
 
 Ba không gian trưng bày cố định tại khu di tích: Nhà Tiền đường, Nhà Hậu đường, Khu Thái Học. Nội dung không thay đổi theo mùa, giúp du khách xem trước để lên kế hoạch tham quan.
 
-*Lưu ý kỹ thuật: hiện tại hai trang về nội dung này bị tách làm đôi do lỗi kỹ thuật. Chúng tôi sẽ gộp lại thành một trang hoàn chỉnh.*
+*Nội dung về trưng bày thường xuyên hiện được trình bày trên hai trang riêng; chúng tôi đề xuất gộp lại thành một trang duy nhất để du khách có cái nhìn đầy đủ hơn trong một lần truy cập.*
 
 ---
 
@@ -236,13 +292,13 @@ Một không gian số được thiết kế riêng, cho phép người dùng �
 
 #### Phần B — Giáo dục di sản
 
-Trung tâm hiện có 192 tài liệu thuộc 12 chương trình giáo dục, phục vụ bốn lứa tuổi từ Mầm non đến lớp 12. Đây là tài sản nội dung rất lớn — vấn đề là cách tổ chức để giáo viên và phụ huynh tìm đúng chương trình mình cần một cách nhanh nhất.
+Trung tâm đã đầu tư xây dựng 192 tài liệu thuộc 12 chương trình giáo dục, phục vụ bốn nhóm lứa tuổi từ Mầm non đến lớp 12 — đây là khối nội dung rất có giá trị. Để phát huy tối đa, chúng tôi đề xuất cách tổ chức giúp giáo viên và phụ huynh tìm đúng chương trình phù hợp một cách nhanh và thuận tiện nhất.
 
 ---
 
 **Các chương trình**
 
-Hiện tại nội dung được xếp theo lứa tuổi — mỗi chương trình xuất hiện ở nhiều trang khác nhau, khiến giáo viên muốn so sánh các biến thể của cùng một chương trình phải mở nhiều trang riêng lẻ.
+Chúng tôi đề xuất trình bày nội dung theo bảng tra cứu hai chiều, thay vì chỉ theo lứa tuổi như hiện nay. Cách này cho phép giáo viên tìm theo chương trình trước, còn phụ huynh tìm theo lứa tuổi trước — cùng một nội dung, hai cách tiếp cận tùy nhu cầu.
 
 Chúng tôi đề xuất trình bày theo bảng tra cứu hai chiều: **theo chương trình** (giáo viên chọn trước) và **theo lứa tuổi** (phụ huynh chọn trước) — cùng một nội dung, hai cách tiếp cận.
 
@@ -321,7 +377,7 @@ Phần này hiển thị ở cuối mọi trang trên website, dành cho những
 
 ---
 
-## IV. Tổng hợp nội dung — Có sẵn và Cần xây mới
+## V. Tổng hợp nội dung — Có sẵn và Cần xây mới
 
 | Mục | Nội dung Trung tâm đã có | Nội dung cần xây thêm |
 |---|---|---|
