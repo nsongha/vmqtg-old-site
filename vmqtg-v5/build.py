@@ -1017,17 +1017,37 @@ ul,ol{list-style:none}
 /* html bg = body bg → no white flash between pages */
 html{background:#f7f7f5}
 
-/* Only the main content fades in; header & footer paint instantly
-   so persistent UI feels stable and the site feels fast. */
+/* Header & footer paint instantly (persistent feel).
+   Content sections cascade in from top → bottom with a light stagger.
+   Pure opacity, ease-out, short — should feel like a fast load, not an animation. */
 @keyframes pageFadeIn{from{opacity:0}to{opacity:1}}
-main,.site-main,.content,.hero,.page-hd,.breadcrumb,.quick-bar,.sections-overview{
-  animation:pageFadeIn .18s ease-out both
+
+.breadcrumb,.hero,.page-hd,.quick-bar,.sections-overview,.content,.site-footer{
+  animation:pageFadeIn .22s ease-out both
 }
+.breadcrumb       {animation-delay:0ms}
+.hero,.page-hd    {animation-delay:60ms}
+.quick-bar        {animation-delay:120ms}
+.sections-overview,.content {animation-delay:160ms}
+.site-footer      {animation-delay:240ms}
+
+/* Inside content / overview, stagger immediate children for a softer cascade.
+   nth-child up to 8 — beyond that, items appear together (cap stagger). */
+.sections-overview > *, .content > *{
+  animation:pageFadeIn .22s ease-out both;
+  animation-delay:200ms
+}
+.sections-overview > *:nth-child(1),.content > *:nth-child(1){animation-delay:200ms}
+.sections-overview > *:nth-child(2),.content > *:nth-child(2){animation-delay:240ms}
+.sections-overview > *:nth-child(3),.content > *:nth-child(3){animation-delay:280ms}
+.sections-overview > *:nth-child(4),.content > *:nth-child(4){animation-delay:320ms}
+.sections-overview > *:nth-child(5),.content > *:nth-child(5){animation-delay:360ms}
+.sections-overview > *:nth-child(6),.content > *:nth-child(6){animation-delay:400ms}
+.sections-overview > *:nth-child(n+7),.content > *:nth-child(n+7){animation-delay:440ms}
 
 @media(prefers-reduced-motion:reduce){
-  main,.site-main,.content,.hero,.page-hd,.breadcrumb,.quick-bar,.sections-overview{
-    animation:none!important
-  }
+  .breadcrumb,.hero,.page-hd,.quick-bar,.sections-overview,.content,.site-footer,
+  .sections-overview > *,.content > *{animation:none!important}
 }
 
 /* ── LANG TRANSITION (directional split) ──
