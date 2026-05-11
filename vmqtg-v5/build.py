@@ -3,11 +3,20 @@
 Style: monochrome minimalist · wireframe with real data
 Nav: hover dropdowns, mega-menu for Về di tích
 """
+import json
 import shutil
+import unicodedata
 from pathlib import Path
+
+import translations as TR
 
 ROOT = Path(__file__).resolve().parent
 OLD_IMGS = ROOT.parent / "site" / "assets" / "images"
+
+
+def _strip_diacritics(s):
+    return "".join(c for c in unicodedata.normalize("NFD", s)
+                   if unicodedata.category(c) != "Mn").lower()
 
 # ─── DATA: SITEMAP ────────────────────────────────────────────────────────────
 
@@ -952,72 +961,228 @@ ul,ol{list-style:none}
 /* ── UTILITY ── */
 .label{display:inline-block;font-size:.62rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border:1px solid #ddd;padding:.2rem .55rem;color:#888;margin-bottom:.75rem}
 .note{background:#fff;border-left:2px solid #ccc;padding:.9rem 1.1rem;font-size:.82rem;color:#666;line-height:1.65;margin:1.25rem 0;border-top:1px solid #e4e4df;border-right:1px solid #e4e4df;border-bottom:1px solid #e4e4df}
+
+/* ── HEADER TOOLS (search + language) ── */
+.header-tools{display:flex;align-items:center;gap:.6rem;flex-shrink:0;margin-left:auto}
+.search-wrap{position:relative}
+.search-input{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.18);
+  color:#fff;font:inherit;font-size:.74rem;
+  padding:.4rem .7rem .4rem .7rem;
+  width:180px;height:30px;outline:none;
+  transition:width .25s ease,background .2s,border-color .2s;
+}
+.search-input::placeholder{color:rgba(255,255,255,.45)}
+.search-input:focus{width:260px;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.4)}
+.search-results{
+  position:absolute;top:calc(100% + 6px);right:0;
+  background:#fff;color:#111110;
+  width:360px;max-height:60vh;overflow-y:auto;
+  border:1px solid #e4e4df;
+  box-shadow:0 12px 32px rgba(0,0,0,.08);
+  display:none;z-index:200;
+}
+.search-results.open{display:block}
+.search-result{
+  display:block;padding:.6rem .9rem;
+  border-bottom:1px solid #f0f0ec;
+  font-size:.78rem;color:#444;
+}
+.search-result:last-child{border:none}
+.search-result:hover,.search-result.selected{background:#f7f7f5}
+.search-result .sr-id{
+  display:inline-block;font-size:.62rem;color:#bbb;font-weight:600;
+  letter-spacing:.04em;margin-right:.5rem;min-width:2.4rem;
+}
+.search-result .sr-title{font-weight:500;color:#111110}
+.search-result .sr-sub{display:block;font-size:.7rem;color:#999;margin-top:.15rem;margin-left:2.9rem}
+.search-result mark{background:#fff3a3;color:#111110;padding:0 .1rem;border-radius:1px}
+.search-empty{padding:.85rem 1rem;font-size:.78rem;color:#999;text-align:center}
+
+.lang-switch{display:flex;border:1px solid rgba(255,255,255,.18);height:30px;overflow:hidden}
+.lang-btn{
+  background:transparent;color:rgba(255,255,255,.55);
+  border:none;cursor:pointer;font:inherit;
+  font-size:.7rem;font-weight:600;letter-spacing:.06em;
+  padding:0 .55rem;height:100%;
+  border-right:1px solid rgba(255,255,255,.12);
+  transition:background .15s,color .15s;
+}
+.lang-btn:last-child{border-right:none}
+.lang-btn:hover{color:#fff}
+.lang-btn.active{background:#fff;color:#111110}
+
+/* ── PAGE TRANSITIONS ── */
+/* ── PAGE TRANSITIONS ── */
+/* html bg = body bg → no white flash while new page loads */
+html{background:#f7f7f5}
+
+/* Fallback fade (all browsers) */
+@keyframes pageFadeIn{from{opacity:0}to{opacity:1}}
+body{animation:pageFadeIn .32s ease both}
+body.page-leaving{opacity:0;pointer-events:none;transition:opacity .2s ease}
+
+/* Cross-document View Transitions (Chrome 126+):
+   header & footer stay in place; only the content between them fades. */
+.site-header{view-transition-name:site-header;contain:layout}
+.site-footer{view-transition-name:site-footer;contain:layout}
+
+@view-transition{navigation:auto}
+
+/* Persistent elements: no animation, appear to stand still */
+::view-transition-old(site-header),::view-transition-new(site-header),
+::view-transition-old(site-footer),::view-transition-new(site-footer){
+  animation:none;mix-blend-mode:normal;
+}
+/* Content area: fade only */
+@keyframes vt-fade-out{to{opacity:0}}
+::view-transition-old(root){animation:.2s ease both vt-fade-out}
+::view-transition-new(root){animation:.35s ease both pageFadeIn}
+
+@media(prefers-reduced-motion:reduce){
+  body{animation:none!important}
+  body.page-leaving{transition:none!important}
+  ::view-transition-old(root),::view-transition-new(root){animation:none}
+}
+
+/* ── LANG TRANSITION (directional split) ──
+   Header/menu slides left→right; everything else slides top→bottom.
+   Both run in parallel, same easing, capped stagger so total < 600ms. */
+@keyframes slideFromLeft{
+  from{opacity:0;transform:translate3d(-12px,0,0)}
+  to  {opacity:1;transform:translate3d(0,0,0)}
+}
+@keyframes slideFromTop{
+  from{opacity:0;transform:translate3d(0,-8px,0)}
+  to  {opacity:1;transform:translate3d(0,0,0)}
+}
+/* Menu animation: only top-level nav bar items, NOT submenu contents
+   (user doesn't see closed dropdowns, and indexing them makes nav bar uneven). */
+.lang-entering .site-header [data-i18n]:not(.dropdown [data-i18n]){
+  animation:slideFromLeft .35s cubic-bezier(.2,.8,.2,1) both;
+  animation-delay:calc(min(var(--i,0), 15) * 30ms);
+  will-change:transform,opacity;
+}
+/* Content animation: ONLY text nodes ([data-i18n] / [data-i18n-html]).
+   Images, backgrounds, card frames stay static. Stagger by parent section
+   so text reveals top-down, section by section. */
+.lang-entering :is(.breadcrumb,.hero,.quick-bar,.page-hd,.sections-overview,.content,.site-footer) :is([data-i18n],[data-i18n-html]){
+  animation:slideFromTop .35s cubic-bezier(.2,.8,.2,1) both;
+  will-change:transform,opacity;
+}
+.lang-entering .breadcrumb        :is([data-i18n],[data-i18n-html]){animation-delay:  0ms}
+.lang-entering .hero              :is([data-i18n],[data-i18n-html]){animation-delay: 80ms}
+.lang-entering .quick-bar         :is([data-i18n],[data-i18n-html]){animation-delay:160ms}
+.lang-entering .page-hd           :is([data-i18n],[data-i18n-html]){animation-delay:160ms}
+.lang-entering .sections-overview :is([data-i18n],[data-i18n-html]){animation-delay:240ms}
+.lang-entering .content           :is([data-i18n],[data-i18n-html]){animation-delay:240ms}
+.lang-entering .site-footer       :is([data-i18n],[data-i18n-html]){animation-delay:320ms}
+
+@media (prefers-reduced-motion: reduce){
+  .lang-entering [data-i18n],
+  .lang-entering [data-i18n-html]{animation:none !important}
+}
+
+@media (max-width:900px){
+  .search-input{width:120px}
+  .search-input:focus{width:160px}
+  .search-results{width:280px}
+}
 """
 
 # ─── TEMPLATE ─────────────────────────────────────────────────────────────────
 
+def t(key, vi):
+    """Render a span with data-i18n key + Vietnamese fallback text."""
+    return f'<span data-i18n="{key}">{vi}</span>'
+
 def build_nav(active_section_id="", b=""):
-    """Build top nav with hover dropdowns."""
+    """Build top nav with hover dropdowns + search + lang switcher."""
     out = ['<nav class="main-nav">']
     for sec in SITEMAP:
         active = "active" if sec["id"] == active_section_id else ""
         slug = sec["slug"]
         sec_url = f'{b}{slug}/index.html'
+        sec_label = t(f'label.{sec["id"]}', sec["label"])
         if sec["type"] == "single":
-            out.append(f'<div class="nav-item {active}"><a href="{sec_url}">{sec["label"]}</a></div>')
+            out.append(f'<div class="nav-item {active}"><a href="{sec_url}">{sec_label}</a></div>')
         elif sec["type"] == "mega":
-            # Mega menu (Về di tích) — 6 columns
             cols = []
             for grp in sec["groups"]:
                 grp_url = f'{b}{slug}/{grp["slug"]}/index.html'
+                grp_label = t(f'label.{grp["id"]}', grp["label"])
                 items_html = ""
                 for it in grp["items"]:
                     it_url = f'{b}{slug}/{grp["slug"]}/{it["slug"]}/index.html'
-                    items_html += f'<li><a href="{it_url}"><span class="dropdown-num">{it["id"]}</span>{it["label"]}</a></li>'
+                    it_label = t(f'label.{it["id"]}', it["label"])
+                    items_html += f'<li><a href="{it_url}"><span class="dropdown-num">{it["id"]}</span>{it_label}</a></li>'
                 cols.append(f'''<div class="mega-col">
-                    <div class="mega-col-title"><a href="{grp_url}">{grp["label"]}</a></div>
+                    <div class="mega-col-title"><a href="{grp_url}">{grp_label}</a></div>
                     <ul>{items_html}</ul>
                 </div>''')
             out.append(f'''<div class="nav-item has-menu {active}">
-                <a href="{sec_url}">{sec["label"]}</a>
+                <a href="{sec_url}">{sec_label}</a>
                 <div class="dropdown mega">{"".join(cols)}</div>
             </div>''')
         else:  # dropdown
             items_html = ""
             for grp in sec["groups"]:
                 grp_url = f'{b}{slug}/{grp["slug"]}/index.html'
-                items_html += f'<a href="{grp_url}"><span class="dropdown-num">{grp["id"]}</span>{grp["label"]}</a>'
+                grp_label = t(f'label.{grp["id"]}', grp["label"])
+                items_html += f'<a href="{grp_url}"><span class="dropdown-num">{grp["id"]}</span>{grp_label}</a>'
             out.append(f'''<div class="nav-item has-menu {active}">
-                <a href="{sec_url}">{sec["label"]}</a>
+                <a href="{sec_url}">{sec_label}</a>
                 <div class="dropdown simple">{items_html}</div>
             </div>''')
-    out.append(f'<a href="{b}tham-quan/index.html#mua-ve" class="nav-cta">Mua vé</a>')
     out.append('</nav>')
-    return "\n".join(out)
+
+    # Tools: search + language switcher + CTA
+    tools = f'''<div class="header-tools">
+      <div class="search-wrap">
+        <input type="search" class="search-input" id="site-search"
+               placeholder="Tìm kiếm…" data-i18n-attr="placeholder:ui.search_ph"
+               autocomplete="off" aria-label="Search">
+        <div class="search-results" id="search-results" role="listbox"></div>
+      </div>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" class="lang-btn" data-lang="vi">VI</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+        <button type="button" class="lang-btn" data-lang="fr">FR</button>
+      </div>
+      <a href="{b}tham-quan/index.html#mua-ve" class="nav-cta" data-i18n="ui.buy_ticket">Mua vé</a>
+    </div>'''
+    return "\n".join(out) + tools
 
 def build_footer(b=""):
     cols = []
     for sec in SITEMAP[:5]:
+        sec_label = t(f'label.{sec["id"]}', sec["label"])
         if sec["type"] == "single":
-            inner = f'<li><a href="{b}{sec["slug"]}/index.html">{sec["label"]}</a></li>'
+            inner = f'<li><a href="{b}{sec["slug"]}/index.html">{sec_label}</a></li>'
         else:
-            inner = "".join(
-                f'<li><a href="{b}{sec["slug"]}/{g["slug"]}/index.html">{g["label"]}</a></li>'
-                for g in sec["groups"][:5]
-            )
-        cols.append(f'<div><p class="footer-col-title">{sec["label"]}</p><ul class="footer-links">{inner}</ul></div>')
+            parts = []
+            for g in sec["groups"][:5]:
+                glabel = t(f'label.{g["id"]}', g["label"])
+                parts.append(f'<li><a href="{b}{sec["slug"]}/{g["slug"]}/index.html">{glabel}</a></li>')
+            inner = "".join(parts)
+        cols.append(f'<div><p class="footer-col-title">{sec_label}</p><ul class="footer-links">{inner}</ul></div>')
     return "\n".join(cols)
 
 def page(title, meta, section_id, crumbs, body, depth=0):
+    """crumbs: list of tuples (label, href) or (label, href, i18n_key)."""
     b = "../" * depth
     nav_html = build_nav(section_id, b)
     crumb_html = ""
-    for i, (lbl, href) in enumerate(crumbs):
+    for i, c in enumerate(crumbs):
+        lbl, href = c[0], c[1]
+        i18n_key = c[2] if len(c) > 2 else None
         if i: crumb_html += '<span class="sep">›</span>'
+        lbl_html = t(i18n_key, lbl) if i18n_key else lbl
         if href and i < len(crumbs) - 1:
-            crumb_html += f'<a href="{b}{href}">{lbl}</a>'
+            crumb_html += f'<a href="{b}{href}">{lbl_html}</a>'
         else:
-            crumb_html += f'<span>{lbl}</span>'
+            crumb_html += f'<span>{lbl_html}</span>'
     footer_cols = build_footer(b)
     return f"""<!doctype html>
 <html lang="vi">
@@ -1034,8 +1199,8 @@ def page(title, meta, section_id, crumbs, body, depth=0):
     <a class="brand" href="{b}index.html">
       <span class="brand-mark">VM</span>
       <span class="brand-text">
-        <span class="brand-name">Văn Miếu – Quốc Tử Giám</span>
-        <span class="brand-sub">Di tích Quốc gia đặc biệt</span>
+        <span class="brand-name" data-i18n="ui.site_name">Văn Miếu – Quốc Tử Giám</span>
+        <span class="brand-sub" data-i18n="ui.site_sub">Di tích Quốc gia đặc biệt</span>
       </span>
     </a>
     {nav_html}
@@ -1047,8 +1212,8 @@ def page(title, meta, section_id, crumbs, body, depth=0):
   <div class="container">
     <div class="footer-grid">
       <div>
-        <p class="footer-brand">Văn Miếu – Quốc Tử Giám</p>
-        <p class="footer-address">
+        <p class="footer-brand" data-i18n="ui.footer_brand">Văn Miếu – Quốc Tử Giám</p>
+        <p class="footer-address" data-i18n-html="ui.footer_addr">
           58 Phố Quốc Tử Giám, Phường Văn Miếu<br>
           Quận Đống Đa, Hà Nội<br>
           Điện thoại: 024.3747.1322<br>
@@ -1057,9 +1222,11 @@ def page(title, meta, section_id, crumbs, body, depth=0):
       </div>
       {footer_cols}
     </div>
-    <p class="footer-copy">© Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám</p>
+    <p class="footer-copy" data-i18n="ui.footer_copy">© Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám</p>
   </div>
 </footer>
+<script src="{b}assets/js/data.js"></script>
+<script src="{b}assets/js/app.js"></script>
 </body>
 </html>"""
 
@@ -1074,16 +1241,19 @@ def img_or_ph(img, depth, label="Ảnh"):
         return f'<img src="{"../"*depth}assets/images/{img}" alt="" loading="lazy">'
     return f'<div class="card-img-ph"><span>{label}</span></div>'
 
-def render_card(num, title, desc, href, img, depth, compact=False):
+def render_card(num, title, desc, href, img, depth, compact=False,
+                title_key=None, desc_key=None):
     img_html = (f'<img src="{"../"*depth}assets/images/{img}" alt="" loading="lazy">'
                 if img else '<div class="card-img-ph"><span>Ảnh</span></div>')
     cls = "card compact" if compact else "card"
+    title_html = t(title_key, title) if title_key else title
+    desc_html  = t(desc_key, desc) if desc_key else desc
     return f'''<a href="{href}" class="{cls}">
   <div class="card-img">{img_html}</div>
   <div class="card-body">
     <p class="card-num">{num}</p>
-    <h3 class="card-title">{title}</h3>
-    <p class="card-desc">{desc}</p>
+    <h3 class="card-title">{title_html}</h3>
+    <p class="card-desc">{desc_html}</p>
   </div>
 </a>'''
 
@@ -1093,13 +1263,14 @@ def render_sidebar(section_slug, group_slug, current_item_slug, items, depth):
     for it in items:
         href = f'{b}{section_slug}/{group_slug}/{it["slug"]}/index.html'
         cls = "active" if it["slug"] == current_item_slug else ""
-        links.append(f'<li><a href="{href}" class="{cls}">{it["label"]}</a></li>')
+        lbl = t(f'label.{it["id"]}', it["label"])
+        links.append(f'<li><a href="{href}" class="{cls}">{lbl}</a></li>')
     return f'''<aside>
   <div class="sidebar-box">
-    <p class="sidebar-title">Trong mục này</p>
+    <p class="sidebar-title" data-i18n="ui.in_section">Trong mục này</p>
     <ul class="sidebar-links">{"".join(links)}</ul>
   </div>
-  <a href="{b}tham-quan/index.html" class="sidebar-cta">Mua vé →</a>
+  <a href="{b}tham-quan/index.html" class="sidebar-cta" data-i18n="ui.buy_ticket_arrow">Mua vé →</a>
 </aside>'''
 
 def render_group_sidebar(section_slug, current_group_slug, groups, depth):
@@ -1108,13 +1279,14 @@ def render_group_sidebar(section_slug, current_group_slug, groups, depth):
     for g in groups:
         href = f'{b}{section_slug}/{g["slug"]}/index.html'
         cls = "active" if g["slug"] == current_group_slug else ""
-        links.append(f'<li><a href="{href}" class="{cls}">{g["label"]}</a></li>')
+        lbl = t(f'label.{g["id"]}', g["label"])
+        links.append(f'<li><a href="{href}" class="{cls}">{lbl}</a></li>')
     return f'''<aside>
   <div class="sidebar-box">
-    <p class="sidebar-title">Trong mục này</p>
+    <p class="sidebar-title" data-i18n="ui.in_section">Trong mục này</p>
     <ul class="sidebar-links">{"".join(links)}</ul>
   </div>
-  <a href="{b}tham-quan/index.html" class="sidebar-cta">Mua vé →</a>
+  <a href="{b}tham-quan/index.html" class="sidebar-cta" data-i18n="ui.buy_ticket_arrow">Mua vé →</a>
 </aside>'''
 
 # ─── HOME PAGE ────────────────────────────────────────────────────────────────
@@ -1122,36 +1294,41 @@ def render_group_sidebar(section_slug, current_group_slug, groups, depth):
 def build_home():
     blocks = []
     counts = {"A":"Vé · Giờ · Đường đến","B":"6 mục","C":"3 mục","D":"7 mục","E":"6 mục"}
+    count_keys = {"A":"ui.count_a","B":"ui.count_b","C":"ui.count_c","D":"ui.count_d","E":"ui.count_e"}
     for sec in SITEMAP:
         href = f'{sec["slug"]}/index.html'
+        sec_label = t(f'label.{sec["id"]}', sec["label"])
+        sec_sub   = t(f'sub.{sec["id"]}', sec["sub"])
+        sec_count = t(count_keys[sec["id"]], counts[sec["id"]])
         blocks.append(f'''<a href="{href}" class="section-block">
   <span class="section-block-num">{sec["id"]}</span>
-  <span class="section-block-name">{sec["label"]}</span>
-  <span class="section-block-sub">{sec["sub"]}</span>
-  <span class="section-block-count">{counts[sec["id"]]}</span>
+  <span class="section-block-name">{sec_label}</span>
+  <span class="section-block-sub">{sec_sub}</span>
+  <span class="section-block-count">{sec_count}</span>
 </a>''')
     body = f'''
 <div class="hero">
   <img class="hero-img" src="assets/images/hero.jpg" alt="">
   <div class="hero-overlay"></div>
   <div class="hero-content container">
-    <h1 class="hero-title">Văn Miếu – Quốc Tử Giám</h1>
-    <p class="hero-sub">Di tích Quốc gia đặc biệt · Trường đại học đầu tiên của Việt Nam · 82 Bia Tiến sĩ — Di sản tư liệu UNESCO</p>
+    <h1 class="hero-title" data-i18n="ui.hero_title">Văn Miếu – Quốc Tử Giám</h1>
+    <p class="hero-sub" data-i18n="ui.hero_sub">Di tích Quốc gia đặc biệt · Trường đại học đầu tiên của Việt Nam · 82 Bia Tiến sĩ — Di sản tư liệu UNESCO</p>
   </div>
 </div>
 <div class="quick-bar"><div class="quick-bar-inner">
-  <div class="quick-item"><p class="quick-label">Giờ mở cửa</p><p class="quick-value">07:30 – 18:00</p></div>
-  <div class="quick-item"><p class="quick-label">Địa chỉ</p><p class="quick-value">58 Quốc Tử Giám, Đống Đa, Hà Nội</p></div>
-  <div class="quick-item"><p class="quick-label">Điện thoại</p><p class="quick-value">024.3747.1322</p></div>
-  <div class="quick-item"><p class="quick-label">Giá vé</p><p class="quick-value">30.000đ / người lớn</p></div>
+  <div class="quick-item"><p class="quick-label" data-i18n="ui.hours">Giờ mở cửa</p><p class="quick-value">07:30 – 18:00</p></div>
+  <div class="quick-item"><p class="quick-label" data-i18n="ui.address">Địa chỉ</p><p class="quick-value" data-i18n="ui.addr_short">58 Quốc Tử Giám, Đống Đa, Hà Nội</p></div>
+  <div class="quick-item"><p class="quick-label" data-i18n="ui.phone">Điện thoại</p><p class="quick-value">024.3747.1322</p></div>
+  <div class="quick-item"><p class="quick-label" data-i18n="ui.price">Giá vé</p><p class="quick-value" data-i18n="ui.price_val_adult">30.000đ / người lớn</p></div>
 </div></div>
 <main>
 <div class="container sections-overview">
-  <p class="sections-title">Khám phá Văn Miếu – Quốc Tử Giám</p>
+  <p class="sections-title" data-i18n="ui.discover">Khám phá Văn Miếu – Quốc Tử Giám</p>
   <div class="sections-grid">{"".join(blocks)}</div>
 </div>
 </main>'''
-    return page("Trang chủ", "Di tích Quốc gia đặc biệt Văn Miếu – Quốc Tử Giám.", "", [("Trang chủ","")], body, 0)
+    return page("Trang chủ", "Di tích Quốc gia đặc biệt Văn Miếu – Quốc Tử Giám.", "",
+                [("Trang chủ","","ui.home")], body, 0)
 
 # ─── SECTION A: THAM QUAN (single page) ───────────────────────────────────────
 
@@ -1159,15 +1336,15 @@ def build_section_a():
     body_inner = CONTENT["tham-quan"]
     body = f'''
 <div class="page-hd"><div class="container">
-  <p class="label">Tham quan</p>
-  <h1 class="page-title">Thông tin tham quan</h1>
-  <p class="page-sub">Vé, giờ mở cửa, nội quy, đường đến và các tiện ích tại Văn Miếu – Quốc Tử Giám.</p>
+  <p class="label" data-i18n="label.A">Tham quan</p>
+  <h1 class="page-title" data-i18n="ui.page_a_title">Thông tin tham quan</h1>
+  <p class="page-sub" data-i18n="ui.page_a_sub">Vé, giờ mở cửa, nội quy, đường đến và các tiện ích tại Văn Miếu – Quốc Tử Giám.</p>
 </div></div>
 <div class="content"><div class="container">
-  <div class="article" id="mua-ve">{body_inner}</div>
+  <div class="article" id="mua-ve" data-i18n-html="content.tham-quan">{body_inner}</div>
 </div></div>'''
     return page("Tham quan", "Thông tin tham quan Văn Miếu – Quốc Tử Giám.",
-                "A", [("Trang chủ","index.html"),("Tham quan","")], body, 1)
+                "A", [("Trang chủ","index.html","ui.home"),("Tham quan","","label.A")], body, 1)
 
 # ─── SECTION HUB (B/C/D/E top-level) ──────────────────────────────────────────
 
@@ -1175,28 +1352,32 @@ def build_section_hub(section):
     cards = []
     for grp in section["groups"]:
         href = f'{grp["slug"]}/index.html'
-        # pick img from first item if available
         img = None
         if grp.get("items"):
             for it in grp["items"]:
                 if it.get("img"):
                     img = it["img"]
                     break
-        count_text = f'{len(grp["items"])} mục' if grp.get("items") else "Trang chi tiết"
-        cards.append(render_card(grp["id"], grp["label"], grp["sub"] + " · " + count_text,
-                                 href, img, depth=1))
+        cards.append(render_card(
+            grp["id"], grp["label"], grp["sub"],
+            href, img, depth=1,
+            title_key=f'label.{grp["id"]}',
+            desc_key=f'sub.{grp["id"]}',
+        ))
     grid_class = "grid-3" if len(section["groups"]) > 4 else "grid-2"
     body = f'''
 <div class="page-hd"><div class="container">
   <p class="label">{section["id"]}</p>
-  <h1 class="page-title">{section["label"]}</h1>
-  <p class="page-sub">{section["sub"]}</p>
+  <h1 class="page-title" data-i18n="label.{section["id"]}">{section["label"]}</h1>
+  <p class="page-sub" data-i18n="sub.{section["id"]}">{section["sub"]}</p>
 </div></div>
 <div class="content"><div class="container">
   <div class="{grid_class}">{"".join(cards)}</div>
 </div></div>'''
     return page(section["label"], section["sub"], section["id"],
-                [("Trang chủ","index.html"),(section["label"],"")], body, 1)
+                [("Trang chủ","index.html","ui.home"),
+                 (section["label"],"",f'label.{section["id"]}')],
+                body, 1)
 
 # ─── GROUP HUB (B1, B2, ..., C1, ..., E1, ...) ────────────────────────────────
 
@@ -1207,29 +1388,34 @@ def build_group_hub(section, group):
         compact = len(group["items"]) > 6
         for it in group["items"]:
             href = f'{it["slug"]}/index.html'
-            cards.append(render_card(it["id"], it["label"],
-                                     f'Chi tiết về {it["label"].lower()}.',
-                                     href, it.get("img"), depth=2, compact=compact))
+            cards.append(render_card(
+                it["id"], it["label"],
+                f'Chi tiết về {it["label"].lower()}.',
+                href, it.get("img"), depth=2, compact=compact,
+                title_key=f'label.{it["id"]}',
+            ))
         grid = "grid-4" if compact else "grid-3"
         if len(group["items"]) <= 3:
             grid = "grid-3"
         body_inner = f'<div class="{grid}">{"".join(cards)}</div>'
     else:
-        # Group has no sub-items — render content directly
         key = f'{section["slug"]}/{group["slug"]}'
         content = CONTENT.get(key, f'<p>Thông tin chi tiết về <strong>{group["label"]}</strong> đang được cập nhật.</p>')
-        body_inner = f'<div class="content-inner"><div class="article">{content}</div>{render_group_sidebar(section["slug"], group["slug"], section["groups"], depth=2)}</div>'
+        content_attr = f' data-i18n-html="content.{key}"'
+        body_inner = f'<div class="content-inner"><div class="article"{content_attr}>{content}</div>{render_group_sidebar(section["slug"], group["slug"], section["groups"], depth=2)}</div>'
     body = f'''
 <div class="page-hd"><div class="container">
-  <p class="label">{section["label"]} · {group["id"]}</p>
-  <h1 class="page-title">{group["label"]}</h1>
-  <p class="page-sub">{group["sub"]}</p>
+  <p class="label"><span data-i18n="label.{section["id"]}">{section["label"]}</span> · {group["id"]}</p>
+  <h1 class="page-title" data-i18n="label.{group["id"]}">{group["label"]}</h1>
+  <p class="page-sub" data-i18n="sub.{group["id"]}">{group["sub"]}</p>
 </div></div>
 <div class="content"><div class="container">
   {body_inner}
 </div></div>'''
     return page(group["label"], group["sub"], section["id"],
-                [("Trang chủ","index.html"),(section["label"],f'{section["slug"]}/index.html'),(group["label"],"")],
+                [("Trang chủ","index.html","ui.home"),
+                 (section["label"],f'{section["slug"]}/index.html',f'label.{section["id"]}'),
+                 (group["label"],"",f'label.{group["id"]}')],
                 body, 2)
 
 # ─── ITEM PAGE (B1.1, B3.4, etc.) ─────────────────────────────────────────────
@@ -1238,7 +1424,6 @@ def build_item_page(section, group, item):
     key = f'{section["slug"]}/{group["slug"]}/{item["slug"]}'
     content = CONTENT.get(key)
     if not content:
-        # generate placeholder content
         content = f'''<p>Trang chi tiết về <strong>{item["label"]}</strong> trong mục {group["label"]}.</p>
 <p>Nội dung chi tiết đang được biên soạn. Quý khách vui lòng liên hệ Phòng Truyền thông để biết thêm thông tin: 024.3747.1322.</p>'''
     img_html = ""
@@ -1246,21 +1431,21 @@ def build_item_page(section, group, item):
         img_html = f'<div class="article-hero"><img src="../../../assets/images/{item["img"]}" alt="{item["label"]}" loading="lazy"></div>'
     body = f'''
 <div class="page-hd"><div class="container">
-  <p class="label">{section["label"]} · {group["label"]} · {item["id"]}</p>
-  <h1 class="page-title">{item["label"]}</h1>
+  <p class="label"><span data-i18n="label.{section["id"]}">{section["label"]}</span> · <span data-i18n="label.{group["id"]}">{group["label"]}</span> · {item["id"]}</p>
+  <h1 class="page-title" data-i18n="label.{item["id"]}">{item["label"]}</h1>
 </div></div>
 <div class="content"><div class="container">
   <div class="content-inner">
-    <div class="article">{img_html}{content}</div>
+    <div class="article">{img_html}<div data-i18n-html="content.{key}">{content}</div></div>
     {render_sidebar(section["slug"], group["slug"], item["slug"], group["items"], depth=3)}
   </div>
 </div></div>'''
     return page(item["label"], f'{item["label"]} — {group["label"]}, {section["label"]}.',
                 section["id"],
-                [("Trang chủ","index.html"),
-                 (section["label"], f'{section["slug"]}/index.html'),
-                 (group["label"], f'{section["slug"]}/{group["slug"]}/index.html'),
-                 (item["label"], "")],
+                [("Trang chủ","index.html","ui.home"),
+                 (section["label"], f'{section["slug"]}/index.html', f'label.{section["id"]}'),
+                 (group["label"], f'{section["slug"]}/{group["slug"]}/index.html', f'label.{group["id"]}'),
+                 (item["label"], "", f'label.{item["id"]}')],
                 body, 3)
 
 # ─── IMAGE COPY ───────────────────────────────────────────────────────────────
@@ -1300,6 +1485,332 @@ def copy_imgs():
                     else:
                         print(f"  ! missing image: {it['img']}")
 
+# ─── DATA.JS (i18n + search index) ────────────────────────────────────────────
+
+def build_search_index():
+    """Build a flat list of every page with VI/EN/FR labels for search."""
+    idx = []
+    # home
+    idx.append({"id":"home","url":"index.html",
+                "vi":"Trang chủ","en":"Home","fr":"Accueil",
+                "sub_vi":"Văn Miếu – Quốc Tử Giám",
+                "sub_en":"Temple of Literature","sub_fr":"Temple de la Littérature",
+                "section":""})
+    for sec in SITEMAP:
+        sec_url = f'{sec["slug"]}/index.html'
+        en = TR.LABELS.get(sec["id"], {}).get("en", sec["label"])
+        fr = TR.LABELS.get(sec["id"], {}).get("fr", sec["label"])
+        sub_en = TR.SUBS.get(sec["id"], {}).get("en", sec["sub"])
+        sub_fr = TR.SUBS.get(sec["id"], {}).get("fr", sec["sub"])
+        idx.append({"id":sec["id"],"url":sec_url,
+                    "vi":sec["label"],"en":en,"fr":fr,
+                    "sub_vi":sec["sub"],"sub_en":sub_en,"sub_fr":sub_fr,
+                    "section":sec["id"]})
+        for grp in sec.get("groups", []):
+            grp_url = f'{sec["slug"]}/{grp["slug"]}/index.html'
+            gen = TR.LABELS.get(grp["id"], {}).get("en", grp["label"])
+            gfr = TR.LABELS.get(grp["id"], {}).get("fr", grp["label"])
+            gsub_en = TR.SUBS.get(grp["id"], {}).get("en", grp["sub"])
+            gsub_fr = TR.SUBS.get(grp["id"], {}).get("fr", grp["sub"])
+            idx.append({"id":grp["id"],"url":grp_url,
+                        "vi":grp["label"],"en":gen,"fr":gfr,
+                        "sub_vi":grp["sub"],"sub_en":gsub_en,"sub_fr":gsub_fr,
+                        "section":sec["id"]})
+            for it in grp.get("items", []):
+                it_url = f'{sec["slug"]}/{grp["slug"]}/{it["slug"]}/index.html'
+                ien = TR.LABELS.get(it["id"], {}).get("en", it["label"])
+                ifr = TR.LABELS.get(it["id"], {}).get("fr", it["label"])
+                idx.append({"id":it["id"],"url":it_url,
+                            "vi":it["label"],"en":ien,"fr":ifr,
+                            "sub_vi":grp["label"],"sub_en":gen,"sub_fr":gfr,
+                            "section":sec["id"]})
+    return idx
+
+def build_i18n_dict():
+    """Build {key → {vi,en,fr}} dict consumed by JS."""
+    out = {}
+    # UI strings
+    for k, v in TR.UI.items():
+        out[f"ui.{k}"] = v
+    # Labels (id → translated label)
+    for k, v in TR.LABELS.items():
+        out[f"label.{k}"] = v
+    # Subs
+    for k, v in TR.SUBS.items():
+        out[f"sub.{k}"] = v
+    # Long content (HTML)
+    for k, v in TR.CONTENT.items():
+        out[f"content.{k}"] = v
+    return out
+
+DATA_JS_TEMPLATE = """// Auto-generated. Do not edit by hand.
+window.I18N = %s;
+window.SEARCH_INDEX = %s;
+"""
+
+def write_data_js():
+    i18n = build_i18n_dict()
+    idx = build_search_index()
+    out = DATA_JS_TEMPLATE % (
+        json.dumps(i18n, ensure_ascii=False, separators=(",",":")),
+        json.dumps(idx,  ensure_ascii=False, separators=(",",":")),
+    )
+    p = ROOT / "assets" / "js" / "data.js"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(out, encoding="utf-8")
+
+# ─── APP.JS (search + i18n + animation) ───────────────────────────────────────
+
+APP_JS = r"""
+(function(){
+  'use strict';
+  var I18N = window.I18N || {};
+  var INDEX = window.SEARCH_INDEX || [];
+  var STORAGE_KEY = 'vmqtg_lang';
+  var DEFAULT = 'vi';
+
+  // ─── helpers ────────────────────────────────────────────────────────────
+  function stripDiacritics(s){
+    return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+  }
+  function getLang(){
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if(saved && (saved==='vi'||saved==='en'||saved==='fr')) return saved;
+    var nav = (navigator.language||'').slice(0,2).toLowerCase();
+    if(nav==='en'||nav==='fr') return nav;
+    return DEFAULT;
+  }
+  function setLang(lang){
+    localStorage.setItem(STORAGE_KEY, lang);
+    document.documentElement.setAttribute('lang', lang);
+  }
+  function lookup(key, lang){
+    var entry = I18N[key];
+    if(!entry) return null;
+    return entry[lang] || null;
+  }
+
+  // ─── i18n apply ─────────────────────────────────────────────────────────
+  function applyI18n(lang){
+    // text nodes
+    var nodes = document.querySelectorAll('[data-i18n]');
+    nodes.forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      // store original VI text once
+      if(!el.hasAttribute('data-vi-text')) el.setAttribute('data-vi-text', el.textContent);
+      var txt = (lang==='vi') ? el.getAttribute('data-vi-text') : lookup(key, lang);
+      el.textContent = txt || el.getAttribute('data-vi-text');
+    });
+    // html nodes
+    var htmlNodes = document.querySelectorAll('[data-i18n-html]');
+    htmlNodes.forEach(function(el){
+      var key = el.getAttribute('data-i18n-html');
+      if(!el.hasAttribute('data-vi-html')) el.setAttribute('data-vi-html', el.innerHTML);
+      var html = (lang==='vi') ? el.getAttribute('data-vi-html') : lookup(key, lang);
+      el.innerHTML = html || el.getAttribute('data-vi-html');
+    });
+    // attribute swaps: data-i18n-attr="placeholder:ui.search_ph"
+    var attrNodes = document.querySelectorAll('[data-i18n-attr]');
+    attrNodes.forEach(function(el){
+      var spec = el.getAttribute('data-i18n-attr');
+      spec.split(',').forEach(function(pair){
+        var parts = pair.trim().split(':');
+        var attr = parts[0], key = parts[1];
+        var orig = el.getAttribute('data-vi-attr-'+attr);
+        if(orig===null){ el.setAttribute('data-vi-attr-'+attr, el.getAttribute(attr)||''); orig = el.getAttribute(attr)||''; }
+        var v = (lang==='vi') ? orig : lookup(key, lang);
+        el.setAttribute(attr, v || orig);
+      });
+    });
+    // update active button
+    document.querySelectorAll('.lang-btn').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-lang')===lang);
+    });
+    // update <title> by extracting current page title text node
+    var h1 = document.querySelector('.page-title, .hero-title');
+    if(h1){
+      var t = h1.textContent.trim();
+      if(t) document.title = t + ' — ' + (lookup('ui.site_name', lang) || 'Văn Miếu Quốc Tử Giám');
+    }
+  }
+
+  // Index translatable elements into 2 regions for staggered animation.
+  // Sets CSS var --i so .lang-entering rules can offset animation-delay.
+  // Re-run after every applyI18n() because innerHTML swap creates new children.
+  // Menu indexing: only top-level nav bar items get a stagger index.
+  // Content sections use static delays in CSS (per parent section), so no
+  // JS indexing is needed there — only text animates, never images/bg.
+  var MENU_SEL = '.site-header [data-i18n]:not(.dropdown [data-i18n])';
+  function indexElements(){
+    document.querySelectorAll(MENU_SEL).forEach(function(el,i){
+      el.style.setProperty('--i', i);
+    });
+  }
+
+  function transitionLang(lang){
+    applyI18n(lang);
+    indexElements();
+    // toggle .lang-entering off→on to restart animation; force reflow between
+    document.body.classList.remove('lang-entering');
+    void document.body.offsetWidth;
+    document.body.classList.add('lang-entering');
+    setTimeout(function(){
+      document.body.classList.remove('lang-entering');
+    }, 900);
+    setLang(lang);
+  }
+
+  // ─── search ─────────────────────────────────────────────────────────────
+  function highlight(text, query){
+    if(!query) return text;
+    var q = stripDiacritics(query);
+    var src = stripDiacritics(text);
+    var i = src.indexOf(q);
+    if(i<0) return text;
+    return text.slice(0,i)+'<mark>'+text.slice(i,i+q.length)+'</mark>'+text.slice(i+q.length);
+  }
+  function score(entry, query, lang){
+    var q = stripDiacritics(query);
+    if(!q) return 0;
+    var fields = [entry[lang]||'', entry.vi||'', entry.en||'', entry.fr||'',
+                  entry['sub_'+lang]||'', entry.sub_vi||''];
+    var best = -1, hit=0;
+    for(var i=0;i<fields.length;i++){
+      var s = stripDiacritics(fields[i]);
+      var idx = s.indexOf(q);
+      if(idx>=0){
+        hit = 1;
+        // weight: earlier match + primary lang first = better
+        var w = (i===0?100:i===1?80:50) - idx;
+        if(w>best) best=w;
+      }
+    }
+    return hit ? best : -1;
+  }
+  function runSearch(query, lang){
+    if(!query.trim()) return [];
+    var ranked = [];
+    INDEX.forEach(function(e){
+      var s = score(e, query, lang);
+      if(s>=0) ranked.push({e:e, s:s});
+    });
+    ranked.sort(function(a,b){return b.s-a.s});
+    return ranked.slice(0,10).map(function(x){return x.e});
+  }
+  function renderResults(results, query, lang){
+    var box = document.getElementById('search-results');
+    if(!box) return;
+    if(!results.length){
+      box.innerHTML = '<div class="search-empty">'+(lookup('ui.search_no',lang)||'Không có kết quả')+'</div>';
+      box.classList.add('open'); return;
+    }
+    // build URL prefix from current depth
+    var depth = (location.pathname.match(/\//g)||[]).length - 1;
+    // Better: count slashes after the site root. Use relative trick:
+    // figure out how many "../" we need by finding base of href in <link rel=stylesheet>
+    var css = document.querySelector('link[rel=stylesheet]');
+    var prefix = '';
+    if(css){
+      var href = css.getAttribute('href')||'';
+      var m = href.match(/^((?:\.\.\/)+)/);
+      if(m) prefix = m[1];
+    }
+    var html = results.map(function(r){
+      var title = r[lang] || r.vi;
+      var sub = r['sub_'+lang] || r.sub_vi || '';
+      var url = prefix + r.url;
+      return '<a class="search-result" href="'+url+'">'+
+             '<span class="sr-id">'+r.id+'</span>'+
+             '<span class="sr-title">'+highlight(title, query)+'</span>'+
+             (sub?'<span class="sr-sub">'+highlight(sub, query)+'</span>':'')+
+             '</a>';
+    }).join('');
+    box.innerHTML = html;
+    box.classList.add('open');
+  }
+
+  // ─── init ───────────────────────────────────────────────────────────────
+  function init(){
+    var lang = getLang();
+    setLang(lang);
+    applyI18n(lang);
+    indexElements();
+
+    document.querySelectorAll('.lang-btn').forEach(function(b){
+      b.addEventListener('click', function(){
+        var l = b.getAttribute('data-lang');
+        if(l===getLang()) return;
+        transitionLang(l);
+      });
+    });
+
+    var input = document.getElementById('site-search');
+    var box = document.getElementById('search-results');
+    if(input){
+      var debounce;
+      input.addEventListener('input', function(){
+        clearTimeout(debounce);
+        debounce = setTimeout(function(){
+          var q = input.value;
+          if(!q.trim()){ box.classList.remove('open'); box.innerHTML=''; return; }
+          renderResults(runSearch(q, getLang()), q, getLang());
+        }, 80);
+      });
+      input.addEventListener('focus', function(){
+        if(input.value.trim()) box.classList.add('open');
+      });
+      document.addEventListener('click', function(e){
+        if(!e.target.closest('.search-wrap')) box.classList.remove('open');
+      });
+      // keyboard
+      input.addEventListener('keydown', function(e){
+        var items = box.querySelectorAll('.search-result');
+        if(!items.length) return;
+        var sel = box.querySelector('.search-result.selected');
+        var idx = sel ? Array.prototype.indexOf.call(items, sel) : -1;
+        if(e.key==='ArrowDown'){ e.preventDefault(); idx=(idx+1)%items.length; }
+        else if(e.key==='ArrowUp'){ e.preventDefault(); idx=(idx-1+items.length)%items.length; }
+        else if(e.key==='Enter' && sel){ e.preventDefault(); window.location.href = sel.getAttribute('href'); return; }
+        else if(e.key==='Escape'){ box.classList.remove('open'); input.blur(); return; }
+        else return;
+        items.forEach(function(i){i.classList.remove('selected')});
+        if(items[idx]) items[idx].classList.add('selected');
+      });
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+
+  // ─── page transitions ────────────────────────────────────────────────────
+  // When cross-document View Transitions handle the navigation (Chrome 126+),
+  // cancel the body fade-in animation to avoid double-animating.
+  window.addEventListener('pagereveal', function(e){
+    if(e.viewTransition) document.body.style.animation = 'none';
+  });
+
+  // Fallback JS fade for browsers without cross-document View Transitions.
+  var hasCrossDocVT = typeof CSSViewTransitionRule !== 'undefined';
+  if(!hasCrossDocVT){
+    document.addEventListener('click', function(e){
+      var a = e.target.closest('a[href]');
+      if(!a || a.target) return;
+      var href = a.href;
+      if(!href || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+      try{ if(new URL(href).origin !== location.origin) return; } catch(err){ return; }
+      if(href.split('#')[0] === location.href.split('#')[0]) return;
+      e.preventDefault();
+      document.body.classList.add('page-leaving');
+      setTimeout(function(){ window.location.href = href; }, 210);
+    });
+  }
+})();
+"""
+
+def write_app_js():
+    p = ROOT / "assets" / "js" / "app.js"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(APP_JS, encoding="utf-8")
+
 # ─── BUILD ────────────────────────────────────────────────────────────────────
 
 def main():
@@ -1320,6 +1831,11 @@ def main():
     css_path.parent.mkdir(parents=True, exist_ok=True)
     css_path.write_text(CSS, encoding="utf-8")
     print("  ✓ CSS")
+
+    # JS (data + app)
+    write_data_js()
+    write_app_js()
+    print("  ✓ JS (data + app)")
 
     # Images
     copy_imgs()

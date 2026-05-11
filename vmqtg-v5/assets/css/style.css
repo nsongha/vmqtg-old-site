@@ -249,3 +249,131 @@ ul,ol{list-style:none}
 /* ── UTILITY ── */
 .label{display:inline-block;font-size:.62rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border:1px solid #ddd;padding:.2rem .55rem;color:#888;margin-bottom:.75rem}
 .note{background:#fff;border-left:2px solid #ccc;padding:.9rem 1.1rem;font-size:.82rem;color:#666;line-height:1.65;margin:1.25rem 0;border-top:1px solid #e4e4df;border-right:1px solid #e4e4df;border-bottom:1px solid #e4e4df}
+
+/* ── HEADER TOOLS (search + language) ── */
+.header-tools{display:flex;align-items:center;gap:.6rem;flex-shrink:0;margin-left:auto}
+.search-wrap{position:relative}
+.search-input{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.18);
+  color:#fff;font:inherit;font-size:.74rem;
+  padding:.4rem .7rem .4rem .7rem;
+  width:180px;height:30px;outline:none;
+  transition:width .25s ease,background .2s,border-color .2s;
+}
+.search-input::placeholder{color:rgba(255,255,255,.45)}
+.search-input:focus{width:260px;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.4)}
+.search-results{
+  position:absolute;top:calc(100% + 6px);right:0;
+  background:#fff;color:#111110;
+  width:360px;max-height:60vh;overflow-y:auto;
+  border:1px solid #e4e4df;
+  box-shadow:0 12px 32px rgba(0,0,0,.08);
+  display:none;z-index:200;
+}
+.search-results.open{display:block}
+.search-result{
+  display:block;padding:.6rem .9rem;
+  border-bottom:1px solid #f0f0ec;
+  font-size:.78rem;color:#444;
+}
+.search-result:last-child{border:none}
+.search-result:hover,.search-result.selected{background:#f7f7f5}
+.search-result .sr-id{
+  display:inline-block;font-size:.62rem;color:#bbb;font-weight:600;
+  letter-spacing:.04em;margin-right:.5rem;min-width:2.4rem;
+}
+.search-result .sr-title{font-weight:500;color:#111110}
+.search-result .sr-sub{display:block;font-size:.7rem;color:#999;margin-top:.15rem;margin-left:2.9rem}
+.search-result mark{background:#fff3a3;color:#111110;padding:0 .1rem;border-radius:1px}
+.search-empty{padding:.85rem 1rem;font-size:.78rem;color:#999;text-align:center}
+
+.lang-switch{display:flex;border:1px solid rgba(255,255,255,.18);height:30px;overflow:hidden}
+.lang-btn{
+  background:transparent;color:rgba(255,255,255,.55);
+  border:none;cursor:pointer;font:inherit;
+  font-size:.7rem;font-weight:600;letter-spacing:.06em;
+  padding:0 .55rem;height:100%;
+  border-right:1px solid rgba(255,255,255,.12);
+  transition:background .15s,color .15s;
+}
+.lang-btn:last-child{border-right:none}
+.lang-btn:hover{color:#fff}
+.lang-btn.active{background:#fff;color:#111110}
+
+/* ── PAGE TRANSITIONS ── */
+/* ── PAGE TRANSITIONS ── */
+/* html bg = body bg → no white flash while new page loads */
+html{background:#f7f7f5}
+
+/* Fallback fade (all browsers) */
+@keyframes pageFadeIn{from{opacity:0}to{opacity:1}}
+body{animation:pageFadeIn .32s ease both}
+body.page-leaving{opacity:0;pointer-events:none;transition:opacity .2s ease}
+
+/* Cross-document View Transitions (Chrome 126+):
+   header & footer stay in place; only the content between them fades. */
+.site-header{view-transition-name:site-header;contain:layout}
+.site-footer{view-transition-name:site-footer;contain:layout}
+
+@view-transition{navigation:auto}
+
+/* Persistent elements: no animation, appear to stand still */
+::view-transition-old(site-header),::view-transition-new(site-header),
+::view-transition-old(site-footer),::view-transition-new(site-footer){
+  animation:none;mix-blend-mode:normal;
+}
+/* Content area: fade only */
+@keyframes vt-fade-out{to{opacity:0}}
+::view-transition-old(root){animation:.2s ease both vt-fade-out}
+::view-transition-new(root){animation:.35s ease both pageFadeIn}
+
+@media(prefers-reduced-motion:reduce){
+  body{animation:none!important}
+  body.page-leaving{transition:none!important}
+  ::view-transition-old(root),::view-transition-new(root){animation:none}
+}
+
+/* ── LANG TRANSITION (directional split) ──
+   Header/menu slides left→right; everything else slides top→bottom.
+   Both run in parallel, same easing, capped stagger so total < 600ms. */
+@keyframes slideFromLeft{
+  from{opacity:0;transform:translate3d(-12px,0,0)}
+  to  {opacity:1;transform:translate3d(0,0,0)}
+}
+@keyframes slideFromTop{
+  from{opacity:0;transform:translate3d(0,-8px,0)}
+  to  {opacity:1;transform:translate3d(0,0,0)}
+}
+/* Menu animation: only top-level nav bar items, NOT submenu contents
+   (user doesn't see closed dropdowns, and indexing them makes nav bar uneven). */
+.lang-entering .site-header [data-i18n]:not(.dropdown [data-i18n]){
+  animation:slideFromLeft .35s cubic-bezier(.2,.8,.2,1) both;
+  animation-delay:calc(min(var(--i,0), 15) * 30ms);
+  will-change:transform,opacity;
+}
+/* Content animation: ONLY text nodes ([data-i18n] / [data-i18n-html]).
+   Images, backgrounds, card frames stay static. Stagger by parent section
+   so text reveals top-down, section by section. */
+.lang-entering :is(.breadcrumb,.hero,.quick-bar,.page-hd,.sections-overview,.content,.site-footer) :is([data-i18n],[data-i18n-html]){
+  animation:slideFromTop .35s cubic-bezier(.2,.8,.2,1) both;
+  will-change:transform,opacity;
+}
+.lang-entering .breadcrumb        :is([data-i18n],[data-i18n-html]){animation-delay:  0ms}
+.lang-entering .hero              :is([data-i18n],[data-i18n-html]){animation-delay: 80ms}
+.lang-entering .quick-bar         :is([data-i18n],[data-i18n-html]){animation-delay:160ms}
+.lang-entering .page-hd           :is([data-i18n],[data-i18n-html]){animation-delay:160ms}
+.lang-entering .sections-overview :is([data-i18n],[data-i18n-html]){animation-delay:240ms}
+.lang-entering .content           :is([data-i18n],[data-i18n-html]){animation-delay:240ms}
+.lang-entering .site-footer       :is([data-i18n],[data-i18n-html]){animation-delay:320ms}
+
+@media (prefers-reduced-motion: reduce){
+  .lang-entering [data-i18n],
+  .lang-entering [data-i18n-html]{animation:none !important}
+}
+
+@media (max-width:900px){
+  .search-input{width:120px}
+  .search-input:focus{width:160px}
+  .search-results{width:280px}
+}
