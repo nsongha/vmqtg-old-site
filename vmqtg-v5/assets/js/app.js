@@ -225,19 +225,28 @@
     if(e.viewTransition) document.body.style.animation = 'none';
   });
 
-  // Fallback JS fade for browsers without cross-document View Transitions.
-  var hasCrossDocVT = typeof CSSViewTransitionRule !== 'undefined';
+  // Fallback JS fade for browsers without cross-document View Transitions,
+  // or when running over file:// (where cross-doc VT does not fire).
+  var hasCrossDocVT = typeof CSSViewTransitionRule !== 'undefined'
+                      && location.protocol !== 'file:';
   if(!hasCrossDocVT){
     document.addEventListener('click', function(e){
       var a = e.target.closest('a[href]');
       if(!a || a.target) return;
-      var href = a.href;
-      if(!href || href.startsWith('mailto:') || href.startsWith('tel:')) return;
-      try{ if(new URL(href).origin !== location.origin) return; } catch(err){ return; }
-      if(href.split('#')[0] === location.href.split('#')[0]) return;
+      var href = a.getAttribute('href');
+      if(!href || href.charAt(0) === '#'
+         || href.startsWith('mailto:') || href.startsWith('tel:')
+         || href.startsWith('javascript:')) return;
+      var full = a.href;
+      try{
+        var u = new URL(full);
+        if(u.origin !== location.origin && location.protocol !== 'file:') return;
+        if(u.protocol !== location.protocol) return;
+      } catch(err){ return; }
+      if(full.split('#')[0] === location.href.split('#')[0]) return;
       e.preventDefault();
       document.body.classList.add('page-leaving');
-      setTimeout(function(){ window.location.href = href; }, 210);
+      setTimeout(function(){ window.location.href = full; }, 210);
     });
   }
 })();
