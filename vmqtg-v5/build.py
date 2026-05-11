@@ -1014,36 +1014,20 @@ ul,ol{list-style:none}
 .lang-btn.active{background:#fff;color:#111110}
 
 /* ── PAGE TRANSITIONS ── */
-/* ── PAGE TRANSITIONS ── */
-/* html bg = body bg → no white flash while new page loads */
+/* html bg = body bg → no white flash between pages */
 html{background:#f7f7f5}
 
-/* Fallback fade (all browsers) */
+/* Only the main content fades in; header & footer paint instantly
+   so persistent UI feels stable and the site feels fast. */
 @keyframes pageFadeIn{from{opacity:0}to{opacity:1}}
-body{animation:pageFadeIn .32s ease both}
-body.page-leaving{opacity:0;pointer-events:none;transition:opacity .2s ease}
-
-/* Cross-document View Transitions (Chrome 126+):
-   header & footer stay in place; only the content between them fades. */
-.site-header{view-transition-name:site-header;contain:layout}
-.site-footer{view-transition-name:site-footer;contain:layout}
-
-@view-transition{navigation:auto}
-
-/* Persistent elements: no animation, appear to stand still */
-::view-transition-old(site-header),::view-transition-new(site-header),
-::view-transition-old(site-footer),::view-transition-new(site-footer){
-  animation:none;mix-blend-mode:normal;
+main,.site-main,.content,.hero,.page-hd,.breadcrumb,.quick-bar,.sections-overview{
+  animation:pageFadeIn .18s ease-out both
 }
-/* Content area: fade only */
-@keyframes vt-fade-out{to{opacity:0}}
-::view-transition-old(root){animation:.2s ease both vt-fade-out}
-::view-transition-new(root){animation:.35s ease both pageFadeIn}
 
 @media(prefers-reduced-motion:reduce){
-  body{animation:none!important}
-  body.page-leaving{transition:none!important}
-  ::view-transition-old(root),::view-transition-new(root){animation:none}
+  main,.site-main,.content,.hero,.page-hd,.breadcrumb,.quick-bar,.sections-overview{
+    animation:none!important
+  }
 }
 
 /* ── LANG TRANSITION (directional split) ──
@@ -1781,37 +1765,8 @@ APP_JS = r"""
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 
-  // ─── page transitions ────────────────────────────────────────────────────
-  // When cross-document View Transitions handle the navigation (Chrome 126+),
-  // cancel the body fade-in animation to avoid double-animating.
-  window.addEventListener('pagereveal', function(e){
-    if(e.viewTransition) document.body.style.animation = 'none';
-  });
-
-  // Fallback JS fade for browsers without cross-document View Transitions,
-  // or when running over file:// (where cross-doc VT does not fire).
-  var hasCrossDocVT = typeof CSSViewTransitionRule !== 'undefined'
-                      && location.protocol !== 'file:';
-  if(!hasCrossDocVT){
-    document.addEventListener('click', function(e){
-      var a = e.target.closest('a[href]');
-      if(!a || a.target) return;
-      var href = a.getAttribute('href');
-      if(!href || href.charAt(0) === '#'
-         || href.startsWith('mailto:') || href.startsWith('tel:')
-         || href.startsWith('javascript:')) return;
-      var full = a.href;
-      try{
-        var u = new URL(full);
-        if(u.origin !== location.origin && location.protocol !== 'file:') return;
-        if(u.protocol !== location.protocol) return;
-      } catch(err){ return; }
-      if(full.split('#')[0] === location.href.split('#')[0]) return;
-      e.preventDefault();
-      document.body.classList.add('page-leaving');
-      setTimeout(function(){ window.location.href = full; }, 210);
-    });
-  }
+  // Page transitions are pure CSS (.18s fade-in on content area only).
+  // No JS interceptor — browser navigates instantly, new page paints fast.
 })();
 """
 
