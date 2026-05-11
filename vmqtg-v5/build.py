@@ -881,40 +881,29 @@ ul,ol{list-style:none}
 .card-img img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(.85) brightness(1.06)}
 
 /* ── PLACEHOLDER (no image yet) ──
-   Used for .card-img-ph, .article-hero.is-placeholder, .hero.is-placeholder.
-   Pure CSS: light cross-hatch + centered camera icon (inline SVG data URI). */
-.ph{
-  position:relative;width:100%;height:100%;
-  background-color:#ececE8;
-  background-image:
-    linear-gradient(135deg,transparent calc(50% - .5px),#dedeD9 calc(50% - .5px),#dedeD9 calc(50% + .5px),transparent calc(50% + .5px)),
-    linear-gradient(45deg, transparent calc(50% - .5px),#dedeD9 calc(50% - .5px),#dedeD9 calc(50% + .5px),transparent calc(50% + .5px));
-  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.5rem
+   A real Văn Miếu photo (Khuê Văn Các, public-domain via Wikimedia Commons)
+   used as the default visual when an item has no img assigned.
+   Same grayscale treatment as real photos so the page feels uniform.
+   Label pill overlaid bottom-left so the user can still tell it's a stand-in. */
+.ph,.card-img-ph,.article-hero.is-placeholder{
+  position:relative;width:100%;height:100%;overflow:hidden;
+  background:#ececE8 url("../images/placeholder.jpg") center/cover no-repeat
 }
-.ph::before{
-  content:"";display:block;width:34px;height:34px;
-  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a8a8a3' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='1.5'/><circle cx='8.5' cy='10.5' r='1.6'/><path d='M21 16.5l-5.2-5.2-8.8 8.7'/></svg>") center/contain no-repeat;
-  opacity:.85
+.ph,.card-img-ph,.article-hero.is-placeholder{
+  filter:grayscale(100%) contrast(.85) brightness(1.06)
 }
-.ph-label{
-  font-size:.6rem;color:#9a9a93;text-transform:uppercase;letter-spacing:.08em;
-  background:#ececE8;padding:.15rem .5rem;font-weight:500
+.ph::after,.card-img-ph::after,.article-hero.is-placeholder::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.18) 0%,transparent 45%);
+  pointer-events:none
 }
-/* Back-compat: keep .card-img-ph rendering as a placeholder */
-.card-img-ph{width:100%;height:100%;background:#ececE8;display:flex;align-items:center;justify-content:center}
-.card-img-ph{
-  background-color:#ececE8;
-  background-image:
-    linear-gradient(135deg,transparent calc(50% - .5px),#dedeD9 calc(50% - .5px),#dedeD9 calc(50% + .5px),transparent calc(50% + .5px)),
-    linear-gradient(45deg, transparent calc(50% - .5px),#dedeD9 calc(50% - .5px),#dedeD9 calc(50% + .5px),transparent calc(50% + .5px));
-  flex-direction:column;gap:.5rem;position:relative
+.ph-label,.card-img-ph span,.article-hero.is-placeholder .ph-label{
+  position:absolute;left:.6rem;bottom:.55rem;z-index:1;
+  font-size:.58rem;color:#fff;text-transform:uppercase;letter-spacing:.08em;
+  background:rgba(0,0,0,.55);padding:.2rem .55rem;font-weight:500;
+  backdrop-filter:blur(2px)
 }
-.card-img-ph::before{
-  content:"";display:block;width:34px;height:34px;
-  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a8a8a3' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='1.5'/><circle cx='8.5' cy='10.5' r='1.6'/><path d='M21 16.5l-5.2-5.2-8.8 8.7'/></svg>") center/contain no-repeat;
-  opacity:.85
-}
-.card-img-ph span{font-size:.6rem;color:#9a9a93;text-transform:uppercase;letter-spacing:.08em;background:#ececE8;padding:.15rem .5rem;font-weight:500;position:relative}
+.card-img-ph,.article-hero.is-placeholder{display:block}
 .card-body{padding:1.2rem}
 .card-num{font-size:.62rem;color:#bbb;font-weight:600;letter-spacing:.06em;margin-bottom:.5rem}
 .card-title{font-size:.92rem;font-weight:600;color:#111110;margin-bottom:.4rem;line-height:1.4}
@@ -1841,21 +1830,17 @@ APP_JS = r"""
   // No JS interceptor — browser navigates instantly, new page paints fast.
 
   // ─── broken-image → placeholder (capture phase: img errors don't bubble) ──
+  // Re-points the failed <img> to the bundled Văn Miếu placeholder photo
+  // (resolved relative to the stylesheet path so depth doesn't matter).
   document.addEventListener('error', function(e){
     var t = e.target;
     if(!t || t.tagName !== 'IMG') return;
     if(t.dataset.phReplaced) return;
     t.dataset.phReplaced = '1';
-    var p = t.parentElement;
-    if(!p) return;
-    t.style.display = 'none';
-    var ph = document.createElement('div');
-    ph.className = 'ph';
-    var lbl = document.createElement('span');
-    lbl.className = 'ph-label';
-    lbl.textContent = t.alt || 'Ảnh';
-    ph.appendChild(lbl);
-    p.appendChild(ph);
+    // derive the placeholder URL from the loaded stylesheet path
+    var ss = document.querySelector('link[rel="stylesheet"]');
+    var base = ss ? ss.getAttribute('href').replace(/css\/[^/]+$/, '') : 'assets/';
+    t.src = base + 'images/placeholder.jpg';
   }, true);
 })();
 """

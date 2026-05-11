@@ -222,20 +222,16 @@
   // No JS interceptor — browser navigates instantly, new page paints fast.
 
   // ─── broken-image → placeholder (capture phase: img errors don't bubble) ──
+  // Re-points the failed <img> to the bundled Văn Miếu placeholder photo
+  // (resolved relative to the stylesheet path so depth doesn't matter).
   document.addEventListener('error', function(e){
     var t = e.target;
     if(!t || t.tagName !== 'IMG') return;
     if(t.dataset.phReplaced) return;
     t.dataset.phReplaced = '1';
-    var p = t.parentElement;
-    if(!p) return;
-    t.style.display = 'none';
-    var ph = document.createElement('div');
-    ph.className = 'ph';
-    var lbl = document.createElement('span');
-    lbl.className = 'ph-label';
-    lbl.textContent = t.alt || 'Ảnh';
-    ph.appendChild(lbl);
-    p.appendChild(ph);
+    // derive the placeholder URL from the loaded stylesheet path
+    var ss = document.querySelector('link[rel="stylesheet"]');
+    var base = ss ? ss.getAttribute('href').replace(/css\/[^/]+$/, '') : 'assets/';
+    t.src = base + 'images/placeholder.jpg';
   }, true);
 })();
