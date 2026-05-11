@@ -879,8 +879,42 @@ ul,ol{list-style:none}
 .card:hover{border-color:#bbb}
 .card-img{aspect-ratio:16/9;background:#ebebE8;overflow:hidden;position:relative}
 .card-img img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(.85) brightness(1.06)}
-.card-img-ph{width:100%;height:100%;background:#e8e8e4;display:flex;align-items:center;justify-content:center}
-.card-img-ph span{font-size:.65rem;color:#bbb;text-transform:uppercase;letter-spacing:.06em}
+
+/* ── PLACEHOLDER (no image yet) ──
+   Used for .card-img-ph, .article-hero.is-placeholder, .hero.is-placeholder.
+   Pure CSS: light cross-hatch + centered camera icon (inline SVG data URI). */
+.ph{
+  position:relative;width:100%;height:100%;
+  background-color:#ececE8;
+  background-image:
+    linear-gradient(135deg,transparent calc(50% - .5px),#dedeD9 calc(50% - .5px),#dedeD9 calc(50% + .5px),transparent calc(50% + .5px)),
+    linear-gradient(45deg, transparent calc(50% - .5px),#dedeD9 calc(50% - .5px),#dedeD9 calc(50% + .5px),transparent calc(50% + .5px));
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.5rem
+}
+.ph::before{
+  content:"";display:block;width:34px;height:34px;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a8a8a3' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='1.5'/><circle cx='8.5' cy='10.5' r='1.6'/><path d='M21 16.5l-5.2-5.2-8.8 8.7'/></svg>") center/contain no-repeat;
+  opacity:.85
+}
+.ph-label{
+  font-size:.6rem;color:#9a9a93;text-transform:uppercase;letter-spacing:.08em;
+  background:#ececE8;padding:.15rem .5rem;font-weight:500
+}
+/* Back-compat: keep .card-img-ph rendering as a placeholder */
+.card-img-ph{width:100%;height:100%;background:#ececE8;display:flex;align-items:center;justify-content:center}
+.card-img-ph{
+  background-color:#ececE8;
+  background-image:
+    linear-gradient(135deg,transparent calc(50% - .5px),#dedeD9 calc(50% - .5px),#dedeD9 calc(50% + .5px),transparent calc(50% + .5px)),
+    linear-gradient(45deg, transparent calc(50% - .5px),#dedeD9 calc(50% - .5px),#dedeD9 calc(50% + .5px),transparent calc(50% + .5px));
+  flex-direction:column;gap:.5rem;position:relative
+}
+.card-img-ph::before{
+  content:"";display:block;width:34px;height:34px;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a8a8a3' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='1.5'/><circle cx='8.5' cy='10.5' r='1.6'/><path d='M21 16.5l-5.2-5.2-8.8 8.7'/></svg>") center/contain no-repeat;
+  opacity:.85
+}
+.card-img-ph span{font-size:.6rem;color:#9a9a93;text-transform:uppercase;letter-spacing:.08em;background:#ececE8;padding:.15rem .5rem;font-weight:500;position:relative}
 .card-body{padding:1.2rem}
 .card-num{font-size:.62rem;color:#bbb;font-weight:600;letter-spacing:.06em;margin-bottom:.5rem}
 .card-title{font-size:.92rem;font-weight:600;color:#111110;margin-bottom:.4rem;line-height:1.4}
@@ -904,8 +938,18 @@ ul,ol{list-style:none}
 .article ol{list-style:decimal;margin:.5rem 0 1rem 1.4rem}
 .article strong{color:#111110;font-weight:600}
 .article em{font-style:italic}
-.article-hero{margin:0 0 2rem;aspect-ratio:16/9;background:#e8e8e4;overflow:hidden;border:1px solid #e4e4df}
+.article-hero{margin:0 0 2rem;aspect-ratio:16/9;background:#e8e8e4;overflow:hidden;border:1px solid #e4e4df;position:relative}
 .article-hero img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(.85) brightness(1.06)}
+.article-hero.is-placeholder{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.6rem;
+  background-color:#ececE8;
+  background-image:
+    linear-gradient(135deg,transparent calc(50% - .5px),#dedeD9 calc(50% - .5px),#dedeD9 calc(50% + .5px),transparent calc(50% + .5px)),
+    linear-gradient(45deg, transparent calc(50% - .5px),#dedeD9 calc(50% - .5px),#dedeD9 calc(50% + .5px),transparent calc(50% + .5px))}
+.article-hero.is-placeholder::before{
+  content:"";display:block;width:42px;height:42px;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a8a8a3' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='1.5'/><circle cx='8.5' cy='10.5' r='1.6'/><path d='M21 16.5l-5.2-5.2-8.8 8.7'/></svg>") center/contain no-repeat;
+  opacity:.8}
+.article-hero.is-placeholder .ph-label{font-size:.65rem;color:#9a9a93;text-transform:uppercase;letter-spacing:.08em;background:#ececE8;padding:.2rem .6rem;font-weight:500}
 
 /* ── INFO TABLE ── */
 .info-table{width:100%;border-collapse:collapse;margin:1.5rem 0;border:1px solid #e4e4df}
@@ -1253,8 +1297,9 @@ def img_or_ph(img, depth, label="Ảnh"):
 
 def render_card(num, title, desc, href, img, depth, compact=False,
                 title_key=None, desc_key=None):
+    ph_label = num if num else "Ảnh"
     img_html = (f'<img src="{"../"*depth}assets/images/{img}" alt="" loading="lazy">'
-                if img else '<div class="card-img-ph"><span>Ảnh</span></div>')
+                if img else f'<div class="card-img-ph"><span>{ph_label}</span></div>')
     cls = "card compact" if compact else "card"
     title_html = t(title_key, title) if title_key else title
     desc_html  = t(desc_key, desc) if desc_key else desc
@@ -1436,9 +1481,10 @@ def build_item_page(section, group, item):
     if not content:
         content = f'''<p>Trang chi tiết về <strong>{item["label"]}</strong> trong mục {group["label"]}.</p>
 <p>Nội dung chi tiết đang được biên soạn. Quý khách vui lòng liên hệ Phòng Truyền thông để biết thêm thông tin: 024.3747.1322.</p>'''
-    img_html = ""
     if item.get("img"):
         img_html = f'<div class="article-hero"><img src="../../../assets/images/{item["img"]}" alt="{item["label"]}" loading="lazy"></div>'
+    else:
+        img_html = f'<div class="article-hero is-placeholder" role="img" aria-label="{item["label"]}"><span class="ph-label">{item["id"]} · {item["label"]}</span></div>'
     body = f'''
 <div class="page-hd"><div class="container">
   <p class="label"><span data-i18n="label.{section["id"]}">{section["label"]}</span> · <span data-i18n="label.{group["id"]}">{group["label"]}</span> · {item["id"]}</p>
@@ -1793,6 +1839,24 @@ APP_JS = r"""
 
   // Page transitions are pure CSS (.18s fade-in on content area only).
   // No JS interceptor — browser navigates instantly, new page paints fast.
+
+  // ─── broken-image → placeholder (capture phase: img errors don't bubble) ──
+  document.addEventListener('error', function(e){
+    var t = e.target;
+    if(!t || t.tagName !== 'IMG') return;
+    if(t.dataset.phReplaced) return;
+    t.dataset.phReplaced = '1';
+    var p = t.parentElement;
+    if(!p) return;
+    t.style.display = 'none';
+    var ph = document.createElement('div');
+    ph.className = 'ph';
+    var lbl = document.createElement('span');
+    lbl.className = 'ph-label';
+    lbl.textContent = t.alt || 'Ảnh';
+    ph.appendChild(lbl);
+    p.appendChild(ph);
+  }, true);
 })();
 """
 

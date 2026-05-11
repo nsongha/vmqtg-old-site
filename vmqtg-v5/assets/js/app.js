@@ -220,4 +220,22 @@
 
   // Page transitions are pure CSS (.18s fade-in on content area only).
   // No JS interceptor — browser navigates instantly, new page paints fast.
+
+  // ─── broken-image → placeholder (capture phase: img errors don't bubble) ──
+  document.addEventListener('error', function(e){
+    var t = e.target;
+    if(!t || t.tagName !== 'IMG') return;
+    if(t.dataset.phReplaced) return;
+    t.dataset.phReplaced = '1';
+    var p = t.parentElement;
+    if(!p) return;
+    t.style.display = 'none';
+    var ph = document.createElement('div');
+    ph.className = 'ph';
+    var lbl = document.createElement('span');
+    lbl.className = 'ph-label';
+    lbl.textContent = t.alt || 'Ảnh';
+    ph.appendChild(lbl);
+    p.appendChild(ph);
+  }, true);
 })();
