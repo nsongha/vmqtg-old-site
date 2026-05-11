@@ -1020,30 +1020,35 @@ html{background:#f7f7f5}
 /* Header & footer paint instantly (persistent feel).
    Content sections cascade in from top → bottom with a light stagger.
    Pure opacity, ease-out, short — should feel like a fast load, not an animation. */
-@keyframes pageFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pageFadeIn{
+  from{opacity:0;transform:translate3d(0,8px,0)}
+  to  {opacity:1;transform:none}
+}
 
 .breadcrumb,.hero,.page-hd,.quick-bar,.sections-overview,.content,.site-footer{
-  animation:pageFadeIn .22s ease-out both
+  animation:pageFadeIn .36s cubic-bezier(.2,.8,.2,1) both;
+  will-change:transform,opacity
 }
 .breadcrumb       {animation-delay:0ms}
-.hero,.page-hd    {animation-delay:60ms}
-.quick-bar        {animation-delay:120ms}
-.sections-overview,.content {animation-delay:160ms}
-.site-footer      {animation-delay:240ms}
+.hero,.page-hd    {animation-delay:120ms}
+.quick-bar        {animation-delay:240ms}
+.sections-overview,.content {animation-delay:360ms}
+.site-footer      {animation-delay:480ms}
 
-/* Inside content / overview, stagger immediate children for a softer cascade.
-   nth-child up to 8 — beyond that, items appear together (cap stagger). */
+/* Inside content / overview, stagger immediate children at 120ms.
+   Cap at item 8 — beyond that, items appear together. */
 .sections-overview > *, .content > *{
-  animation:pageFadeIn .22s ease-out both;
-  animation-delay:200ms
+  animation:pageFadeIn .36s cubic-bezier(.2,.8,.2,1) both;
+  animation-delay:480ms
 }
-.sections-overview > *:nth-child(1),.content > *:nth-child(1){animation-delay:200ms}
-.sections-overview > *:nth-child(2),.content > *:nth-child(2){animation-delay:240ms}
-.sections-overview > *:nth-child(3),.content > *:nth-child(3){animation-delay:280ms}
-.sections-overview > *:nth-child(4),.content > *:nth-child(4){animation-delay:320ms}
-.sections-overview > *:nth-child(5),.content > *:nth-child(5){animation-delay:360ms}
-.sections-overview > *:nth-child(6),.content > *:nth-child(6){animation-delay:400ms}
-.sections-overview > *:nth-child(n+7),.content > *:nth-child(n+7){animation-delay:440ms}
+.sections-overview > *:nth-child(1),.content > *:nth-child(1){animation-delay:480ms}
+.sections-overview > *:nth-child(2),.content > *:nth-child(2){animation-delay:600ms}
+.sections-overview > *:nth-child(3),.content > *:nth-child(3){animation-delay:720ms}
+.sections-overview > *:nth-child(4),.content > *:nth-child(4){animation-delay:840ms}
+.sections-overview > *:nth-child(5),.content > *:nth-child(5){animation-delay:960ms}
+.sections-overview > *:nth-child(6),.content > *:nth-child(6){animation-delay:1080ms}
+.sections-overview > *:nth-child(7),.content > *:nth-child(7){animation-delay:1200ms}
+.sections-overview > *:nth-child(n+8),.content > *:nth-child(n+8){animation-delay:1320ms}
 
 @media(prefers-reduced-motion:reduce){
   .breadcrumb,.hero,.page-hd,.quick-bar,.sections-overview,.content,.site-footer,
