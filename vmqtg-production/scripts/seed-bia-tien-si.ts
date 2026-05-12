@@ -7,7 +7,7 @@ import config from '../src/payload.config'
 import { transformBiaTienSi } from './transforms'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const DATA_PATH = path.resolve(__dirname, '../../vmqtg-v5/docs/82-van-bia-tien-si.json')
+const DATA_PATH = path.resolve(__dirname, '../data/bia-tien-si.json')
 
 async function main() {
   const payload = await getPayload({ config })
