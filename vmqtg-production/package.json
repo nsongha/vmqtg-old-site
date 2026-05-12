@@ -1,0 +1,45 @@
+{
+  "name": "vmqtg-production",
+  "version": "0.1.0",
+  "description": "Văn Miếu – Quốc Tử Giám production website (Next.js 15 + Payload v3)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "payload migrate && next build",
+    "start": "next start",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "seed:bia": "tsx scripts/seed-bia-tien-si.ts",
+    "seed:ditich": "tsx scripts/seed-di-tich.ts",
+    "migrate:media": "tsx scripts/migrate-media.ts"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "3.84.1",
+    "@payloadcms/next": "3.84.1",
+    "@payloadcms/richtext-lexical": "3.84.1",
+    "@payloadcms/ui": "3.84.1",
+    "@tailwindcss/postcss": "^4.3.0",
+    "cross-env": "^10.1.0",
+    "graphql": "^16.14.0",
+    "next": "^15.5.18",
+    "payload": "3.84.1",
+    "react": "^19.1.7",
+    "react-dom": "^19.1.7",
+    "sharp": "^0.34.5",
+    "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.7.3",
+    "vitest": "^4.1.6"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@10.33.4"
+}

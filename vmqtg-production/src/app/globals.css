@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-bg-primary: #FAFAF7;
+  --color-bg-subtle: #F2EFE9;
+  --color-ink: #1A1A1A;
+  --color-ink-muted: #5A5550;
+  --color-gold: #8B6914;
+  --color-gold-light: #C8A84B;
+  --color-red-son: #C41E3A;
+  --color-border: #E8E4DC;
+
+  /* Typography */
+  --font-serif: 'Lora', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Spacing */
+  --spacing-section: 80px;
+  --spacing-section-mobile: 48px;
+
+  /* Grid */
+  --container-max: 1280px;
+}
+
+:root {
+  --font-serif: var(--font-lora), Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-mono), monospace;
+}
+
+html {
+  background-color: var(--color-bg-primary);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+}
+
+.container {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+@media (max-width: 640px) {
+  .container { padding-inline: 16px; }
+}
+
+/* Section divider — traditional motif */
+.divider-motif {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-border) 20%,
+    var(--color-gold) 50%,
+    var(--color-border) 80%,
+    transparent
+  );
+  margin-block: 48px;
+}
