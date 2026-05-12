@@ -22,7 +22,7 @@ export function MegaMenu({ items, locale }: Props) {
         <div
           key={item.href}
           className="relative"
-          onMouseEnter={() => item.children?.length ? setOpenMenu(item.href) : null}
+          onMouseEnter={() => (item.children?.length ?? 0) > 0 ? setOpenMenu(item.href) : null}
           onMouseLeave={() => setOpenMenu(null)}
         >
           <Link
@@ -33,11 +33,11 @@ export function MegaMenu({ items, locale }: Props) {
           </Link>
 
           {/* Dropdown / mega menu */}
-          {item.children?.length && openMenu === item.href && (
+          {(item.children?.length ?? 0) > 0 && openMenu === item.href && (
             <div className={`absolute top-full left-0 z-50 bg-[--color-bg-primary] border border-[--color-border] shadow-lg
               ${item.mega_menu ? 'w-[640px] grid grid-cols-2 gap-0' : 'w-56'}`}
             >
-              {item.children.map((child) => (
+              {item.children!.map((child) => (
                 <Link
                   key={child.href}
                   href={`/${locale}${child.href}`}
