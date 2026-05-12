@@ -46,6 +46,38 @@ const DI_TICH_ITEMS = [
   { id_code: 'B4.6', slug: 'danh-nhan/khoa-bang', section: 'B4', order: 6, title: 'Danh nhân khoa bảng' },
 ]
 
+// Map di-tich slug → media filename (in data/images/) for cover image
+const DI_TICH_IMAGE_MAP: Record<string, string> = {
+  // B1 - lich-su
+  'lich-su/thoi-ly': '1-toan-canh-van-mieu-quoc-tu-giam-dau-the-ky-xx-copy.jpg',
+  'lich-su/thoi-tran': '2-tu-tru-va-ho-van-phia-truoc-van-mieu-quoc-tu-giam.jpg',
+  'lich-su/thoi-le': '10-nha-bia-tien-si-ben-tay.jpg',
+  'lich-su/thoi-nguyen': '30-cong-thai-hoc.jpg',
+  // B2 - phan-khu
+  'phan-khu/noi-tu': 'san-dai-bai-va-nha-dai-bai.jpg',
+  'phan-khu/vuon-giam': 'khu-vuon-bia-ts-ben-dong.jpg',
+  'phan-khu/ho-van': 'ho-van.jpg',
+  // B3 - kien-truc
+  'kien-truc/bia-ha-ma': '5-bia-ha-ma.jpg',
+  'kien-truc/cong-van-mieu': 'cong-vm-mat-truoc.jpg',
+  'kien-truc/cong-dai-trung': 'cong-dai-trung.jpg',
+  'kien-truc/khue-van-cac': 'kvc-va-gieng-thien-quang.jpg',
+  'kien-truc/nha-che-bia': 'nha-bia.jpg',
+  'kien-truc/cong-dai-thanh': 'cong-dai-thanh.jpg',
+  'kien-truc/bai-duong': 'toa-bai-duong.jpg',
+  'kien-truc/cong-thai-hoc': 'cong-thai-hoc-2.jpg',
+  'kien-truc/thai-hoc': 'cong-dat-tai.jpg',
+  'kien-truc/nha-chuong-trong': 'lau-trong.jpg',
+  'kien-truc/nha-bat-giac': 'nha-bat-giac-vuon-giam.jpg',
+  'kien-truc/phuong-dinh': 'gieng-thien-quang.jpg',
+  // B4 - danh-nhan
+  'danh-nhan/vua-ly-thanh-tong': '7-ly-thanh-tong.jpg',
+  'danh-nhan/vua-ly-nhan-tong': '8-ly-nhan-tong.jpg',
+  'danh-nhan/vua-le-thanh-tong': '9-lethanhtong.jpg',
+  'danh-nhan/chu-van-an': '6-chu-van-an.jpg',
+  'danh-nhan/khoa-bang': '1-nha-tho-trang-nguyen-nguyen-truc-xa-tam-hung-thanh-oai-ha-noi-anh-p-ncst.jpg',
+}
+
 const NAV_ITEMS = [
   { label: 'Tham quan', href: '/tham-quan', mega_menu: false, children: [] },
   {
@@ -156,6 +188,38 @@ async function seedMedia(payload: any) {
   }
 }
 
+async function linkDiTichImages(payload: any) {
+  // Idempotent: only update items where images is empty
+  const items = await payload.find({ collection: 'di-tich-items', limit: 100 })
+  let linked = 0
+  for (const item of items.docs) {
+    const hasImage = Array.isArray(item.images) && item.images.length > 0
+    if (hasImage) continue
+    const filename = DI_TICH_IMAGE_MAP[item.slug]
+    if (!filename) continue
+    try {
+      const media = await payload.find({
+        collection: 'media',
+        where: { filename: { equals: filename } },
+        limit: 1,
+      })
+      if (media.docs.length === 0) {
+        console.log(`[seed] link: media ${filename} not found for ${item.slug}`)
+        continue
+      }
+      await payload.update({
+        collection: 'di-tich-items',
+        id: item.id,
+        data: { images: [{ image: media.docs[0].id }] } as any,
+      })
+      linked++
+    } catch (e: any) {
+      console.error(`[seed] link ${item.slug} failed:`, e.message)
+    }
+  }
+  console.log(`[seed] linked ${linked} di-tich items to images`)
+}
+
 async function main() {
   console.log('[seed] starting build-time seed check')
   const payload = await getPayload({ config })
@@ -183,6 +247,11 @@ async function main() {
 
   if (counts.media === 0) await seedMedia(payload)
   else console.log('[seed] media: already has data, skip')
+
+  // After media + di-tich both seeded, link them (idempotent — fills only empty images)
+  if (counts.media > 0 || (await getCount(payload, 'media')) > 0) {
+    await linkDiTichImages(payload)
+  }
 
   console.log('[seed] done')
   process.exit(0)

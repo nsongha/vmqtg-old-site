@@ -28,14 +28,23 @@ export default async function HomePage({ params }: Props) {
 
   const payload = await getPayloadClient()
 
-  // Lấy 6 di tích items nổi bật (B3 kiến trúc)
+  // Lấy 6 di tích items nổi bật (B3 kiến trúc) + populate images relation
   const featured = await payload.find({
     collection: 'di-tich-items',
     where: { section: { equals: 'B3' }, status: { equals: 'published' } },
     locale: locale as Locale,
     limit: 6,
     sort: 'order',
+    depth: 2,
   })
+
+  // Hero image — first try a Media record named hero.jpg (uploaded by seed)
+  const heroMedia = await payload.find({
+    collection: 'media',
+    where: { filename: { equals: 'hero.jpg' } },
+    limit: 1,
+  })
+  const heroUrl: string | undefined = (heroMedia.docs[0] as any)?.url
 
   const HERO_TEXTS = {
     vi: {
@@ -64,13 +73,15 @@ export default async function HomePage({ params }: Props) {
     <div>
       {/* Hero */}
       <section className="relative h-[70vh] min-h-[480px] flex items-end bg-[--color-ink]">
-        <Image
-          src="/media/hero.jpg"
-          alt="Văn Miếu – Quốc Tử Giám"
-          fill
-          className="object-cover opacity-60"
-          priority
-        />
+        {heroUrl && (
+          <Image
+            src={heroUrl}
+            alt="Văn Miếu – Quốc Tử Giám"
+            fill
+            className="object-cover opacity-60"
+            priority
+          />
+        )}
         <div className="relative container pb-16">
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-white max-w-2xl leading-tight mb-4">
             {t.title}
@@ -113,6 +124,7 @@ export default async function HomePage({ params }: Props) {
               section={item.section}
               slug={item.slug}
               locale={locale as Locale}
+              imageUrl={item.images?.[0]?.image?.url}
             />
           ))}
         </div>
