@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 export const Navigation: CollectionConfig = {
   slug: 'navigation',
-  admin: { useAsTitle: 'label' },
+  admin: { useAsTitle: 'key' },
   fields: [
     { name: 'key', type: 'text', required: true, unique: true,
       admin: { description: 'Ví dụ: main-nav, footer-nav' } },
