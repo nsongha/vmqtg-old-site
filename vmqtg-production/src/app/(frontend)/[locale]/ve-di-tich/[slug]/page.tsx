@@ -104,9 +104,13 @@ export default async function DiTichItemPage({ params }: Props) {
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayloadClient()
-  const result = await payload.find({ collection: 'di-tich-items', limit: 100 })
-  return result.docs.flatMap((item: any) =>
-    ['vi', 'en', 'fr'].map((locale) => ({ locale, slug: item.slug }))
-  )
+  try {
+    const payload = await getPayloadClient()
+    const result = await payload.find({ collection: 'di-tich-items', limit: 100 })
+    return result.docs.flatMap((item: any) =>
+      ['vi', 'en', 'fr'].map((locale) => ({ locale, slug: item.slug }))
+    )
+  } catch {
+    return []
+  }
 }
