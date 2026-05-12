@@ -5,6 +5,8 @@ import { isValidLocale, type Locale } from '@/lib/i18n'
 import { DiTichCard } from '@/components/features/DiTichCard'
 import { Badge } from '@/components/ui/Badge'
 
+export const dynamic = 'force-dynamic'
+
 type Props = { params: Promise<{ locale: string }> }
 
 const SECTION_LABELS: Record<string, Record<Locale, string>> = {

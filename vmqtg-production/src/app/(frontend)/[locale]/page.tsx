@@ -7,6 +7,8 @@ import { isValidLocale, type Locale } from '@/lib/i18n'
 import { DiTichCard } from '@/components/features/DiTichCard'
 import type { Metadata } from 'next'
 
+export const dynamic = 'force-dynamic'
+
 type Props = { params: Promise<{ locale: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

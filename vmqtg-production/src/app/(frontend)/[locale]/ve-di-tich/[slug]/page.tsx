@@ -7,6 +7,8 @@ import { RichText } from '@/components/ui/RichText'
 import { Badge } from '@/components/ui/Badge'
 import type { Metadata } from 'next'
 
+export const dynamic = 'force-dynamic'
+
 type Props = { params: Promise<{ locale: string; slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

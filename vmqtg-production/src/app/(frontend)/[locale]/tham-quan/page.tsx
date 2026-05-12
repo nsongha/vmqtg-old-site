@@ -4,6 +4,8 @@ import { isValidLocale, type Locale } from '@/lib/i18n'
 import { RichText } from '@/components/ui/RichText'
 import type { Metadata } from 'next'
 
+export const dynamic = 'force-dynamic'
+
 type Props = { params: Promise<{ locale: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
