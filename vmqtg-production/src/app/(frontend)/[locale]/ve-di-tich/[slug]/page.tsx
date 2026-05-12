@@ -87,7 +87,7 @@ export default async function DiTichItemPage({ params }: Props) {
             img.image && (
               <div key={i} className="border border-[--color-border]">
                 <Image
-                  src={`/media/${img.image.filename}`}
+                  src={img.image.url ?? `/media/${img.image.filename}`}
                   alt={img.image.alt ?? item.title}
                   width={400}
                   height={300}
