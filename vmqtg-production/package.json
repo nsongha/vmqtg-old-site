@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "payload migrate && next build",
+    "build": "payload migrate && tsx scripts/seed-on-build.ts && next build",
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
