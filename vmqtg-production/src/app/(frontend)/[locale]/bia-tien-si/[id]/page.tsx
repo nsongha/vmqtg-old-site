@@ -87,14 +87,14 @@ export default async function BiaTienSiDetailPage({ params }: Props) {
           </div>
 
           {/* Historical notes */}
-          {bia.historical_notes?.length > 0 && (
+          {(bia.historical_notes?.length ?? 0) > 0 && (
             <>
               <div className="divider-motif" />
               <h2 className="font-serif text-lg font-semibold mb-4">
                 {locale === 'vi' ? 'Ghi chú lịch sử' : locale === 'en' ? 'Historical notes' : 'Notes historiques'}
               </h2>
               <ul className="space-y-3">
-                {bia.historical_notes.map((item: any, i: number) => (
+                {bia.historical_notes!.map((item: any, i: number) => (
                   <li key={i} className="flex gap-3 text-sm">
                     <span className="shrink-0 font-mono text-xs text-[--color-gold] mt-0.5">{String(i + 1).padStart(2, '0')}</span>
                     <p className="text-[--color-ink-muted] leading-relaxed">{item.note}</p>

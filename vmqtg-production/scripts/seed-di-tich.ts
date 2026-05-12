@@ -63,7 +63,7 @@ async function main() {
   for (const item of DI_TICH_ITEMS) {
     await payload.create({
       collection: 'di-tich-items',
-      data: { ...item, status: 'published' },
+      data: { ...item, status: 'published' } as any,
     })
     process.stdout.write('.')
   }
