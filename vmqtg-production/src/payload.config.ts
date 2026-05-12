@@ -17,10 +17,16 @@ import { Navigation } from './collections/Navigation'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-// Revalidate tất cả locale paths khi content thay đổi
+// Revalidate tất cả locale paths khi content thay đổi.
+// No-op when called outside a Next.js request context (eg. build-time seed
+// scripts), where revalidatePath throws "static generation store missing".
 function revalidateLocales(path: string) {
-  for (const locale of ['vi', 'en', 'fr']) {
-    revalidatePath(`/${locale}${path}`)
+  try {
+    for (const locale of ['vi', 'en', 'fr']) {
+      revalidatePath(`/${locale}${path}`)
+    }
+  } catch {
+    // outside request scope — nothing to revalidate
   }
 }
 
