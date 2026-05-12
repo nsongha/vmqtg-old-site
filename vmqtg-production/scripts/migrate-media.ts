@@ -6,7 +6,7 @@ import { getPayload } from 'payload'
 import config from '../src/payload.config'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const IMAGES_DIR = path.resolve(__dirname, '../vmqtg-v5/assets/images')
+const IMAGES_DIR = path.resolve(__dirname, '../../vmqtg-v5/assets/images')
 
 async function getAllImages(dir: string): Promise<string[]> {
   const entries = fs.readdirSync(dir, { withFileTypes: true })
