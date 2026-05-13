@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/lib/payload'
 import { isValidLocale, type Locale } from '@/lib/i18n'
 import { DiTichCard } from '@/components/features/DiTichCard'
+import { FadeInOnView } from '@/components/ui/FadeInOnView'
 import { Badge } from '@/components/ui/Badge'
 
 export const dynamic = 'force-dynamic'
@@ -40,20 +41,22 @@ export default async function VeDiTichPage({ params }: Props) {
 
   return (
     <div className="container mt-12 mb-[--spacing-section]">
-      <h1 className="font-serif text-3xl md:text-4xl font-bold mb-3">
-        {locale === 'vi' ? 'Về di tích' : locale === 'en' ? 'About the Site' : 'À propos du site'}
-      </h1>
-      <p className="text-[--color-ink-muted] mb-12">
-        {locale === 'vi' ? 'Lịch sử, phân khu, kiến trúc, danh nhân, tượng thờ và thư viện.'
-         : locale === 'en' ? 'History, sectors, architecture, eminent figures, statues, and library.'
-         : 'Histoire, secteurs, architecture, personnages, statues et bibliothèque.'}
-      </p>
+      <div className="animate-fade-up">
+        <h1 className="font-serif text-3xl md:text-4xl font-bold mb-3">
+          {locale === 'vi' ? 'Về di tích' : locale === 'en' ? 'About the Site' : 'À propos du site'}
+        </h1>
+        <p className="text-[--color-ink-muted] mb-12">
+          {locale === 'vi' ? 'Lịch sử, phân khu, kiến trúc, danh nhân, tượng thờ và thư viện.'
+           : locale === 'en' ? 'History, sectors, architecture, eminent figures, statues, and library.'
+           : 'Histoire, secteurs, architecture, personnages, statues et bibliothèque.'}
+        </p>
+      </div>
 
       {['B1', 'B2', 'B3', 'B4', 'B5', 'B6'].map((section) => {
         const items = grouped[section]
         if (!items?.length) return null
         return (
-          <section key={section} className="mb-16">
+          <FadeInOnView as="section" key={section} className="mb-16">
             <div className="flex items-center gap-3 mb-6">
               <Badge variant="gold">{section}</Badge>
               <h2 className="font-serif text-xl font-semibold">
@@ -61,20 +64,25 @@ export default async function VeDiTichPage({ params }: Props) {
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {items.map((item: any) => (
-                <DiTichCard
+              {items.map((item: any, i: number) => (
+                <div
                   key={item.id}
-                  id_code={item.id_code}
-                  title={item.title}
-                  subtitle={item.subtitle}
-                  section={item.section}
-                  slug={item.slug}
-                  locale={locale as Locale}
-                />
+                  className="animate-fade-up"
+                  style={{ '--i': i } as React.CSSProperties}
+                >
+                  <DiTichCard
+                    id_code={item.id_code}
+                    title={item.title}
+                    subtitle={item.subtitle}
+                    section={item.section}
+                    slug={item.slug}
+                    locale={locale as Locale}
+                  />
+                </div>
               ))}
             </div>
             <div className="divider-motif" />
-          </section>
+          </FadeInOnView>
         )
       })}
     </div>

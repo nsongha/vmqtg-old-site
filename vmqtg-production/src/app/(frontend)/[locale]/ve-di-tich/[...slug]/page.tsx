@@ -5,6 +5,7 @@ import { getPayloadClient } from '@/lib/payload'
 import { isValidLocale, type Locale } from '@/lib/i18n'
 import { RichText } from '@/components/ui/RichText'
 import { HtmlContent } from '@/components/ui/HtmlContent'
+import { FadeInOnView } from '@/components/ui/FadeInOnView'
 import { Badge } from '@/components/ui/Badge'
 import type { Metadata } from 'next'
 
@@ -62,28 +63,32 @@ export default async function DiTichItemPage({ params }: Props) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         <div className="lg:col-span-2">
-          <div className="flex items-center gap-3 mb-4">
-            <Badge variant="gold">{item.section}</Badge>
-            <span className="font-mono text-xs text-[--color-ink-muted]">{item.id_code}</span>
+          <div className="animate-fade-up">
+            <div className="flex items-center gap-3 mb-4">
+              <Badge variant="gold">{item.section}</Badge>
+              <span className="font-mono text-xs text-[--color-ink-muted]">{item.id_code}</span>
+            </div>
+            <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">{item.title}</h1>
+            {item.subtitle && <p className="text-lg text-[--color-ink-muted] mb-8">{item.subtitle}</p>}
           </div>
-          <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">{item.title}</h1>
-          {item.subtitle && <p className="text-lg text-[--color-ink-muted] mb-8">{item.subtitle}</p>}
 
           <div className="divider-motif" />
 
-          {(item as any).content_html ? (
-            <HtmlContent html={(item as any).content_html} />
-          ) : item.content ? (
-            <div className="prose max-w-none">
-              <RichText content={item.content as any} />
-            </div>
-          ) : (
-            <p className="text-[--color-ink-muted] text-sm italic">
-              {locale === 'vi' ? 'Nội dung đang được cập nhật.'
-               : locale === 'en' ? 'Content is being updated.'
-               : 'Contenu en cours de mise à jour.'}
-            </p>
-          )}
+          <FadeInOnView>
+            {(item as any).content_html ? (
+              <HtmlContent html={(item as any).content_html} />
+            ) : item.content ? (
+              <div className="prose max-w-none">
+                <RichText content={item.content as any} />
+              </div>
+            ) : (
+              <p className="text-[--color-ink-muted] text-sm italic">
+                {locale === 'vi' ? 'Nội dung đang được cập nhật.'
+                 : locale === 'en' ? 'Content is being updated.'
+                 : 'Contenu en cours de mise à jour.'}
+              </p>
+            )}
+          </FadeInOnView>
         </div>
 
         {/* Sidebar images */}
