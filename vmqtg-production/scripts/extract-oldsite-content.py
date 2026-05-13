@@ -324,11 +324,45 @@ def build_site_html(folder: Path, recursive: bool = False) -> str | None:
     return "\n\n".join(parts) if parts else None
 
 
+# Folder name → anchor id mapping for v5-aggregated pages. The nav links to
+# /<slug>#<id> so section ids must match the codes (C1, D1, E1...) rather than
+# the raw v5 folder names. Falls back to the folder name when not mapped.
+FOLDER_TO_ANCHOR: dict[str, dict[str, str]] = {
+    # hoat-dong (cac-hoat-dong)
+    "cac-hoat-dong/su-kien": "D1",
+    "cac-hoat-dong/giao-duc-di-san": "D2",
+    "cac-hoat-dong/trai-nghiem": "D3",
+    "cac-hoat-dong/van-hoa-nghe-thuat": "D4",
+    "cac-hoat-dong/hoi-thao": "D5",
+    "cac-hoat-dong/doan-ngoai-giao": "D6",
+    "cac-hoat-dong/workshop": "D7",
+    "cac-hoat-dong/su-kien/sap-dien-ra": "D1.1",
+    "cac-hoat-dong/su-kien/dang-dien-ra": "D1.2",
+    # trung-bay-trien-lam
+    "trung-bay-trien-lam/co-dinh": "C1",
+    "trung-bay-trien-lam/chuyen-de": "C2",
+    "trung-bay-trien-lam/trien-lam": "C3",
+    "trung-bay-trien-lam/co-dinh/truong-quoc-hoc": "C1.1",
+    "trung-bay-trien-lam/co-dinh/khoi-nguon-dao-hoc": "C1.2",
+    "trung-bay-trien-lam/co-dinh/su-da-luu-danh": "C1.3",
+    # dich-vu
+    "dich-vu/tour-dem": "E1",
+    "dich-vu/audio-guide": "E2",
+    "dich-vu/huong-dan-vien": "E3",
+    "dich-vu/qua-luu-niem": "E4",
+    "dich-vu/thu-phap": "E5",
+    "dich-vu/nuoc-uong": "E6",
+}
+
+
 def build_v5_html(folder: Path, v5: dict, key_prefix: str, recursive: bool = True) -> tuple[str, str, str] | tuple[None, None, None]:
     """Aggregate v5 sub-categories into a single content_html block per locale.
 
     Walks v5/<folder>/, for each direct child <sub>/, extracts the v5 article
     body for vi and pulls en/fr from v5 CONTENT[<key_prefix>/<sub>].
+
+    Section ids use FOLDER_TO_ANCHOR (so nav anchors #D2, #C1.1, #E4 resolve)
+    and fall back to the sub-folder name when not mapped.
 
     Output triple is (vi, en, fr) — each is concatenated <section> blocks,
     or None if nothing found.
@@ -345,6 +379,7 @@ def build_v5_html(folder: Path, v5: dict, key_prefix: str, recursive: bool = Tru
             continue
         sub_idx = sub / "index.html"
         sub_key = f"{key_prefix}/{sub.name}"
+        sub_anchor = FOLDER_TO_ANCHOR.get(sub_key, sub.name)
         # vi: prefer extracted HTML, fall back to v5 CONTENT vi if defined
         vi_html = extract_v5_article(sub_idx)
         # en / fr from translations dict
@@ -352,11 +387,11 @@ def build_v5_html(folder: Path, v5: dict, key_prefix: str, recursive: bool = Tru
         en_html = (loc.get("en") or "").strip() or None
         fr_html = (loc.get("fr") or "").strip() or None
         if vi_html:
-            vi_parts.append(f'<section class="from-oldsite" id="{sub.name}">\n{vi_html}\n</section>')
+            vi_parts.append(f'<section class="from-oldsite scroll-mt-24" id="{sub_anchor}">\n{vi_html}\n</section>')
         if en_html:
-            en_parts.append(f'<section class="from-oldsite" id="{sub.name}">\n{en_html.strip()}\n</section>')
+            en_parts.append(f'<section class="from-oldsite scroll-mt-24" id="{sub_anchor}">\n{en_html.strip()}\n</section>')
         if fr_html:
-            fr_parts.append(f'<section class="from-oldsite" id="{sub.name}">\n{fr_html.strip()}\n</section>')
+            fr_parts.append(f'<section class="from-oldsite scroll-mt-24" id="{sub_anchor}">\n{fr_html.strip()}\n</section>')
 
         # also dive deeper one level for su-kien/<sub-sub> (events)
         if recursive:
@@ -365,16 +400,17 @@ def build_v5_html(folder: Path, v5: dict, key_prefix: str, recursive: bool = Tru
                     continue
                 nested_idx = nested / "index.html"
                 nested_key = f"{key_prefix}/{sub.name}/{nested.name}"
+                nested_anchor = FOLDER_TO_ANCHOR.get(nested_key, f"{sub.name}-{nested.name}")
                 vi_n = extract_v5_article(nested_idx)
                 loc_n = v5.get(nested_key) or {}
                 en_n = (loc_n.get("en") or "").strip() or None
                 fr_n = (loc_n.get("fr") or "").strip() or None
                 if vi_n:
-                    vi_parts.append(f'<section class="from-oldsite" id="{sub.name}-{nested.name}">\n{vi_n}\n</section>')
+                    vi_parts.append(f'<section class="from-oldsite scroll-mt-24" id="{nested_anchor}">\n{vi_n}\n</section>')
                 if en_n:
-                    en_parts.append(f'<section class="from-oldsite" id="{sub.name}-{nested.name}">\n{en_n.strip()}\n</section>')
+                    en_parts.append(f'<section class="from-oldsite scroll-mt-24" id="{nested_anchor}">\n{en_n.strip()}\n</section>')
                 if fr_n:
-                    fr_parts.append(f'<section class="from-oldsite" id="{sub.name}-{nested.name}">\n{fr_n.strip()}\n</section>')
+                    fr_parts.append(f'<section class="from-oldsite scroll-mt-24" id="{nested_anchor}">\n{fr_n.strip()}\n</section>')
 
     vi = "\n\n".join(vi_parts) if vi_parts else None
     en = "\n\n".join(en_parts) if en_parts else None
