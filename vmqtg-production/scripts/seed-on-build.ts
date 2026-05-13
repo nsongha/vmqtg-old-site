@@ -21,6 +21,8 @@ const CORE_PAGES = [
   { slug: 'hoat-dong', title: 'Các hoạt động', subtitle: 'Hoạt động trưng bày, triển lãm thường xuyên tại di tích.' },
   { slug: 'bia-tien-si', title: '82 Bia Tiến Sĩ', subtitle: 'Di sản tư liệu thế giới UNESCO · 1.307 tiến sĩ từ 1442–1779.' },
   { slug: 've-chung-toi', title: 'Về chúng tôi', subtitle: 'Trung tâm hoạt động VHKH Văn Miếu – Quốc Tử Giám.' },
+  { slug: 'trung-bay-trien-lam', title: 'Trưng bày, triển lãm', subtitle: 'Trưng bày cố định, chuyên đề và các triển lãm tại di tích.' },
+  { slug: 'dich-vu', title: 'Dịch vụ', subtitle: 'Tour đêm, audio guide, thuyết minh, quà lưu niệm, viết thư pháp.' },
 ]
 
 const DI_TICH_ITEMS = [
@@ -48,6 +50,15 @@ const DI_TICH_ITEMS = [
   { id_code: 'B4.3', slug: 'danh-nhan/vua-le-thanh-tong', section: 'B4', order: 3, title: 'Vua Lê Thánh Tông' },
   { id_code: 'B4.5', slug: 'danh-nhan/chu-van-an', section: 'B4', order: 5, title: 'Tư nghiệp Chu Văn An' },
   { id_code: 'B4.6', slug: 'danh-nhan/khoa-bang', section: 'B4', order: 6, title: 'Danh nhân khoa bảng' },
+  // B5 — tượng thờ (statues of worship)
+  { id_code: 'B5.1', slug: 'tuong-tho/khong-tu', section: 'B5', order: 1, title: 'Khổng Tử' },
+  { id_code: 'B5.2', slug: 'tuong-tho/nhan-tu', section: 'B5', order: 2, title: 'Nhan Tử' },
+  { id_code: 'B5.3', slug: 'tuong-tho/tu-tu', section: 'B5', order: 3, title: 'Tử Tư' },
+  { id_code: 'B5.4', slug: 'tuong-tho/tang-tu', section: 'B5', order: 4, title: 'Tăng Tử' },
+  { id_code: 'B5.5', slug: 'tuong-tho/manh-tu', section: 'B5', order: 5, title: 'Mạnh Tử' },
+  // B6 — thư viện (library)
+  { id_code: 'B6.1', slug: 'thu-vien/thu-vien-anh', section: 'B6', order: 1, title: 'Thư viện ảnh' },
+  { id_code: 'B6.2', slug: 'thu-vien/video', section: 'B6', order: 2, title: 'Video' },
 ]
 
 // Map di-tich slug → media filename (in data/images/) for cover image
@@ -98,6 +109,8 @@ const NAV_ITEMS = [
   { label: '82 Bia Tiến Sĩ', href: '/bia-tien-si', mega_menu: false, children: [] },
   { label: 'Giáo dục di sản', href: '/giao-duc-di-san', mega_menu: false, children: [] },
   { label: 'Các hoạt động', href: '/hoat-dong', mega_menu: false, children: [] },
+  { label: 'Trưng bày, triển lãm', href: '/trung-bay-trien-lam', mega_menu: false, children: [] },
+  { label: 'Dịch vụ', href: '/dich-vu', mega_menu: false, children: [] },
   { label: 'Về chúng tôi', href: '/ve-chung-toi', mega_menu: false, children: [] },
 ]
 
@@ -147,14 +160,24 @@ async function seedPages(payload: any) {
 }
 
 async function seedDiTich(payload: any) {
-  console.log(`[seed] di-tich: creating ${DI_TICH_ITEMS.length} records`)
+  // Idempotent upsert: skip records whose id_code already exists.
+  let created = 0
   for (const item of DI_TICH_ITEMS) {
     try {
+      const existing = await payload.find({
+        collection: 'di-tich-items',
+        where: { id_code: { equals: item.id_code } },
+        limit: 1,
+        depth: 0,
+      })
+      if (existing.docs.length > 0) continue
       await payload.create({ collection: 'di-tich-items', data: { ...item, status: 'published' } as any })
+      created++
     } catch (e: any) {
       console.error(`[seed] di-tich ${item.id_code} failed:`, e.message)
     }
   }
+  console.log(`[seed] di-tich: created ${created} new records (${DI_TICH_ITEMS.length - created} already present)`)
 }
 
 async function seedNavigation(payload: any) {
@@ -325,8 +348,9 @@ async function main() {
   // Pages: always run — seedPages is now idempotent and adds new slugs over time.
   await seedPages(payload)
 
-  if (counts.diTich === 0) await seedDiTich(payload)
-  else console.log('[seed] di-tich: already has data, skip')
+  // di-tich: always run — seedDiTich is now idempotent and adds new sections
+  // (B5 tượng thờ, B6 thư viện) over time.
+  await seedDiTich(payload)
 
   // Navigation: always run — seedNavigation is now idempotent and refreshes items.
   await seedNavigation(payload)
