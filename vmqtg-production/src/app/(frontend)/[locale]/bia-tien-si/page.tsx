@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/lib/payload'
 import { isValidLocale, type Locale } from '@/lib/i18n'
 import { BiaTienSiCard } from '@/components/features/BiaTienSiCard'
+import { HtmlContent } from '@/components/ui/HtmlContent'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
@@ -22,12 +23,21 @@ export default async function BiaTienSiPage({ params }: Props) {
   if (!isValidLocale(locale)) notFound()
 
   const payload = await getPayloadClient()
-  const result = await payload.find({
-    collection: 'bia-tien-si',
-    locale: locale as Locale,
-    limit: 82,
-    sort: 'order',
-  })
+  const [result, pageResult] = await Promise.all([
+    payload.find({
+      collection: 'bia-tien-si',
+      locale: locale as Locale,
+      limit: 82,
+      sort: 'order',
+    }),
+    payload.find({
+      collection: 'pages',
+      where: { slug: { equals: 'bia-tien-si' }, status: { equals: 'published' } },
+      locale: locale as Locale,
+      limit: 1,
+    }),
+  ])
+  const page = pageResult.docs[0]
 
   // Group by dynasty
   const dynasties = [...new Set(result.docs.map((b: any) => b.dynasty))] as string[]
@@ -46,6 +56,13 @@ export default async function BiaTienSiPage({ params }: Props) {
             : '1 307 docteurs de 1442 à 1779. Mémoire du monde de l\'UNESCO depuis 2010.'}
         </p>
       </div>
+
+      {(page as any)?.content_html && (
+        <>
+          <HtmlContent html={(page as any).content_html} />
+          <div className="divider-motif" />
+        </>
+      )}
 
       {dynasties.map((dynasty) => {
         const biaOfDynasty = result.docs.filter((b: any) => b.dynasty === dynasty)
