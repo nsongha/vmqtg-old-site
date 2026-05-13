@@ -56,7 +56,7 @@ export default async function VeDiTichPage({ params }: Props) {
         const items = grouped[section]
         if (!items?.length) return null
         return (
-          <FadeInOnView as="section" key={section} className="mb-16">
+          <FadeInOnView as="section" key={section} className="mb-16 scroll-mt-24" id={section}>
             <div className="flex items-center gap-3 mb-6">
               <Badge variant="gold">{section}</Badge>
               <h2 className="font-serif text-xl font-semibold">

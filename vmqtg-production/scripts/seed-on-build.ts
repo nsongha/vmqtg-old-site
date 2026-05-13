@@ -93,25 +93,112 @@ const DI_TICH_IMAGE_MAP: Record<string, string> = {
   'danh-nhan/khoa-bang': '1-nha-tho-trang-nguyen-nguyen-truc-xa-tam-hung-thanh-oai-ha-noi-anh-p-ncst.jpg',
 }
 
+// Nav structure follows the v0.2 sitemap (cấu trúc website VM):
+//   A. Tham quan (no children)
+//   B. Về di tích (mega menu — 6 columns B1..B6, each with sub-items)
+//   C. Trưng bày, triển lãm (mega menu — 3 columns C1..C3)
+//   D. Các hoạt động (mega menu — 7 columns D1..D7)
+//   E. Dịch vụ (simple dropdown — 6 services E1..E6)
+//
+// Convention for mega children: items with a "bare" group_id (e.g. "B1") are
+// rendered as the column header / link to the category overview; items with a
+// dotted group_id (e.g. "B1.1") are list items within that column. Frontend
+// MegaMenu groups them by first segment when laying out the dropdown.
 const NAV_ITEMS = [
   { label: 'Tham quan', href: '/tham-quan', mega_menu: false, children: [] },
+
   {
     label: 'Về di tích', href: '/ve-di-tich', mega_menu: true,
     children: [
-      { label: 'Lịch sử', href: '/ve-di-tich', group_id: 'B1' },
-      { label: 'Các phân khu', href: '/ve-di-tich', group_id: 'B2' },
-      { label: 'Kiến trúc', href: '/ve-di-tich', group_id: 'B3' },
-      { label: 'Danh nhân', href: '/ve-di-tich', group_id: 'B4' },
-      { label: 'Tượng thờ', href: '/ve-di-tich', group_id: 'B5' },
-      { label: 'Thư viện', href: '/ve-di-tich', group_id: 'B6' },
+      // B1 — Lịch sử (4)
+      { label: 'Lịch sử',         href: '/ve-di-tich#B1',   group_id: 'B1' },
+      { label: 'Thời Lý',         href: '/ve-di-tich#B1.1', group_id: 'B1.1' },
+      { label: 'Thời Trần',       href: '/ve-di-tich#B1.2', group_id: 'B1.2' },
+      { label: 'Thời Lê',         href: '/ve-di-tich#B1.3', group_id: 'B1.3' },
+      { label: 'Thời Nguyễn',     href: '/ve-di-tich#B1.4', group_id: 'B1.4' },
+      // B2 — Các phân khu (3)
+      { label: 'Các phân khu',    href: '/ve-di-tich#B2',   group_id: 'B2' },
+      { label: 'Nội tự',          href: '/ve-di-tich#B2.1', group_id: 'B2.1' },
+      { label: 'Vườn Giám',       href: '/ve-di-tich#B2.2', group_id: 'B2.2' },
+      { label: 'Hồ Văn',          href: '/ve-di-tich#B2.3', group_id: 'B2.3' },
+      // B3 — Công trình kiến trúc (12 + 82 Bia Tiến Sĩ link)
+      { label: 'Công trình kiến trúc', href: '/ve-di-tich#B3', group_id: 'B3' },
+      { label: 'Bia Hạ mã',       href: '/ve-di-tich#B3.1',  group_id: 'B3.1' },
+      { label: 'Cổng Văn Miếu',   href: '/ve-di-tich#B3.2',  group_id: 'B3.2' },
+      { label: 'Cổng Đại Trung',  href: '/ve-di-tich#B3.3',  group_id: 'B3.3' },
+      { label: 'Khuê Văn Các',    href: '/ve-di-tich#B3.4',  group_id: 'B3.4' },
+      { label: 'Nhà che bia',     href: '/ve-di-tich#B3.5',  group_id: 'B3.5' },
+      { label: 'Cổng Đại Thành',  href: '/ve-di-tich#B3.6',  group_id: 'B3.6' },
+      { label: 'Bái đường',       href: '/ve-di-tich#B3.7',  group_id: 'B3.7' },
+      { label: 'Cổng Thái học',   href: '/ve-di-tich#B3.8',  group_id: 'B3.8' },
+      { label: 'Thái học',        href: '/ve-di-tich#B3.9',  group_id: 'B3.9' },
+      { label: 'Nhà chuông, nhà trống', href: '/ve-di-tich#B3.10', group_id: 'B3.10' },
+      { label: 'Nhà Bát Giác',    href: '/ve-di-tich#B3.11', group_id: 'B3.11' },
+      { label: 'Phương đình',     href: '/ve-di-tich#B3.12', group_id: 'B3.12' },
+      { label: '82 Bia Tiến Sĩ',  href: '/bia-tien-si',      group_id: 'B3.13' },
+      // B4 — Danh nhân (5)
+      { label: 'Danh nhân',       href: '/ve-di-tich#B4',   group_id: 'B4' },
+      { label: 'Vua Lý Thánh Tông', href: '/ve-di-tich#B4.1', group_id: 'B4.1' },
+      { label: 'Vua Lý Nhân Tông', href: '/ve-di-tich#B4.2', group_id: 'B4.2' },
+      { label: 'Vua Lê Thánh Tông', href: '/ve-di-tich#B4.3', group_id: 'B4.3' },
+      { label: 'Tư nghiệp Chu Văn An', href: '/ve-di-tich#B4.5', group_id: 'B4.5' },
+      { label: 'Danh nhân khoa bảng', href: '/ve-di-tich#B4.6', group_id: 'B4.6' },
+      // B5 — Tượng thờ (5)
+      { label: 'Tượng thờ',       href: '/ve-di-tich#B5',   group_id: 'B5' },
+      { label: 'Khổng Tử',        href: '/ve-di-tich#B5.1', group_id: 'B5.1' },
+      { label: 'Nhan Tử',         href: '/ve-di-tich#B5.2', group_id: 'B5.2' },
+      { label: 'Tử Tư',           href: '/ve-di-tich#B5.3', group_id: 'B5.3' },
+      { label: 'Tăng Tử',         href: '/ve-di-tich#B5.4', group_id: 'B5.4' },
+      { label: 'Mạnh Tử',         href: '/ve-di-tich#B5.5', group_id: 'B5.5' },
+      // B6 — Thư viện (2)
+      { label: 'Thư viện',        href: '/ve-di-tich#B6',   group_id: 'B6' },
+      { label: 'Thư viện ảnh',    href: '/ve-di-tich#B6.1', group_id: 'B6.1' },
+      { label: 'Video',           href: '/ve-di-tich#B6.2', group_id: 'B6.2' },
     ],
   },
-  { label: '82 Bia Tiến Sĩ', href: '/bia-tien-si', mega_menu: false, children: [] },
-  { label: 'Giáo dục di sản', href: '/giao-duc-di-san', mega_menu: false, children: [] },
-  { label: 'Các hoạt động', href: '/hoat-dong', mega_menu: false, children: [] },
-  { label: 'Trưng bày, triển lãm', href: '/trung-bay-trien-lam', mega_menu: false, children: [] },
-  { label: 'Dịch vụ', href: '/dich-vu', mega_menu: false, children: [] },
-  { label: 'Về chúng tôi', href: '/ve-chung-toi', mega_menu: false, children: [] },
+
+  {
+    label: 'Trưng bày, triển lãm', href: '/trung-bay-trien-lam', mega_menu: true,
+    children: [
+      // C1 — Trưng bày cố định (3)
+      { label: 'Trưng bày cố định', href: '/trung-bay-trien-lam#C1',   group_id: 'C1' },
+      { label: 'Quốc Tử Giám – Trường quốc học đầu tiên', href: '/trung-bay-trien-lam#C1.1', group_id: 'C1.1' },
+      { label: 'Khơi nguồn đạo học', href: '/trung-bay-trien-lam#C1.2', group_id: 'C1.2' },
+      { label: 'Sử đá lưu danh', href: '/trung-bay-trien-lam#C1.3', group_id: 'C1.3' },
+      // C2, C3 (no sub-items)
+      { label: 'Trưng bày chuyên đề', href: '/trung-bay-trien-lam#C2', group_id: 'C2' },
+      { label: 'Triển lãm', href: '/trung-bay-trien-lam#C3', group_id: 'C3' },
+    ],
+  },
+
+  {
+    label: 'Các hoạt động', href: '/hoat-dong', mega_menu: true,
+    children: [
+      // D1 — Sự kiện (2 sub)
+      { label: 'Sự kiện', href: '/hoat-dong#D1', group_id: 'D1' },
+      { label: 'Sự kiện sắp diễn ra', href: '/hoat-dong#D1.1', group_id: 'D1.1' },
+      { label: 'Sự kiện đang diễn ra', href: '/hoat-dong#D1.2', group_id: 'D1.2' },
+      // D2..D7 (no sub-items)
+      { label: 'Giáo dục di sản', href: '/hoat-dong#D2', group_id: 'D2' },
+      { label: 'Hoạt động trải nghiệm', href: '/hoat-dong#D3', group_id: 'D3' },
+      { label: 'Hoạt động văn hoá nghệ thuật', href: '/hoat-dong#D4', group_id: 'D4' },
+      { label: 'Hội thảo – Toạ đàm', href: '/hoat-dong#D5', group_id: 'D5' },
+      { label: 'Đón đoàn ngoại giao', href: '/hoat-dong#D6', group_id: 'D6' },
+      { label: 'Workshop', href: '/hoat-dong#D7', group_id: 'D7' },
+    ],
+  },
+
+  {
+    label: 'Dịch vụ', href: '/dich-vu', mega_menu: false,
+    children: [
+      { label: 'Tour đêm Văn Miếu', href: '/dich-vu#E1', group_id: 'E1' },
+      { label: 'Thuyết minh tự động', href: '/dich-vu#E2', group_id: 'E2' },
+      { label: 'Thuyết minh tại điểm', href: '/dich-vu#E3', group_id: 'E3' },
+      { label: 'Quà lưu niệm', href: '/dich-vu#E4', group_id: 'E4' },
+      { label: 'Viết chữ thư pháp', href: '/dich-vu#E5', group_id: 'E5' },
+      { label: 'Nước uống', href: '/dich-vu#E6', group_id: 'E6' },
+    ],
+  },
 ]
 
 async function getCount(payload: any, collection: string): Promise<number> {
