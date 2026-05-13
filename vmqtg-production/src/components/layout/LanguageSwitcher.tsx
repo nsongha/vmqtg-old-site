@@ -10,7 +10,7 @@ export function LanguageSwitcher({ currentLocale }: { currentLocale: Locale }) {
     // Thay thế locale segment đầu tiên trong pathname
     const segments = pathname.split('/')
     segments[1] = locale
-    router.push(segments.join('/'))
+    router.push(segments.join('/'), { scroll: false })
   }
 
   return (
