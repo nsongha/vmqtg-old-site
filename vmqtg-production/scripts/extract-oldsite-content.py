@@ -26,6 +26,89 @@ V5_ROOT = REPO_ROOT.parent / "vmqtg-v5"
 V5_TRANS = V5_ROOT / "translations.py"
 OUTPUT = REPO_ROOT / "data" / "oldsite-content.json"
 
+# Page → v5 LABELS/SUBS key (None when no v5 entry exists for this slug)
+PAGE_LABEL_KEY: dict[str, str | None] = {
+    "tham-quan": "A",
+    "ve-di-tich": "B",
+    "giao-duc-di-san": "D2",
+    "hoat-dong": "D",
+    "bia-tien-si": None,         # custom page (not in v5 nav)
+    "ve-chung-toi": None,        # custom page
+    "trung-bay-trien-lam": "C",
+    "dich-vu": "E",
+}
+
+# DiTich slug → v5 id_code (drives v5 LABELS lookup for en/fr title)
+DI_TICH_CODE: dict[str, str] = {
+    "lich-su/thoi-ly": "B1.1",
+    "lich-su/thoi-tran": "B1.2",
+    "lich-su/thoi-le": "B1.3",
+    "lich-su/thoi-nguyen": "B1.4",
+    "phan-khu/noi-tu": "B2.1",
+    "phan-khu/vuon-giam": "B2.2",
+    "phan-khu/ho-van": "B2.3",
+    "kien-truc/bia-ha-ma": "B3.1",
+    "kien-truc/cong-van-mieu": "B3.2",
+    "kien-truc/cong-dai-trung": "B3.3",
+    "kien-truc/khue-van-cac": "B3.4",
+    "kien-truc/nha-che-bia": "B3.5",
+    "kien-truc/cong-dai-thanh": "B3.6",
+    "kien-truc/bai-duong": "B3.7",
+    "kien-truc/cong-thai-hoc": "B3.8",
+    "kien-truc/thai-hoc": "B3.9",
+    "kien-truc/nha-chuong-trong": "B3.10",
+    "kien-truc/nha-bat-giac": "B3.11",
+    "kien-truc/phuong-dinh": "B3.12",
+    "danh-nhan/vua-ly-thanh-tong": "B4.1",
+    "danh-nhan/vua-ly-nhan-tong": "B4.2",
+    "danh-nhan/vua-le-thanh-tong": "B4.3",
+    "danh-nhan/chu-van-an": "B4.5",
+    "danh-nhan/khoa-bang": "B4.6",
+    "tuong-tho/khong-tu": "B5.1",
+    "tuong-tho/nhan-tu": "B5.2",
+    "tuong-tho/tu-tu": "B5.3",
+    "tuong-tho/tang-tu": "B5.4",
+    "tuong-tho/manh-tu": "B5.5",
+    "thu-vien/thu-vien-anh": "B6.1",
+    "thu-vien/video": "B6.2",
+}
+
+# Vietnamese titles for DiTich items (derived from v5 sitemap labels — same
+# strings used in DI_TICH_ITEMS seed table).
+DI_TICH_VI_TITLE: dict[str, str] = {
+    "lich-su/thoi-ly": "Thời Lý",
+    "lich-su/thoi-tran": "Thời Trần",
+    "lich-su/thoi-le": "Thời Lê",
+    "lich-su/thoi-nguyen": "Thời Nguyễn",
+    "phan-khu/noi-tu": "Nội tự",
+    "phan-khu/vuon-giam": "Vườn Giám",
+    "phan-khu/ho-van": "Hồ Văn",
+    "kien-truc/bia-ha-ma": "Bia Hạ mã",
+    "kien-truc/cong-van-mieu": "Cổng Văn Miếu",
+    "kien-truc/cong-dai-trung": "Cổng Đại Trung",
+    "kien-truc/khue-van-cac": "Khuê Văn Các",
+    "kien-truc/nha-che-bia": "Nhà che bia",
+    "kien-truc/cong-dai-thanh": "Cổng Đại Thành",
+    "kien-truc/bai-duong": "Bái đường",
+    "kien-truc/cong-thai-hoc": "Cổng Thái học",
+    "kien-truc/thai-hoc": "Thái học",
+    "kien-truc/nha-chuong-trong": "Nhà chuông, nhà trống",
+    "kien-truc/nha-bat-giac": "Nhà Bát Giác",
+    "kien-truc/phuong-dinh": "Phương đình",
+    "danh-nhan/vua-ly-thanh-tong": "Vua Lý Thánh Tông",
+    "danh-nhan/vua-ly-nhan-tong": "Vua Lý Nhân Tông",
+    "danh-nhan/vua-le-thanh-tong": "Vua Lê Thánh Tông",
+    "danh-nhan/chu-van-an": "Tư nghiệp Chu Văn An",
+    "danh-nhan/khoa-bang": "Danh nhân khoa bảng",
+    "tuong-tho/khong-tu": "Khổng Tử",
+    "tuong-tho/nhan-tu": "Nhan Tử",
+    "tuong-tho/tu-tu": "Tử Tư",
+    "tuong-tho/tang-tu": "Tăng Tử",
+    "tuong-tho/manh-tu": "Mạnh Tử",
+    "thu-vien/thu-vien-anh": "Thư viện ảnh",
+    "thu-vien/video": "Video",
+}
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Top-level Pages.
 # Schema: (slug, source: "site"|"v5", folder, recursive, v5_content_key|None)
@@ -133,12 +216,79 @@ def extract_v5_article(html_path: Path) -> str | None:
     return rewrite_paths(m.group(1).strip()) if m else None
 
 
-def load_v5_content() -> dict:
+def load_v5_dicts() -> tuple[dict, dict, dict, dict]:
+    """Load CONTENT, LABELS, SUBS, UI from vmqtg-v5/translations.py."""
     if not V5_TRANS.exists():
-        return {}
+        return ({}, {}, {}, {})
     ns: dict = {}
     exec(V5_TRANS.read_text(encoding="utf-8"), ns)
-    return ns.get("CONTENT", {})
+    return (
+        ns.get("CONTENT", {}),
+        ns.get("LABELS", {}),
+        ns.get("SUBS", {}),
+        ns.get("UI", {}),
+    )
+
+
+# Optional UI dict keys for page-specific title/subtitle (preferred over LABELS
+# when present — these are written as page headers, not nav menu labels).
+PAGE_UI_KEY: dict[str, str] = {
+    "tham-quan": "a",  # UI["page_a_title"] = "Visitor information" etc.
+}
+
+
+# Hardcoded VI page titles/subtitles for slugs without a `<p class="page-sub">`
+# on either site/ or v5. Used when neither HTML source nor v5 LABELS/SUBS
+# provides one — keeps the seed deterministic instead of falling through to
+# empty values that would break required-field validation later.
+PAGE_VI_FALLBACK: dict[str, dict[str, str]] = {
+    "tham-quan":           {"title": "Thông tin tham quan", "subtitle": "Vé, giờ mở cửa, nội quy, đường đến và các tiện ích."},
+    "ve-di-tich":          {"title": "Về di tích",          "subtitle": "Lịch sử, phân khu, kiến trúc, danh nhân, tượng thờ và thư viện."},
+    "giao-duc-di-san":     {"title": "Giáo dục di sản",     "subtitle": "Các chương trình giáo dục dành cho mọi lứa tuổi từ mầm non đến THPT."},
+    "hoat-dong":           {"title": "Các hoạt động",       "subtitle": "Sự kiện, giáo dục di sản, trải nghiệm, hội thảo và workshop."},
+    "bia-tien-si":         {"title": "82 Bia Tiến Sĩ",      "subtitle": "Di sản tư liệu thế giới UNESCO · 1.307 tiến sĩ từ 1442–1779."},
+    "ve-chung-toi":        {"title": "Về chúng tôi",        "subtitle": "Trung tâm hoạt động VHKH Văn Miếu – Quốc Tử Giám."},
+    "trung-bay-trien-lam": {"title": "Trưng bày, triển lãm","subtitle": "Trưng bày cố định, chuyên đề và các triển lãm tại di tích."},
+    "dich-vu":             {"title": "Dịch vụ",             "subtitle": "Tour đêm, audio guide, thuyết minh, quà lưu niệm, viết thư pháp."},
+}
+
+PAGE_TITLE_RE = re.compile(r'<h2\s+class="page-title"[^>]*>(.*?)</h2>', re.DOTALL)
+PAGE_SUB_RE = re.compile(r'<p\s+class="page-sub"[^>]*>(.*?)</p>', re.DOTALL)
+
+
+def extract_vi_title_subtitle(slug: str) -> tuple[str | None, str | None]:
+    """Pull VI page title + subtitle from site/<slug>/index.html when present.
+
+    Returns (title, subtitle). Falls back to PAGE_VI_FALLBACK[slug] if the
+    source doesn't have h2.page-title (or the page doesn't exist in site/).
+    """
+    # Resolve slug → site/ folder
+    folder_map = {
+        "tham-quan": "tham-quan",
+        "ve-di-tich": "di-tich",
+        "giao-duc-di-san": "giao-duc-di-san",
+        "hoat-dong": "hoat-dong",
+        "bia-tien-si": "di-tich/bia-tien-si",
+        "ve-chung-toi": "ve-chung-toi",
+        # trung-bay-trien-lam + dich-vu are v5-only; site/ has no equivalent
+    }
+    folder_rel = folder_map.get(slug)
+    title: str | None = None
+    subtitle: str | None = None
+    if folder_rel:
+        idx = OLDSITE / folder_rel / "index.html"
+        if idx.exists():
+            text = idx.read_text(encoding="utf-8")
+            m = PAGE_TITLE_RE.search(text)
+            if m:
+                # strip any inner tags, keep plain text
+                title = re.sub(r"<[^>]+>", "", m.group(1)).strip()
+            m = PAGE_SUB_RE.search(text)
+            if m:
+                subtitle = re.sub(r"<[^>]+>", "", m.group(1)).strip()
+    # Fallback
+    fb = PAGE_VI_FALLBACK.get(slug, {})
+    return (title or fb.get("title"), subtitle or fb.get("subtitle"))
 
 
 def build_site_html(folder: Path, recursive: bool = False) -> str | None:
@@ -237,7 +387,7 @@ def main() -> None:
         print(f"ERROR: oldsite not found at {OLDSITE}", file=sys.stderr)
         sys.exit(1)
 
-    v5 = load_v5_content()
+    v5, labels, subs, ui = load_v5_dicts()
     out = {"pages": [], "diTich": []}
 
     for slug, source, folder_rel, recursive, v5_key in PAGES:
@@ -249,17 +399,54 @@ def main() -> None:
         else:  # source == "v5"
             folder = V5_ROOT / folder_rel
             vi, en, fr = build_v5_html(folder, v5, key_prefix=folder_rel, recursive=recursive)
-        out["pages"].append({"slug": slug, "vi": vi, "en": en, "fr": fr})
+
+        # Title + subtitle.
+        # vi: site/<slug> page-title / page-sub, else PAGE_VI_FALLBACK.
+        # en/fr: prefer UI["page_<x>_title"]/"page_<x>_sub" when defined
+        # (richer page headers), else LABELS/SUBS keyed by nav code.
+        vi_title, vi_subtitle = extract_vi_title_subtitle(slug)
+        label_key = PAGE_LABEL_KEY.get(slug)
+        ui_key = PAGE_UI_KEY.get(slug)
+
+        ui_title = ui.get(f"page_{ui_key}_title", {}) if ui_key else {}
+        ui_sub = ui.get(f"page_{ui_key}_sub", {}) if ui_key else {}
+        labels_loc = labels.get(label_key) if label_key else {}
+        subs_loc = subs.get(label_key) if label_key else {}
+
+        title = {
+            "vi": vi_title,
+            "en": ui_title.get("en") or (labels_loc or {}).get("en"),
+            "fr": ui_title.get("fr") or (labels_loc or {}).get("fr"),
+        }
+        subtitle = {
+            "vi": vi_subtitle,
+            "en": ui_sub.get("en") or (subs_loc or {}).get("en"),
+            "fr": ui_sub.get("fr") or (subs_loc or {}).get("fr"),
+        }
+
+        out["pages"].append({
+            "slug": slug,
+            "title": title,
+            "subtitle": subtitle,
+            "vi": vi, "en": en, "fr": fr,
+        })
 
     for slug, v5_path in DI_TICH:
         idx = V5_ROOT / v5_path / "index.html"
-        entry = {
+        id_code = DI_TICH_CODE.get(slug)
+        title = {
+            "vi": DI_TICH_VI_TITLE.get(slug),
+            "en": (labels.get(id_code) or {}).get("en") if id_code else None,
+            "fr": (labels.get(id_code) or {}).get("fr") if id_code else None,
+        }
+        out["diTich"].append({
             "slug": slug,
+            "id_code": id_code,
+            "title": title,
             "vi": extract_v5_article(idx),
             "en": (v5.get(v5_path) or {}).get("en"),
             "fr": (v5.get(v5_path) or {}).get("fr"),
-        }
-        out["diTich"].append(entry)
+        })
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8")
