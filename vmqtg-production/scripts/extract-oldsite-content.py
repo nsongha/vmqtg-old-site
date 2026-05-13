@@ -78,13 +78,29 @@ V5_ARTICLE_RE = re.compile(
 )
 
 
+def rewrite_paths(html: str) -> str:
+    """Rewrite GitHub Pages prefix to a local-served path.
+
+    Old-site URLs like /vmqtg-old-site/assets/images/foo.jpg are rewritten to
+    /oldsite/assets/images/foo.jpg, which Next.js serves from public/oldsite/
+    (populated at build time by scripts/copy-oldsite-assets.mjs).
+
+    Also strips /vmqtg-old-site/ from internal page anchors to make them
+    relative-root paths usable by the new site (e.g. /tham-quan/ve/ becomes
+    /tham-quan/ve/ — the page won't exist yet but at least won't 404 to GH).
+    """
+    html = html.replace("/vmqtg-old-site/assets/", "/oldsite/assets/")
+    html = html.replace("/vmqtg-old-site/", "/")
+    return html
+
+
 def extract_article_body(html_path: Path) -> str | None:
     """Return inner HTML of <article class="article-body">."""
     if not html_path.exists():
         return None
     text = html_path.read_text(encoding="utf-8")
     m = ARTICLE_RE.search(text)
-    return m.group(1).strip() if m else None
+    return rewrite_paths(m.group(1).strip()) if m else None
 
 
 def extract_page_intro(html_path: Path) -> str | None:
@@ -93,7 +109,7 @@ def extract_page_intro(html_path: Path) -> str | None:
         return None
     text = html_path.read_text(encoding="utf-8")
     m = PAGE_INTRO_RE.search(text)
-    return m.group(1).strip() if m else None
+    return rewrite_paths(m.group(1).strip()) if m else None
 
 
 def extract_v5_article(html_path: Path) -> str | None:
@@ -102,7 +118,7 @@ def extract_v5_article(html_path: Path) -> str | None:
         return None
     text = html_path.read_text(encoding="utf-8")
     m = V5_ARTICLE_RE.search(text)
-    return m.group(1).strip() if m else None
+    return rewrite_paths(m.group(1).strip()) if m else None
 
 
 def load_v5_content() -> dict:

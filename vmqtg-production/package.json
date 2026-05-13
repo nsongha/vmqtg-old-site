@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "payload migrate && tsx scripts/seed-on-build.ts && next build",
+    "build": "node scripts/copy-oldsite-assets.mjs && payload migrate && tsx scripts/seed-on-build.ts && next build",
+    "copy:oldsite": "node scripts/copy-oldsite-assets.mjs",
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
