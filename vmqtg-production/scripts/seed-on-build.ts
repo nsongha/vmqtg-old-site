@@ -17,6 +17,10 @@ const CORE_PAGES = [
   { slug: 'home', title: 'Trang chủ', subtitle: 'Di tích lịch sử quốc gia đặc biệt · Hà Nội' },
   { slug: 'tham-quan', title: 'Thông tin tham quan', subtitle: 'Vé, giờ mở cửa, nội quy, đường đến và các tiện ích.' },
   { slug: 've-di-tich', title: 'Về di tích', subtitle: 'Lịch sử, phân khu, kiến trúc, danh nhân, tượng thờ và thư viện.' },
+  { slug: 'giao-duc-di-san', title: 'Giáo dục di sản', subtitle: 'Các chương trình giáo dục dành cho mọi lứa tuổi từ mầm non đến THPT.' },
+  { slug: 'hoat-dong', title: 'Các hoạt động', subtitle: 'Hoạt động trưng bày, triển lãm thường xuyên tại di tích.' },
+  { slug: 'bia-tien-si', title: '82 Bia Tiến Sĩ', subtitle: 'Di sản tư liệu thế giới UNESCO · 1.307 tiến sĩ từ 1442–1779.' },
+  { slug: 've-chung-toi', title: 'Về chúng tôi', subtitle: 'Trung tâm hoạt động VHKH Văn Miếu – Quốc Tử Giám.' },
 ]
 
 const DI_TICH_ITEMS = [
@@ -92,6 +96,9 @@ const NAV_ITEMS = [
     ],
   },
   { label: '82 Bia Tiến Sĩ', href: '/bia-tien-si', mega_menu: false, children: [] },
+  { label: 'Giáo dục di sản', href: '/giao-duc-di-san', mega_menu: false, children: [] },
+  { label: 'Các hoạt động', href: '/hoat-dong', mega_menu: false, children: [] },
+  { label: 'Về chúng tôi', href: '/ve-chung-toi', mega_menu: false, children: [] },
 ]
 
 async function getCount(payload: any, collection: string): Promise<number> {
@@ -121,9 +128,18 @@ async function seedBia(payload: any) {
 }
 
 async function seedPages(payload: any) {
+  // Idempotent: create each page only if its slug is missing.
   for (const page of CORE_PAGES) {
     try {
+      const existing = await payload.find({
+        collection: 'pages',
+        where: { slug: { equals: page.slug } },
+        limit: 1,
+        depth: 0,
+      })
+      if (existing.docs.length > 0) continue
       await payload.create({ collection: 'pages', data: { ...page, status: 'published' } })
+      console.log(`[seed] created page ${page.slug}`)
     } catch (e: any) {
       console.error(`[seed] page ${page.slug} failed:`, e.message)
     }
@@ -142,11 +158,29 @@ async function seedDiTich(payload: any) {
 }
 
 async function seedNavigation(payload: any) {
+  // Idempotent: upsert by key='main-nav'. Refresh items so newly added Pages
+  // (giao-duc-di-san, hoat-dong, ve-chung-toi…) appear in the menu after redeploy.
   try {
-    await payload.create({
+    const existing = await payload.find({
       collection: 'navigation',
-      data: { key: 'main-nav', items: NAV_ITEMS } as any,
+      where: { key: { equals: 'main-nav' } },
+      limit: 1,
+      depth: 0,
     })
+    if (existing.docs.length > 0) {
+      await payload.update({
+        collection: 'navigation',
+        id: existing.docs[0].id,
+        data: { items: NAV_ITEMS } as any,
+      })
+      console.log('[seed] navigation: refreshed main-nav items')
+    } else {
+      await payload.create({
+        collection: 'navigation',
+        data: { key: 'main-nav', items: NAV_ITEMS } as any,
+      })
+      console.log('[seed] navigation: created main-nav')
+    }
   } catch (e: any) {
     console.error('[seed] navigation failed:', e.message)
   }
@@ -220,6 +254,58 @@ async function linkDiTichImages(payload: any) {
   console.log(`[seed] linked ${linked} di-tich items to images`)
 }
 
+type LocalizedHtml = { slug: string; vi: string | null; en: string | null; fr: string | null }
+type OldsiteContent = { pages: LocalizedHtml[]; diTich: LocalizedHtml[] }
+
+function loadOldsiteContent(): OldsiteContent | null {
+  const p = path.resolve(DATA_DIR, 'oldsite-content.json')
+  if (!fs.existsSync(p)) return null
+  try {
+    return JSON.parse(fs.readFileSync(p, 'utf-8'))
+  } catch (e: any) {
+    console.error('[seed] failed to parse oldsite-content.json:', e.message)
+    return null
+  }
+}
+
+// Fill empty content_html fields per locale from oldsite extraction.
+// Preserves any admin-edited content_html. Safe to re-run.
+async function fillContentFromOldsite(
+  payload: any,
+  collection: 'pages' | 'di-tich-items',
+  entries: LocalizedHtml[],
+) {
+  let filled = 0
+  for (const entry of entries) {
+    const existing = await payload.find({
+      collection,
+      where: { slug: { equals: entry.slug } },
+      limit: 1,
+      depth: 0,
+    })
+    if (existing.docs.length === 0) continue
+    const docId = existing.docs[0].id
+    for (const locale of ['vi', 'en', 'fr'] as const) {
+      const html = entry[locale]
+      if (!html) continue
+      try {
+        const current = await payload.findByID({ collection, id: docId, locale, depth: 0 })
+        if (current?.content_html) continue
+        await payload.update({
+          collection,
+          id: docId,
+          locale,
+          data: { content_html: html },
+        })
+        filled++
+      } catch (e: any) {
+        console.error(`[seed] fill ${collection}/${entry.slug}/${locale} failed:`, e.message)
+      }
+    }
+  }
+  console.log(`[seed] ${collection}: filled ${filled} localized content_html fields`)
+}
+
 async function main() {
   console.log('[seed] starting build-time seed check')
   const payload = await getPayload({ config })
@@ -236,14 +322,14 @@ async function main() {
   if (counts.bia === 0) await seedBia(payload)
   else console.log('[seed] bia: already has data, skip')
 
-  if (counts.pages === 0) await seedPages(payload)
-  else console.log('[seed] pages: already has data, skip')
+  // Pages: always run — seedPages is now idempotent and adds new slugs over time.
+  await seedPages(payload)
 
   if (counts.diTich === 0) await seedDiTich(payload)
   else console.log('[seed] di-tich: already has data, skip')
 
-  if (counts.nav === 0) await seedNavigation(payload)
-  else console.log('[seed] navigation: already has data, skip')
+  // Navigation: always run — seedNavigation is now idempotent and refreshes items.
+  await seedNavigation(payload)
 
   if (counts.media === 0) await seedMedia(payload)
   else console.log('[seed] media: already has data, skip')
@@ -251,6 +337,15 @@ async function main() {
   // After media + di-tich both seeded, link them (idempotent — fills only empty images)
   if (counts.media > 0 || (await getCount(payload, 'media')) > 0) {
     await linkDiTichImages(payload)
+  }
+
+  // Fill localized content_html from oldsite extraction (idempotent)
+  const oldsite = loadOldsiteContent()
+  if (oldsite) {
+    await fillContentFromOldsite(payload, 'pages', oldsite.pages)
+    await fillContentFromOldsite(payload, 'di-tich-items', oldsite.diTich)
+  } else {
+    console.log('[seed] no oldsite-content.json found, skip content fill')
   }
 
   console.log('[seed] done')

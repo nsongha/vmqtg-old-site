@@ -4,19 +4,24 @@ import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/lib/payload'
 import { isValidLocale, type Locale } from '@/lib/i18n'
 import { RichText } from '@/components/ui/RichText'
+import { HtmlContent } from '@/components/ui/HtmlContent'
 import { Badge } from '@/components/ui/Badge'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
 
-type Props = { params: Promise<{ locale: string; slug: string }> }
+type Props = { params: Promise<{ locale: string; slug: string[] }> }
+
+function joinSlug(parts: string[]): string {
+  return parts.join('/')
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: 'di-tich-items',
-    where: { slug: { equals: slug } },
+    where: { slug: { equals: joinSlug(slug) } },
     locale: locale as Locale,
     limit: 1,
   })
@@ -31,7 +36,7 @@ export default async function DiTichItemPage({ params }: Props) {
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: 'di-tich-items',
-    where: { slug: { equals: slug }, status: { equals: 'published' } },
+    where: { slug: { equals: joinSlug(slug) }, status: { equals: 'published' } },
     locale: locale as Locale,
     limit: 1,
     depth: 2,
@@ -39,8 +44,6 @@ export default async function DiTichItemPage({ params }: Props) {
 
   const item = result.docs[0]
   if (!item) notFound()
-
-  const firstImage = item.images?.[0]?.image
 
   return (
     <div className="container mt-12 mb-[--spacing-section]">
@@ -68,7 +71,9 @@ export default async function DiTichItemPage({ params }: Props) {
 
           <div className="divider-motif" />
 
-          {item.content ? (
+          {(item as any).content_html ? (
+            <HtmlContent html={(item as any).content_html} />
+          ) : item.content ? (
             <div className="prose max-w-none">
               <RichText content={item.content as any} />
             </div>
@@ -110,7 +115,7 @@ export async function generateStaticParams() {
     const payload = await getPayloadClient()
     const result = await payload.find({ collection: 'di-tich-items', limit: 100 })
     return result.docs.flatMap((item: any) =>
-      ['vi', 'en', 'fr'].map((locale) => ({ locale, slug: item.slug }))
+      ['vi', 'en', 'fr'].map((locale) => ({ locale, slug: String(item.slug).split('/') }))
     )
   } catch {
     return []

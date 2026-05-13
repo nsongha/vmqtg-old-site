@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/lib/payload'
 import { isValidLocale, type Locale } from '@/lib/i18n'
 import { RichText } from '@/components/ui/RichText'
+import { HtmlContent } from '@/components/ui/HtmlContent'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
@@ -77,8 +78,10 @@ export default async function ThamQuanPage({ params }: Props) {
 
       <div className="divider-motif" />
 
-      {/* Rich text content từ Payload */}
-      {page?.content ? (
+      {/* Content từ Payload — content_html (legacy/seeded) ưu tiên hơn richText */}
+      {(page as any)?.content_html ? (
+        <HtmlContent html={(page as any).content_html} />
+      ) : page?.content ? (
         <div className="prose max-w-none">
           <RichText content={page.content as any} />
         </div>

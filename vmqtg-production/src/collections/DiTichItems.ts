@@ -17,6 +17,15 @@ export const DiTichItems: CollectionConfig = {
     { name: 'subtitle', type: 'text', localized: true },
     { name: 'content', type: 'richText', localized: true },
     {
+      name: 'content_html',
+      type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'Raw HTML (sanitized at render). Takes precedence over richText when set.',
+        rows: 12,
+      },
+    },
+    {
       name: 'images',
       type: 'array',
       fields: [
