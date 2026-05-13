@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/lib/payload'
 import { isValidLocale, type Locale } from '@/lib/i18n'
 import { DiTichCard } from '@/components/features/DiTichCard'
+import { FadeInOnView } from '@/components/ui/FadeInOnView'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
@@ -105,7 +106,7 @@ export default async function HomePage({ params }: Props) {
       </section>
 
       {/* Featured architecture */}
-      <section className="container mt-[--spacing-section]">
+      <FadeInOnView as="section" className="container mt-[--spacing-section]">
         <div className="flex items-baseline justify-between mb-8">
           <h2 className="font-serif text-2xl font-semibold">
             {locale === 'vi' ? 'Công trình kiến trúc' : locale === 'en' ? 'Architecture' : 'Architecture'}
@@ -115,23 +116,24 @@ export default async function HomePage({ params }: Props) {
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featured.docs.map((item: any) => (
-            <DiTichCard
-              key={item.id}
-              id_code={item.id_code}
-              title={item.title}
-              subtitle={item.subtitle}
-              section={item.section}
-              slug={item.slug}
-              locale={locale as Locale}
-              imageUrl={item.images?.[0]?.image?.url}
-            />
+          {featured.docs.map((item: any, i: number) => (
+            <div key={item.id} className="animate-fade-up" style={{ '--i': i } as React.CSSProperties}>
+              <DiTichCard
+                id_code={item.id_code}
+                title={item.title}
+                subtitle={item.subtitle}
+                section={item.section}
+                slug={item.slug}
+                locale={locale as Locale}
+                imageUrl={item.images?.[0]?.image?.url}
+              />
+            </div>
           ))}
         </div>
-      </section>
+      </FadeInOnView>
 
       {/* Quick info strip */}
-      <section className="mt-[--spacing-section] bg-[--color-bg-subtle] border-y border-[--color-border]">
+      <FadeInOnView as="section" className="mt-[--spacing-section] bg-[--color-bg-subtle] border-y border-[--color-border]">
         <div className="container py-10 grid grid-cols-1 sm:grid-cols-3 gap-8">
           {[
             { label: locale === 'vi' ? 'Giờ mở cửa' : locale === 'en' ? 'Opening hours' : 'Horaires', value: '8:00 – 17:00' },
@@ -144,10 +146,10 @@ export default async function HomePage({ params }: Props) {
             </div>
           ))}
         </div>
-      </section>
+      </FadeInOnView>
 
       {/* 82 Bia CTA */}
-      <section className="container mt-[--spacing-section] mb-[--spacing-section]">
+      <FadeInOnView as="section" className="container mt-[--spacing-section] mb-[--spacing-section]">
         <div className="border border-[--color-border] p-8 md:p-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
             <h2 className="font-serif text-2xl font-semibold mb-2">
@@ -168,7 +170,7 @@ export default async function HomePage({ params }: Props) {
             {locale === 'vi' ? 'Khám phá bia tiến sĩ →' : locale === 'en' ? 'Explore stelae →' : 'Explorer les stèles →'}
           </Link>
         </div>
-      </section>
+      </FadeInOnView>
     </div>
   )
 }

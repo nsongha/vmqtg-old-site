@@ -3,6 +3,7 @@ import { getPayloadClient } from '@/lib/payload'
 import { isValidLocale, type Locale } from '@/lib/i18n'
 import { RichText } from '@/components/ui/RichText'
 import { HtmlContent } from '@/components/ui/HtmlContent'
+import { FadeInOnView } from '@/components/ui/FadeInOnView'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
@@ -58,7 +59,7 @@ export default async function ThamQuanPage({ params }: Props) {
   return (
     <div className="container mt-12 mb-[--spacing-section]">
       {/* Page header */}
-      <div className="mb-10">
+      <div className="mb-10 animate-fade-up">
         <h1 className="font-serif text-3xl md:text-4xl font-bold mb-3">
           {page?.title ?? (locale === 'vi' ? 'Thông tin tham quan' : locale === 'en' ? 'Visitor Information' : 'Informations pratiques')}
         </h1>
@@ -67,8 +68,12 @@ export default async function ThamQuanPage({ params }: Props) {
 
       {/* Quick info grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
-        {info.map((item) => (
-          <div key={item.label} className="border border-[--color-border] p-6">
+        {info.map((item, i) => (
+          <div
+            key={item.label}
+            className="border border-[--color-border] p-6 animate-fade-up"
+            style={{ '--i': i + 1 } as React.CSSProperties}
+          >
             <dt className="text-xs text-[--color-ink-muted] uppercase tracking-wider mb-2">{item.label}</dt>
             <dd className="font-serif text-lg font-medium mb-1">{item.value}</dd>
             <p className="text-xs text-[--color-ink-muted]">{item.sub}</p>
@@ -79,19 +84,21 @@ export default async function ThamQuanPage({ params }: Props) {
       <div className="divider-motif" />
 
       {/* Content từ Payload — content_html (legacy/seeded) ưu tiên hơn richText */}
-      {(page as any)?.content_html ? (
-        <HtmlContent html={(page as any).content_html} />
-      ) : page?.content ? (
-        <div className="prose max-w-none">
-          <RichText content={page.content as any} />
-        </div>
-      ) : (
-        <p className="text-[--color-ink-muted] text-sm italic">
-          {locale === 'vi' ? 'Nội dung đang được cập nhật.'
-           : locale === 'en' ? 'Content is being updated.'
-           : 'Contenu en cours de mise à jour.'}
-        </p>
-      )}
+      <FadeInOnView>
+        {(page as any)?.content_html ? (
+          <HtmlContent html={(page as any).content_html} />
+        ) : page?.content ? (
+          <div className="prose max-w-none">
+            <RichText content={page.content as any} />
+          </div>
+        ) : (
+          <p className="text-[--color-ink-muted] text-sm italic">
+            {locale === 'vi' ? 'Nội dung đang được cập nhật.'
+             : locale === 'en' ? 'Content is being updated.'
+             : 'Contenu en cours de mise à jour.'}
+          </p>
+        )}
+      </FadeInOnView>
     </div>
   )
 }

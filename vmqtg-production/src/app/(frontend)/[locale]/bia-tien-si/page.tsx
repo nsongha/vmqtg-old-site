@@ -3,6 +3,7 @@ import { getPayloadClient } from '@/lib/payload'
 import { isValidLocale, type Locale } from '@/lib/i18n'
 import { BiaTienSiCard } from '@/components/features/BiaTienSiCard'
 import { HtmlContent } from '@/components/ui/HtmlContent'
+import { FadeInOnView } from '@/components/ui/FadeInOnView'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
@@ -44,7 +45,7 @@ export default async function BiaTienSiPage({ params }: Props) {
 
   return (
     <div className="container mt-12 mb-[--spacing-section]">
-      <div className="max-w-2xl mb-12">
+      <div className="max-w-2xl mb-12 animate-fade-up">
         <h1 className="font-serif text-3xl md:text-4xl font-bold mb-3">
           {locale === 'vi' ? '82 Bia Tiến Sĩ' : locale === 'en' ? '82 Doctoral Stelae' : '82 Stèles doctorales'}
         </h1>
@@ -58,35 +59,40 @@ export default async function BiaTienSiPage({ params }: Props) {
       </div>
 
       {(page as any)?.content_html && (
-        <>
+        <FadeInOnView>
           <HtmlContent html={(page as any).content_html} />
           <div className="divider-motif" />
-        </>
+        </FadeInOnView>
       )}
 
       {dynasties.map((dynasty) => {
         const biaOfDynasty = result.docs.filter((b: any) => b.dynasty === dynasty)
         return (
-          <section key={dynasty} className="mb-12">
+          <FadeInOnView as="section" key={dynasty} className="mb-12">
             <h2 className="font-serif text-lg font-semibold mb-4 flex items-center gap-3">
               <span className="h-px flex-1 bg-[--color-border]" />
               <span>{dynasty}</span>
               <span className="h-px flex-1 bg-[--color-border]" />
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {biaOfDynasty.map((bia: any) => (
-                <BiaTienSiCard
+              {biaOfDynasty.map((bia: any, i: number) => (
+                <div
                   key={bia.id}
-                  order={bia.order}
-                  year={bia.year}
-                  dynasty={bia.dynasty}
-                  title={bia.title}
-                  passed_count={bia.passed_count}
-                  locale={locale as Locale}
-                />
+                  className="animate-fade-up"
+                  style={{ '--i': i } as React.CSSProperties}
+                >
+                  <BiaTienSiCard
+                    order={bia.order}
+                    year={bia.year}
+                    dynasty={bia.dynasty}
+                    title={bia.title}
+                    passed_count={bia.passed_count}
+                    locale={locale as Locale}
+                  />
+                </div>
               ))}
             </div>
-          </section>
+          </FadeInOnView>
         )
       })}
     </div>
