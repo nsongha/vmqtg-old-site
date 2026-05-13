@@ -21,6 +21,8 @@ const CORE_PAGES = [
   { slug: 'hoat-dong', title: 'Các hoạt động', subtitle: 'Hoạt động trưng bày, triển lãm thường xuyên tại di tích.' },
   { slug: 'bia-tien-si', title: '82 Bia Tiến Sĩ', subtitle: 'Di sản tư liệu thế giới UNESCO · 1.307 tiến sĩ từ 1442–1779.' },
   { slug: 've-chung-toi', title: 'Về chúng tôi', subtitle: 'Trung tâm hoạt động VHKH Văn Miếu – Quốc Tử Giám.' },
+  { slug: 'trung-bay-trien-lam', title: 'Trưng bày, triển lãm', subtitle: 'Trưng bày cố định, chuyên đề và các triển lãm tại di tích.' },
+  { slug: 'dich-vu', title: 'Dịch vụ', subtitle: 'Tour đêm, audio guide, thuyết minh, quà lưu niệm, viết thư pháp.' },
 ]
 
 const DI_TICH_ITEMS = [
@@ -48,6 +50,15 @@ const DI_TICH_ITEMS = [
   { id_code: 'B4.3', slug: 'danh-nhan/vua-le-thanh-tong', section: 'B4', order: 3, title: 'Vua Lê Thánh Tông' },
   { id_code: 'B4.5', slug: 'danh-nhan/chu-van-an', section: 'B4', order: 5, title: 'Tư nghiệp Chu Văn An' },
   { id_code: 'B4.6', slug: 'danh-nhan/khoa-bang', section: 'B4', order: 6, title: 'Danh nhân khoa bảng' },
+  // B5 — tượng thờ (statues of worship)
+  { id_code: 'B5.1', slug: 'tuong-tho/khong-tu', section: 'B5', order: 1, title: 'Khổng Tử' },
+  { id_code: 'B5.2', slug: 'tuong-tho/nhan-tu', section: 'B5', order: 2, title: 'Nhan Tử' },
+  { id_code: 'B5.3', slug: 'tuong-tho/tu-tu', section: 'B5', order: 3, title: 'Tử Tư' },
+  { id_code: 'B5.4', slug: 'tuong-tho/tang-tu', section: 'B5', order: 4, title: 'Tăng Tử' },
+  { id_code: 'B5.5', slug: 'tuong-tho/manh-tu', section: 'B5', order: 5, title: 'Mạnh Tử' },
+  // B6 — thư viện (library)
+  { id_code: 'B6.1', slug: 'thu-vien/thu-vien-anh', section: 'B6', order: 1, title: 'Thư viện ảnh' },
+  { id_code: 'B6.2', slug: 'thu-vien/video', section: 'B6', order: 2, title: 'Video' },
 ]
 
 // Map di-tich slug → media filename (in data/images/) for cover image
@@ -98,6 +109,8 @@ const NAV_ITEMS = [
   { label: '82 Bia Tiến Sĩ', href: '/bia-tien-si', mega_menu: false, children: [] },
   { label: 'Giáo dục di sản', href: '/giao-duc-di-san', mega_menu: false, children: [] },
   { label: 'Các hoạt động', href: '/hoat-dong', mega_menu: false, children: [] },
+  { label: 'Trưng bày, triển lãm', href: '/trung-bay-trien-lam', mega_menu: false, children: [] },
+  { label: 'Dịch vụ', href: '/dich-vu', mega_menu: false, children: [] },
   { label: 'Về chúng tôi', href: '/ve-chung-toi', mega_menu: false, children: [] },
 ]
 
@@ -147,14 +160,24 @@ async function seedPages(payload: any) {
 }
 
 async function seedDiTich(payload: any) {
-  console.log(`[seed] di-tich: creating ${DI_TICH_ITEMS.length} records`)
+  // Idempotent upsert: skip records whose id_code already exists.
+  let created = 0
   for (const item of DI_TICH_ITEMS) {
     try {
+      const existing = await payload.find({
+        collection: 'di-tich-items',
+        where: { id_code: { equals: item.id_code } },
+        limit: 1,
+        depth: 0,
+      })
+      if (existing.docs.length > 0) continue
       await payload.create({ collection: 'di-tich-items', data: { ...item, status: 'published' } as any })
+      created++
     } catch (e: any) {
       console.error(`[seed] di-tich ${item.id_code} failed:`, e.message)
     }
   }
+  console.log(`[seed] di-tich: created ${created} new records (${DI_TICH_ITEMS.length - created} already present)`)
 }
 
 async function seedNavigation(payload: any) {
@@ -254,8 +277,10 @@ async function linkDiTichImages(payload: any) {
   console.log(`[seed] linked ${linked} di-tich items to images`)
 }
 
-type LocalizedHtml = { slug: string; vi: string | null; en: string | null; fr: string | null }
-type OldsiteContent = { pages: LocalizedHtml[]; diTich: LocalizedHtml[] }
+type Trio = { vi?: string | null; en?: string | null; fr?: string | null }
+type PageEntry = { slug: string; title?: Trio; subtitle?: Trio; vi?: string | null; en?: string | null; fr?: string | null }
+type DiTichEntry = { slug: string; id_code?: string; title?: Trio; vi?: string | null; en?: string | null; fr?: string | null }
+type OldsiteContent = { pages: PageEntry[]; diTich: DiTichEntry[] }
 
 function loadOldsiteContent(): OldsiteContent | null {
   const p = path.resolve(DATA_DIR, 'oldsite-content.json')
@@ -268,12 +293,27 @@ function loadOldsiteContent(): OldsiteContent | null {
   }
 }
 
-// Fill empty content_html fields per locale from oldsite extraction.
-// Preserves any admin-edited content_html. Safe to re-run.
-async function fillContentFromOldsite(
+/**
+ * Fill localized fields (title, subtitle, content_html) per locale from
+ * oldsite extraction.
+ *
+ * Per-field semantics: only writes a value when the current row has none for
+ * that field — preserves any admin/manual edits made after a previous deploy.
+ *
+ * Validation handling: Payload's update with `locale: <X>` validates required
+ * fields (notably `title`) for that locale. When the en/fr row doesn't yet
+ * exist Payload creates it from the input data, so we must always include
+ * `title` in the update — otherwise validation throws "Title is required".
+ *
+ * If the JSON has no title for a locale (bia-tien-si en/fr, ve-chung-toi en/fr,
+ * ve-di-tich en/fr), we skip that locale instead of inventing one — Payload's
+ * locale fallback will surface the vi version naturally.
+ */
+async function fillLocalized(
   payload: any,
   collection: 'pages' | 'di-tich-items',
-  entries: LocalizedHtml[],
+  entries: (PageEntry | DiTichEntry)[],
+  opts: { withSubtitle: boolean },
 ) {
   let filled = 0
   for (const entry of entries) {
@@ -285,25 +325,58 @@ async function fillContentFromOldsite(
     })
     if (existing.docs.length === 0) continue
     const docId = existing.docs[0].id
+
     for (const locale of ['vi', 'en', 'fr'] as const) {
       const html = entry[locale]
-      if (!html) continue
+      const titleLoc = entry.title?.[locale]
+      const subtitleLoc = opts.withSubtitle ? (entry as PageEntry).subtitle?.[locale] : undefined
+
+      // For non-vi locales: skip if we have no title translation — better to
+      // fall back to vi than to ship a half-translated row with vi title.
+      if (locale !== 'vi' && !titleLoc) continue
+
+      // Read the locale row WITHOUT fallback so unset en/fr fields show as
+      // null/undefined (otherwise Payload would return the vi value and the
+      // skip-if-set guard would think en is already populated).
+      let current: any = null
       try {
-        const current = await payload.findByID({ collection, id: docId, locale, depth: 0 })
-        if (current?.content_html) continue
-        await payload.update({
+        current = await payload.findByID({
           collection,
           id: docId,
           locale,
-          data: { content_html: html },
+          depth: 0,
+          fallbackLocale: false as any,
         })
+      } catch {
+        current = null
+      }
+
+      try {
+        const data: Record<string, unknown> = {}
+
+        // Per-field "fill only if empty" guard.
+        if (titleLoc && !current?.title) data.title = titleLoc
+        if (subtitleLoc && !current?.subtitle) data.subtitle = subtitleLoc
+        if (html && !current?.content_html) data.content_html = html
+
+        if (Object.keys(data).length === 0) continue
+
+        // For en/fr creating a new locale row, Payload requires title even
+        // if we're only writing other fields. Include current row's title
+        // (if any) so the validator passes when we're topping up subtitle
+        // or content_html on an existing row.
+        if (locale !== 'vi' && !('title' in data) && current?.title) {
+          data.title = current.title
+        }
+
+        await payload.update({ collection, id: docId, locale, data })
         filled++
       } catch (e: any) {
         console.error(`[seed] fill ${collection}/${entry.slug}/${locale} failed:`, e.message)
       }
     }
   }
-  console.log(`[seed] ${collection}: filled ${filled} localized content_html fields`)
+  console.log(`[seed] ${collection}: filled ${filled} localized rows`)
 }
 
 async function main() {
@@ -325,8 +398,9 @@ async function main() {
   // Pages: always run — seedPages is now idempotent and adds new slugs over time.
   await seedPages(payload)
 
-  if (counts.diTich === 0) await seedDiTich(payload)
-  else console.log('[seed] di-tich: already has data, skip')
+  // di-tich: always run — seedDiTich is now idempotent and adds new sections
+  // (B5 tượng thờ, B6 thư viện) over time.
+  await seedDiTich(payload)
 
   // Navigation: always run — seedNavigation is now idempotent and refreshes items.
   await seedNavigation(payload)
@@ -339,11 +413,13 @@ async function main() {
     await linkDiTichImages(payload)
   }
 
-  // Fill localized content_html from oldsite extraction (idempotent)
+  // Fill localized fields (title, subtitle, content_html) from oldsite
+  // extraction. Idempotent + per-field skip-if-set guard preserves any
+  // admin/migration edits.
   const oldsite = loadOldsiteContent()
   if (oldsite) {
-    await fillContentFromOldsite(payload, 'pages', oldsite.pages)
-    await fillContentFromOldsite(payload, 'di-tich-items', oldsite.diTich)
+    await fillLocalized(payload, 'pages', oldsite.pages, { withSubtitle: true })
+    await fillLocalized(payload, 'di-tich-items', oldsite.diTich, { withSubtitle: false })
   } else {
     console.log('[seed] no oldsite-content.json found, skip content fill')
   }
