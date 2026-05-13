@@ -1,4 +1,4 @@
-import { MigrateUpArgs, MigrateDownArgs } from '@payloadcms/db-postgres'
+import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 // Polished EN + FR translations for the /tham-quan page. Replaces the rough
 // translations originally seeded from vmqtg-v5/translations.py with friendlier,
@@ -99,27 +99,31 @@ const FR = `
 </ul>
 `.trim()
 
-export async function up({ payload }: MigrateUpArgs): Promise<void> {
-  const result = await payload.find({
-    collection: 'pages',
-    where: { slug: { equals: 'tham-quan' } },
-    limit: 1,
-    depth: 0,
-  })
-  const page = result.docs[0]
-  if (!page) {
-    payload.logger.warn('[migration] tham-quan page not found — skipping')
-    return
+// Raw SQL UPSERT: payload.update() validates required fields per-locale and
+// rejects when the en/fr row doesn't yet exist with a title. We bypass that
+// by writing directly to pages_locales. Falls back to the vi title if the
+// en/fr row is being created fresh, and just overwrites content_html otherwise.
+export async function up({ db }: MigrateUpArgs): Promise<void> {
+  const FALLBACK_TITLE = {
+    en: 'Visitor information',
+    fr: 'Informations pratiques',
   }
   for (const [locale, html] of [['en', EN], ['fr', FR]] as const) {
-    await payload.update({
-      collection: 'pages',
-      id: page.id,
-      locale,
-      data: { content_html: html } as any,
-    })
+    await db.execute(sql`
+      INSERT INTO "pages_locales" ("_locale", "_parent_id", "title", "content_html")
+      SELECT
+        ${locale}::"_locales",
+        p.id,
+        COALESCE(vi.title, ${FALLBACK_TITLE[locale]}),
+        ${html}
+      FROM "pages" p
+      LEFT JOIN "pages_locales" vi
+        ON vi."_parent_id" = p.id AND vi."_locale" = 'vi'
+      WHERE p.slug = 'tham-quan'
+      ON CONFLICT ("_locale", "_parent_id")
+      DO UPDATE SET "content_html" = EXCLUDED."content_html"
+    `)
   }
-  payload.logger.info('[migration] tham-quan EN + FR polished')
 }
 
 export async function down(_: MigrateDownArgs): Promise<void> {
