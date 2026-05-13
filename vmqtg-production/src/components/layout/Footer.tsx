@@ -45,7 +45,11 @@ export function Footer({ locale }: Props) {
             {[
               { href: '/tham-quan', label: { vi: 'Thông tin tham quan', en: 'Visitor info', fr: 'Informations' } },
               { href: '/ve-di-tich', label: { vi: 'Về di tích', en: 'About', fr: 'À propos' } },
+              { href: '/trung-bay-trien-lam', label: { vi: 'Trưng bày, triển lãm', en: 'Exhibitions', fr: 'Expositions' } },
+              { href: '/hoat-dong', label: { vi: 'Các hoạt động', en: 'Activities', fr: 'Activités' } },
+              { href: '/dich-vu', label: { vi: 'Dịch vụ', en: 'Services', fr: 'Services' } },
               { href: '/bia-tien-si', label: { vi: '82 Bia Tiến Sĩ', en: '82 Doctoral Stelae', fr: '82 Stèles' } },
+              { href: '/ve-chung-toi', label: { vi: 'Về chúng tôi', en: 'About us', fr: 'À propos de nous' } },
             ].map((link) => (
               <li key={link.href}>
                 <Link href={`/${locale}${link.href}`} className="hover:text-[--color-gold]">

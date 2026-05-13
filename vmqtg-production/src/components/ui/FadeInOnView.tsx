@@ -10,6 +10,8 @@ type Props = {
   className?: string
   /** Render as a different tag if needed (default: div). */
   as?: 'div' | 'section' | 'article'
+  /** DOM id (useful for anchor jumps from nav). */
+  id?: string
 }
 
 export function FadeInOnView({
@@ -18,6 +20,7 @@ export function FadeInOnView({
   threshold = 0.05,
   className = '',
   as: Tag = 'div',
+  id,
 }: Props) {
   const ref = useRef<HTMLElement>(null)
   const [visible, setVisible] = useState(false)
@@ -53,6 +56,7 @@ export function FadeInOnView({
   return (
     <Tag
       ref={ref as any}
+      id={id}
       style={style}
       className={`fade-in-on-view ${visible ? 'is-visible' : ''} ${className}`.trim()}
     >
