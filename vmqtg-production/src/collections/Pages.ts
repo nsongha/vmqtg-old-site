@@ -11,6 +11,15 @@ export const Pages: CollectionConfig = {
     { name: 'hero_image', type: 'upload', relationTo: 'media' },
     { name: 'content', type: 'richText', localized: true },
     {
+      name: 'content_html',
+      type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'Raw HTML (sanitized at render). Takes precedence over richText when set.',
+        rows: 12,
+      },
+    },
+    {
       name: 'meta',
       type: 'group',
       fields: [

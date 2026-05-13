@@ -220,6 +220,58 @@ async function linkDiTichImages(payload: any) {
   console.log(`[seed] linked ${linked} di-tich items to images`)
 }
 
+type LocalizedHtml = { slug: string; vi: string | null; en: string | null; fr: string | null }
+type OldsiteContent = { pages: LocalizedHtml[]; diTich: LocalizedHtml[] }
+
+function loadOldsiteContent(): OldsiteContent | null {
+  const p = path.resolve(DATA_DIR, 'oldsite-content.json')
+  if (!fs.existsSync(p)) return null
+  try {
+    return JSON.parse(fs.readFileSync(p, 'utf-8'))
+  } catch (e: any) {
+    console.error('[seed] failed to parse oldsite-content.json:', e.message)
+    return null
+  }
+}
+
+// Fill empty content_html fields per locale from oldsite extraction.
+// Preserves any admin-edited content_html. Safe to re-run.
+async function fillContentFromOldsite(
+  payload: any,
+  collection: 'pages' | 'di-tich-items',
+  entries: LocalizedHtml[],
+) {
+  let filled = 0
+  for (const entry of entries) {
+    const existing = await payload.find({
+      collection,
+      where: { slug: { equals: entry.slug } },
+      limit: 1,
+      depth: 0,
+    })
+    if (existing.docs.length === 0) continue
+    const docId = existing.docs[0].id
+    for (const locale of ['vi', 'en', 'fr'] as const) {
+      const html = entry[locale]
+      if (!html) continue
+      try {
+        const current = await payload.findByID({ collection, id: docId, locale, depth: 0 })
+        if (current?.content_html) continue
+        await payload.update({
+          collection,
+          id: docId,
+          locale,
+          data: { content_html: html },
+        })
+        filled++
+      } catch (e: any) {
+        console.error(`[seed] fill ${collection}/${entry.slug}/${locale} failed:`, e.message)
+      }
+    }
+  }
+  console.log(`[seed] ${collection}: filled ${filled} localized content_html fields`)
+}
+
 async function main() {
   console.log('[seed] starting build-time seed check')
   const payload = await getPayload({ config })
@@ -251,6 +303,15 @@ async function main() {
   // After media + di-tich both seeded, link them (idempotent — fills only empty images)
   if (counts.media > 0 || (await getCount(payload, 'media')) > 0) {
     await linkDiTichImages(payload)
+  }
+
+  // Fill localized content_html from oldsite extraction (idempotent)
+  const oldsite = loadOldsiteContent()
+  if (oldsite) {
+    await fillContentFromOldsite(payload, 'pages', oldsite.pages)
+    await fillContentFromOldsite(payload, 'di-tich-items', oldsite.diTich)
+  } else {
+    console.log('[seed] no oldsite-content.json found, skip content fill')
   }
 
   console.log('[seed] done')
