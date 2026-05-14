@@ -188,8 +188,15 @@
         backdrop-filter: blur(10px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       }
-      /* Hotline label rotation — fade swap controlled by JS via .is-swapping */
-      .hotline-label[data-rotate] {
+      /* Hotline label rotation — fade swap controlled by JS via .is-swapping.
+         Override the i18n-stack's center alignment so the rotating label hugs
+         the left edge of the button text column, matching the phone number
+         underneath it. */
+      .hotline-label.i18n-stack {
+        justify-items: start;
+        text-align: left;
+      }
+      .hotline-label [data-rotate] {
         transition: opacity 0.28s ease;
       }
       .hotline-label.is-swapping [data-rotate] {
@@ -604,7 +611,7 @@
               class="hotline-shadow flex items-center gap-3 rounded-full bg-crimson px-5 py-3 transition hover:bg-crimson/90 sm:gap-3.5 sm:px-7 sm:py-4"
             >
               <i class="icon-phone" style="font-size:18px;color:#FFFFFF;"></i>
-              <span class="flex flex-col leading-tight">
+              <span class="flex flex-col items-start leading-tight">
                 <span class="hotline-label i18n-stack">
                   <span data-i18n="vi" data-rotate="vi" data-stagger="6" class="font-display text-[10px] font-bold tracking-wider2 text-white/70">
                     HOTLINE
