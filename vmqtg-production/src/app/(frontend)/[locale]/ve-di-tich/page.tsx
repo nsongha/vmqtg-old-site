@@ -43,7 +43,7 @@ export default async function VeDiTichPage({ params }: Props) {
     <div className="container mt-12 mb-[--spacing-section]">
       <div className="animate-fade-up">
         <h1 className="font-serif text-3xl md:text-4xl font-bold mb-3">
-          {locale === 'vi' ? 'Về di tích' : locale === 'en' ? 'About the Site' : 'À propos du site'}
+          {locale === 'vi' ? 'Di tích' : locale === 'en' ? 'About the Site' : 'À propos du site'}
         </h1>
         <p className="text-[--color-ink-muted] mb-12">
           {locale === 'vi' ? 'Lịch sử, phân khu, kiến trúc, danh nhân, tượng thờ và thư viện.'

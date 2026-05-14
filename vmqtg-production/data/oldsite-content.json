@@ -8,7 +8,7 @@
         "fr": "Informations pratiques"
       },
       "subtitle": {
-        "vi": "Hướng dẫn tham quan di tích Văn Miếu – Quốc Tử Giám: vé, nội quy, dịch vụ và tiện ích.",
+        "vi": "Vé, giờ mở cửa, nội quy, đường đến và các tiện ích.",
         "en": "Tickets, hours, rules, directions and on-site amenities.",
         "fr": "Billets, horaires, règlement, accès et services sur place."
       },
@@ -19,12 +19,12 @@
     {
       "slug": "ve-di-tich",
       "title": {
-        "vi": "Khu di tích Văn Miếu – Quốc Tử Giám",
+        "vi": "Di tích",
         "en": "About the site",
         "fr": "À propos du site"
       },
       "subtitle": {
-        "vi": "Khám phá lịch sử, kiến trúc, hệ thống bia tiến sĩ và những danh nhân gắn liền với di tích.",
+        "vi": "Lịch sử, phân khu, kiến trúc, danh nhân, tượng thờ và thư viện.",
         "en": "History, sectors, architecture, figures, statues and library.",
         "fr": "Histoire, secteurs, architecture, personnages, statues et bibliothèque."
       },
@@ -56,7 +56,7 @@
         "fr": "Activités"
       },
       "subtitle": {
-        "vi": "Hoạt động trưng bày, triển lãm thường xuyên tại di tích.",
+        "vi": "Sự kiện, giáo dục di sản, trải nghiệm, hội thảo và workshop.",
         "en": "Events, heritage education, cultural experiences and workshops.",
         "fr": "Événements, éducation, expériences culturelles et ateliers."
       },
@@ -67,12 +67,12 @@
     {
       "slug": "bia-tien-si",
       "title": {
-        "vi": "82 Bia Tiến sĩ",
+        "vi": "82 Bia Tiến Sĩ",
         "en": null,
         "fr": null
       },
       "subtitle": {
-        "vi": "Hệ thống 82 bia đá khắc tên các vị Tiến sĩ — Di sản tư liệu thế giới.",
+        "vi": "Di sản tư liệu thế giới UNESCO · 1.307 tiến sĩ từ 1442–1779.",
         "en": null,
         "fr": null
       },
@@ -99,7 +99,7 @@
     {
       "slug": "trung-bay-trien-lam",
       "title": {
-        "vi": "Trưng bày, triển lãm",
+        "vi": "Trưng bày",
         "en": "Exhibitions",
         "fr": "Expositions"
       },

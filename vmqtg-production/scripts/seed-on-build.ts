@@ -16,12 +16,12 @@ const DATA_DIR = path.resolve(__dirname, '../data')
 const CORE_PAGES = [
   { slug: 'home', title: 'Trang chủ', subtitle: 'Di tích lịch sử quốc gia đặc biệt · Hà Nội' },
   { slug: 'tham-quan', title: 'Thông tin tham quan', subtitle: 'Vé, giờ mở cửa, nội quy, đường đến và các tiện ích.' },
-  { slug: 've-di-tich', title: 'Về di tích', subtitle: 'Lịch sử, phân khu, kiến trúc, danh nhân, tượng thờ và thư viện.' },
+  { slug: 've-di-tich', title: 'Di tích', subtitle: 'Lịch sử, phân khu, kiến trúc, danh nhân, tượng thờ và thư viện.' },
   { slug: 'giao-duc-di-san', title: 'Giáo dục di sản', subtitle: 'Các chương trình giáo dục dành cho mọi lứa tuổi từ mầm non đến THPT.' },
   { slug: 'hoat-dong', title: 'Các hoạt động', subtitle: 'Hoạt động trưng bày, triển lãm thường xuyên tại di tích.' },
   { slug: 'bia-tien-si', title: '82 Bia Tiến Sĩ', subtitle: 'Di sản tư liệu thế giới UNESCO · 1.307 tiến sĩ từ 1442–1779.' },
   { slug: 've-chung-toi', title: 'Về chúng tôi', subtitle: 'Trung tâm hoạt động VHKH Văn Miếu – Quốc Tử Giám.' },
-  { slug: 'trung-bay-trien-lam', title: 'Trưng bày, triển lãm', subtitle: 'Trưng bày cố định, chuyên đề và các triển lãm tại di tích.' },
+  { slug: 'trung-bay-trien-lam', title: 'Trưng bày', subtitle: 'Trưng bày cố định, chuyên đề và các triển lãm tại di tích.' },
   { slug: 'dich-vu', title: 'Dịch vụ', subtitle: 'Tour đêm, audio guide, thuyết minh, quà lưu niệm, viết thư pháp.' },
 ]
 
