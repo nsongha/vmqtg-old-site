@@ -2,13 +2,13 @@
 <html lang="vi">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=1440, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Văn Miếu — Quốc Tử Giám · Coming Soon</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500;600&family=Geist:ital,wght@0,400;0,500;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
       rel="stylesheet"
     />
     <link
@@ -21,19 +21,22 @@
         theme: {
           extend: {
             fontFamily: {
-              display: ["'Playfair Display'", "serif"],
-              mono: ["'JetBrains Mono'", "monospace"],
-              body: ["'Geist'", "sans-serif"],
+              display: ["'Montserrat'", "sans-serif"],
+              body: ["'Be Vietnam Pro'", "sans-serif"],
             },
             colors: {
-              ink: "#1E1D1D",
+              /* From Design System v1.0 */
+              ink: "#1E1D1D",         /* accent đen */
+              cream: "#E2DCCC",       /* accent kem */
+              ash: "#D9D9D9",         /* accent ghi */
+              bronze: "#B6A78E",      /* secondary đồng */
               parchment: {
-                50: "#F5F2E9",
-                100: "#F2F3F0",
-                200: "#D6D2C9",
-                300: "#B8B9B6",
-                400: "#8C8782",
-                500: "#7D6B3D",
+                50: "#E2DCCC",
+                100: "#D9D9D9",
+                200: "#B6A78E",
+                300: "#9A8F7B",
+                400: "#7A6F5F",
+                500: "#5A5247",
               },
               crimson: { DEFAULT: "#8B0000", soft: "#FF8080", tint: "#F2B8B8" },
             },
@@ -48,19 +51,107 @@
     </script>
     <style>
       html, body { background: #1E1D1D; }
-      body { font-family: "Geist", sans-serif; color: #F5F2E9; }
+      body { font-family: "Be Vietnam Pro", sans-serif; color: #E2DCCC; }
+      .font-display { font-family: "Montserrat", sans-serif; }
+      /* Logo "VM" mark from Design System v1.0 §2.1 */
+      .vm-mark { display: block; width: 100%; height: 100%; }
+
+      /* Dual-lang wrapper: both texts share one grid cell so the surrounding
+         layout never shifts when switching languages — only the characters change. */
+      .i18n-stack {
+        display: inline-grid;
+        grid-template-areas: "x";
+        grid-template-columns: minmax(0, auto);
+        justify-items: center;
+        text-align: center;
+      }
+      .i18n-stack-block {
+        display: grid;
+        grid-template-areas: "x";
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: center;
+        align-items: start;
+      }
+      .i18n-stack > [data-i18n],
+      .i18n-stack-block > [data-i18n] {
+        grid-area: x;
+      }
+
+      /* Default: inactive language is faded out + offset up, no pointer events.
+         Active language sits in place (opacity 1, no transform). */
+      [data-i18n] {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.32s ease, transform 0.32s ease;
+        will-change: opacity, transform;
+      }
+      .scene[data-lang="vi"] [data-i18n="en"],
+      .scene[data-lang="en"] [data-i18n="vi"] {
+        opacity: 0;
+        transform: translateY(-10px);
+        pointer-events: none;
+      }
+
+      /* Enter animation — text rises from below with fade. Plays on initial load
+         and every time an element becomes the active language. Delay is read
+         from a custom property so it can't be overridden by the shorthand. */
+      @keyframes textRise {
+        0%   { opacity: 0; transform: translateY(16px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+      .scene[data-lang="vi"] [data-i18n="vi"],
+      .scene[data-lang="en"] [data-i18n="en"] {
+        animation-name: textRise;
+        animation-duration: 0.55s;
+        animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+        animation-delay: var(--stagger, 0s);
+        animation-fill-mode: both;
+      }
+      /* Stagger from top of page downwards */
+      [data-stagger="1"] { --stagger: 0.00s; }
+      [data-stagger="2"] { --stagger: 0.09s; }
+      [data-stagger="3"] { --stagger: 0.18s; }
+      [data-stagger="4"] { --stagger: 0.27s; }
+      [data-stagger="5"] { --stagger: 0.36s; }
+      [data-stagger="6"] { --stagger: 0.45s; }
+      [data-stagger="7"] { --stagger: 0.54s; }
+      [data-stagger="8"] { --stagger: 0.63s; }
+
+      /* Lang toggle pill — active state highlight */
+      .lang-btn { transition: background 0.3s, color 0.3s; }
       .scene {
         position: relative;
-        width: 1440px;
-        height: 1024px;
+        width: 100%;
+        min-height: 100svh;
+        min-height: 100vh;
         margin: 0 auto;
         overflow: hidden;
         background: #1E1D1D;
       }
+      /* Khuê Văn Các is at ~33% horizontally in the source image.
+         Use cover on small screens (lots of horizontal overflow), zoom on
+         desktop where cover wouldn't overflow enough to center the focal point. */
       .bg-cinematic {
         background-image: url("./bg.jpg");
+        background-repeat: no-repeat;
         background-size: cover;
-        background-position: center;
+        background-position: 25% 35%; /* mobile default */
+      }
+      @media (min-width: 640px) {
+        .bg-cinematic { background-position: 22% 35%; }
+      }
+      @media (min-width: 768px) {
+        .bg-cinematic { background-position: 16% 35%; }
+      }
+      @media (min-width: 1024px) {
+        .bg-cinematic {
+          background-size: 160% auto;
+          background-position: 5% 35%;
+        }
+      }
+      @media (min-width: 1024px) and (min-aspect-ratio: 16/9) {
+        /* On very wide desktops, image_h at 160% might not cover full height — use larger zoom */
+        .bg-cinematic { background-size: auto 200%; background-position: 33% 30%; }
       }
       .overlay-gradient {
         background: linear-gradient(
@@ -104,34 +195,67 @@
   </head>
 
   <body>
-    <main class="scene">
+    <main class="scene" data-lang="vi">
       <!-- Background image + overlays -->
       <div class="bg-cinematic absolute inset-0"></div>
       <div class="overlay-gradient absolute inset-0"></div>
       <div class="vignette absolute inset-0"></div>
 
       <!-- Content -->
-      <div class="relative z-10 flex h-full w-full flex-col justify-between">
+      <div class="relative z-10 flex min-h-screen w-full flex-col justify-between gap-10 py-6 sm:py-8 md:gap-0 md:py-0">
         <!-- HEADER -->
-        <header class="flex items-center justify-between px-20 py-8">
-          <div class="flex flex-col items-center gap-0.5">
-            <span class="font-display text-[22px] font-semibold tracking-wider2 text-parchment-100">
-              VĂN MIẾU
-            </span>
-            <span class="font-mono text-[10px] font-medium tracking-wider3 text-parchment-300">
-              QUỐC TỬ GIÁM
-            </span>
-          </div>
+        <header class="flex items-center justify-between px-5 sm:px-8 md:px-12 lg:px-20 md:py-7 lg:py-8">
+          <!-- Logo: VM symbol + wordmark (DS v1.0 §2.1) -->
+          <a href="/" class="flex flex-col items-center gap-1.5 md:gap-2" aria-label="Văn Miếu — Quốc Tử Giám">
+            <svg
+              class="vm-mark h-10 w-8 md:h-12 md:w-9 lg:h-14 lg:w-11"
+              viewBox="0 0 120 160"
+              fill="none"
+              stroke="#E2DCCC"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="22,12 60,68 98,12" />
+              <line x1="46" y1="76" x2="74" y2="76" />
+              <polyline points="22,156 22,90 98,90 98,156" />
+            </svg>
+            <div class="hidden flex-col items-center gap-0.5 leading-none sm:flex">
+              <span class="font-display text-[14px] font-semibold tracking-wider2 text-cream md:text-[16px]">
+                Văn Miếu
+              </span>
+              <span class="font-display text-[7px] font-medium tracking-wider3 text-parchment-200 md:text-[8px]">
+                QUỐC TỬ GIÁM
+              </span>
+            </div>
+          </a>
 
-          <div class="flex items-center gap-6">
-            <span class="font-mono text-[10px] font-medium tracking-wider2 text-parchment-400">
+          <div class="flex items-center gap-3 md:gap-6">
+            <span class="hidden font-display text-[10px] font-medium tracking-wider2 text-parchment-300 sm:inline">
               EST. 1070
             </span>
-            <div class="flex items-center rounded-full ring-1 ring-inset ring-parchment-300/20">
-              <button class="rounded-full bg-crimson px-3.5 py-1.5 font-mono text-[10px] font-medium tracking-wider2 text-parchment-100">
+            <div
+              class="flex items-center rounded-full ring-1 ring-inset ring-parchment-300/30"
+              role="tablist"
+              aria-label="Language"
+            >
+              <button
+                type="button"
+                data-action="set-lang"
+                data-lang="vi"
+                aria-pressed="true"
+                class="lang-btn is-active rounded-full bg-crimson px-3.5 py-1.5 font-display text-[10px] font-bold tracking-wider2 text-cream"
+              >
                 VI
               </button>
-              <button class="rounded-full px-3.5 py-1.5 font-mono text-[10px] font-medium tracking-wider2 text-parchment-400 hover:text-parchment-100">
+              <button
+                type="button"
+                data-action="set-lang"
+                data-lang="en"
+                aria-pressed="false"
+                class="lang-btn rounded-full px-3.5 py-1.5 font-display text-[10px] font-bold tracking-wider2 text-parchment-300 hover:text-cream"
+              >
                 EN
               </button>
             </div>
@@ -139,123 +263,154 @@
         </header>
 
         <!-- HERO -->
-        <section class="flex flex-col items-center gap-8 px-32">
+        <section class="flex flex-col items-center gap-6 px-5 sm:gap-7 sm:px-8 md:gap-8 md:px-12 lg:px-32">
           <!-- Eyebrow -->
           <div class="flex items-center gap-3 rounded-full bg-white/[0.04] px-4 py-2 ring-1 ring-inset ring-parchment-400/40">
             <span class="h-2 w-2 rounded-full bg-crimson"></span>
-            <span class="font-mono text-[11px] font-medium tracking-wider2 text-parchment-100">
-              COMING SOON &nbsp;•&nbsp; SẮP RA MẮT
+            <span class="i18n-stack">
+              <span data-i18n="en" data-stagger="1" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">
+                COMING SOON
+              </span>
+              <span data-i18n="vi" data-stagger="1" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">
+                SẮP RA MẮT
+              </span>
             </span>
           </div>
 
-          <!-- Headlines -->
-          <div class="flex w-full flex-col items-center gap-2 text-shadow">
-            <h1 class="text-center font-display text-[88px] leading-[1.05] text-parchment-50">
+          <!-- Headlines: VI and EN share one grid cell — no layout shift on switch -->
+          <div class="i18n-stack-block w-full text-shadow">
+            <h1
+              data-i18n="en"
+              data-stagger="2"
+              class="text-center font-display font-black tracking-tight text-cream leading-[1.02] text-[40px] sm:text-[56px] md:text-[72px] lg:text-[88px] xl:text-[96px]"
+            >
               Under Construction
             </h1>
-            <p class="text-center font-display text-[36px] italic leading-[1.1] text-crimson">
-              Trang web đang được xây dựng
-            </p>
+            <h1
+              data-i18n="vi"
+              data-stagger="2"
+              class="text-center font-display font-black italic tracking-tight text-cream leading-[1.02] text-[32px] sm:text-[44px] md:text-[60px] lg:text-[72px] xl:text-[80px]"
+            >
+              Trang web đang xây dựng
+            </h1>
           </div>
 
           <!-- Divider -->
-          <span class="h-px w-20 bg-parchment-400"></span>
+          <span class="h-px w-16 bg-parchment-400 md:w-20"></span>
 
           <!-- Description -->
-          <div class="flex w-[720px] flex-col items-center gap-1.5">
-            <p class="text-center text-base leading-[1.5] text-parchment-200">
+          <div class="i18n-stack-block w-full max-w-[760px]">
+            <p
+              data-i18n="en"
+              data-stagger="3"
+              class="text-center font-medium leading-[1.55] text-parchment-50 text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px]"
+            >
               We are crafting a thoughtful digital experience to honor Vietnam's
               first university. We will be back on May 31, 2026.
             </p>
-            <p class="text-center text-sm italic leading-[1.5] text-parchment-400">
+            <p
+              data-i18n="vi"
+              data-stagger="3"
+              class="text-center font-medium leading-[1.55] text-parchment-50 text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px]"
+            >
               Chúng tôi đang hoàn thiện trải nghiệm số xứng tầm với di sản đầu
               tiên của nền giáo dục Việt Nam. Hẹn quý khách ngày 31.05.2026.
             </p>
           </div>
 
-          <!-- Countdown -->
-          <div class="flex items-center justify-center gap-4">
+          <!-- Countdown: 2x2 grid on mobile, single row on tablet+ -->
+          <div class="grid w-full max-w-md grid-cols-2 gap-3 sm:max-w-none sm:flex sm:items-center sm:justify-center sm:gap-4">
             <!-- card 1 -->
-            <div class="countdown-card flex w-40 flex-col items-center gap-2 rounded-xl px-7 py-6">
-              <span data-unit="days" class="font-display text-[64px] font-medium leading-none text-parchment-50">17</span>
+            <div class="countdown-card flex flex-col items-center gap-2 rounded-xl px-4 py-4 sm:w-32 sm:px-5 sm:py-5 md:w-36 md:py-6 lg:w-40 lg:px-7">
+              <span data-unit="days" class="font-display font-extrabold leading-none text-cream text-[44px] sm:text-[48px] md:text-[56px] lg:text-[64px]">17</span>
               <span class="card-rule h-px w-8"></span>
-              <span class="font-mono text-[11px] font-semibold tracking-wider2 text-parchment-50">DAYS</span>
-              <span class="font-body text-[11px] italic text-parchment-400">ngày</span>
+              <span class="i18n-stack">
+                <span data-i18n="en" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">DAYS</span>
+                <span data-i18n="vi" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">NGÀY</span>
+              </span>
             </div>
 
             <!-- card 2 -->
-            <div class="countdown-card flex w-40 flex-col items-center gap-2 rounded-xl px-7 py-6">
-              <span data-unit="hours" class="font-display text-[64px] font-medium leading-none text-parchment-50">08</span>
+            <div class="countdown-card flex flex-col items-center gap-2 rounded-xl px-4 py-4 sm:w-32 sm:px-5 sm:py-5 md:w-36 md:py-6 lg:w-40 lg:px-7">
+              <span data-unit="hours" class="font-display font-extrabold leading-none text-cream text-[44px] sm:text-[48px] md:text-[56px] lg:text-[64px]">08</span>
               <span class="card-rule h-px w-8"></span>
-              <span class="font-mono text-[11px] font-semibold tracking-wider2 text-parchment-50">HOURS</span>
-              <span class="font-body text-[11px] italic text-parchment-400">giờ</span>
+              <span class="i18n-stack">
+                <span data-i18n="en" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">HOURS</span>
+                <span data-i18n="vi" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">GIỜ</span>
+              </span>
             </div>
 
             <!-- card 3 -->
-            <div class="countdown-card flex w-40 flex-col items-center gap-2 rounded-xl px-7 py-6">
-              <span data-unit="minutes" class="font-display text-[64px] font-medium leading-none text-parchment-50">42</span>
+            <div class="countdown-card flex flex-col items-center gap-2 rounded-xl px-4 py-4 sm:w-32 sm:px-5 sm:py-5 md:w-36 md:py-6 lg:w-40 lg:px-7">
+              <span data-unit="minutes" class="font-display font-extrabold leading-none text-cream text-[44px] sm:text-[48px] md:text-[56px] lg:text-[64px]">42</span>
               <span class="card-rule h-px w-8"></span>
-              <span class="font-mono text-[11px] font-semibold tracking-wider2 text-parchment-50">MINUTES</span>
-              <span class="font-body text-[11px] italic text-parchment-400">phút</span>
+              <span class="i18n-stack">
+                <span data-i18n="en" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">MINUTES</span>
+                <span data-i18n="vi" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">PHÚT</span>
+              </span>
             </div>
 
             <!-- card 4 (active/seconds) -->
-            <div class="countdown-card-active flex w-40 flex-col items-center gap-2 rounded-xl px-7 py-6">
-              <span data-unit="seconds" class="font-display text-[64px] font-medium leading-none text-white">15</span>
+            <div class="countdown-card-active flex flex-col items-center gap-2 rounded-xl px-4 py-4 sm:w-32 sm:px-5 sm:py-5 md:w-36 md:py-6 lg:w-40 lg:px-7">
+              <span data-unit="seconds" class="font-display font-extrabold leading-none text-white text-[44px] sm:text-[48px] md:text-[56px] lg:text-[64px]">15</span>
               <span class="card-rule-crimson h-px w-8"></span>
-              <span class="font-mono text-[11px] font-semibold tracking-wider2 text-white">SECONDS</span>
-              <span class="font-body text-[11px] italic text-crimson-tint">giây</span>
+              <span class="i18n-stack">
+                <span data-i18n="en" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-white sm:text-[11px]">SECONDS</span>
+                <span data-i18n="vi" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-white sm:text-[11px]">GIÂY</span>
+              </span>
             </div>
           </div>
 
           <!-- Launch row -->
-          <div class="flex items-center justify-center gap-4">
-            <span class="h-px w-10 bg-parchment-500"></span>
-            <span class="font-mono text-[13px] font-medium tracking-wider3 text-parchment-500">
-              Launching · Ra mắt &nbsp;·&nbsp; 31 . 05 . 2026
+          <div class="flex items-center justify-center gap-3 sm:gap-4">
+            <span class="h-px w-8 bg-bronze sm:w-10"></span>
+            <span class="i18n-stack">
+              <span data-i18n="en" data-stagger="5" class="whitespace-nowrap font-display text-[11px] font-bold tracking-wider3 text-bronze sm:text-[12px] md:text-[13px]">
+                LAUNCHING &nbsp;·&nbsp; 31 . 05 . 2026
+              </span>
+              <span data-i18n="vi" data-stagger="5" class="whitespace-nowrap font-display text-[11px] font-bold tracking-wider3 text-bronze sm:text-[12px] md:text-[13px]">
+                RA MẮT &nbsp;·&nbsp; 31 . 05 . 2026
+              </span>
             </span>
-            <span class="h-px w-10 bg-parchment-500"></span>
+            <span class="h-px w-8 bg-bronze sm:w-10"></span>
           </div>
 
           <!-- CTA -->
           <div class="flex justify-center">
             <a
               href="tel:19006779"
-              class="hotline-shadow flex items-center gap-3.5 rounded-full bg-crimson px-7 py-4 transition hover:bg-crimson/90"
+              class="hotline-shadow flex items-center gap-3 rounded-full bg-crimson px-5 py-3 transition hover:bg-crimson/90 sm:gap-3.5 sm:px-7 sm:py-4"
             >
-              <i class="icon-phone" style="font-size:20px;color:#FFFFFF;"></i>
-              <span class="flex flex-col">
-                <span class="font-mono text-[10px] font-semibold tracking-wider2 text-white/70">
-                  HOTLINE
+              <i class="icon-phone" style="font-size:18px;color:#FFFFFF;"></i>
+              <span class="flex flex-col leading-tight">
+                <span class="i18n-stack">
+                  <span data-i18n="en" data-stagger="6" class="font-display text-[10px] font-bold tracking-wider2 text-white/70">
+                    HOTLINE
+                  </span>
+                  <span data-i18n="vi" data-stagger="6" class="font-display text-[10px] font-bold tracking-wider2 text-white/70">
+                    ĐƯỜNG DÂY NÓNG
+                  </span>
                 </span>
-                <span class="font-display text-[18px] font-semibold text-white">
+                <span class="font-display text-[18px] font-extrabold text-white sm:text-[20px]">
                   1900 6779
                 </span>
-              </span>
-              <span class="flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 font-mono text-[10px] font-semibold tracking-wider2 text-white">
-                <i class="icon-clock" style="font-size:10px;color:#FFFFFF;"></i>
-                24/7
               </span>
             </a>
           </div>
         </section>
 
         <!-- FOOTER -->
-        <footer class="flex items-center justify-between px-20 py-8">
-          <div class="flex items-center gap-6 text-parchment-400">
-            <div class="flex items-center gap-2">
-              <i class="icon-map-pin" style="font-size:14px;color:#8C8782;"></i>
-              <span class="text-xs">58 Quốc Tử Giám, Đống Đa, Hà Nội</span>
-            </div>
-            <span class="h-[3px] w-[3px] rounded-full bg-parchment-400"></span>
-            <span class="font-mono text-[11px] tracking-wider">Hanoi, Vietnam</span>
+        <footer class="flex flex-col items-center gap-4 px-5 py-6 text-center sm:px-8 md:grid md:grid-cols-3 md:items-center md:gap-0 md:px-12 md:py-8 md:text-left lg:px-20">
+          <div class="flex flex-wrap items-center justify-center gap-2 text-bronze sm:gap-3 md:justify-start">
+            <i class="icon-map-pin" style="font-size:14px;color:#B6A78E;"></i>
+            <span class="text-[11px] font-semibold sm:text-xs">58 Quốc Tử Giám, Đống Đa, Hà Nội</span>
           </div>
 
-          <span class="font-mono text-[11px] font-medium tracking-wider text-parchment-400">
+          <span class="font-display text-[10px] font-bold tracking-wider text-bronze sm:text-[11px] md:justify-self-center">
             © 2026 · Văn Miếu — Quốc Tử Giám
           </span>
 
-          <div class="flex items-center gap-3">
+          <div class="flex items-center justify-center gap-3 md:justify-end">
             <a
               href="https://www.facebook.com/vanmieuquoctugiam"
               target="_blank"
@@ -303,6 +458,36 @@
       }
       tick();
       setInterval(tick, 1000);
+
+      // Language switch — CSS handles transitions via [data-lang] selectors.
+      // Force animation restart by toggling a sentinel class so the keyframe
+      // replays even when the same animation-name is reused.
+      const scene = document.querySelector(".scene");
+      const langBtns = document.querySelectorAll('[data-action="set-lang"]');
+      langBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const target = btn.dataset.lang;
+          if (scene.dataset.lang === target) return;
+          scene.dataset.lang = target;
+          // Restart enter animation on newly-active i18n elements
+          const incoming = scene.querySelectorAll(`[data-i18n="${target}"]`);
+          incoming.forEach((el) => {
+            el.style.animation = "none";
+            // force reflow
+            void el.offsetWidth;
+            el.style.animation = "";
+          });
+          // Update button states
+          langBtns.forEach((b) => {
+            const isActive = b.dataset.lang === target;
+            b.classList.toggle("is-active", isActive);
+            b.setAttribute("aria-pressed", isActive ? "true" : "false");
+            b.classList.toggle("bg-crimson", isActive);
+            b.classList.toggle("text-cream", isActive);
+            b.classList.toggle("text-parchment-300", !isActive);
+          });
+        });
+      });
     </script>
   </body>
 </html>
