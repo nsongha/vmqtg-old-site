@@ -420,9 +420,11 @@
 
         <!-- HERO -->
         <section class="flex flex-col items-center gap-6 px-5 sm:gap-7 sm:px-8 md:gap-8 md:px-12 lg:px-32">
-          <!-- Eyebrow -->
-          <div class="flex items-center gap-3 rounded-full bg-white/[0.04] px-4 py-2 ring-1 ring-inset ring-parchment-400/40">
-            <span class="h-2 w-2 rounded-full bg-crimson"></span>
+          <!-- Eyebrow — dot is absolutely positioned so the rotating text
+               stays optically centred inside the pill regardless of the
+               language's word length. -->
+          <div class="relative flex items-center justify-center rounded-full bg-white/[0.04] px-10 py-2 ring-1 ring-inset ring-parchment-400/40">
+            <span class="absolute left-4 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-crimson"></span>
             <span class="i18n-stack">
               <span data-i18n="vi" data-stagger="1" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">
                 SẮP RA MẮT
@@ -558,7 +560,7 @@
           <div class="grid w-full max-w-md grid-cols-2 gap-3 sm:max-w-none sm:flex sm:items-center sm:justify-center sm:gap-4">
             <!-- card 1 -->
             <div class="countdown-card flex flex-col items-center gap-2 rounded-xl px-4 py-4 sm:w-32 sm:px-5 sm:py-5 md:w-36 md:py-6 lg:w-40 lg:px-7">
-              <span data-unit="days" class="font-display font-extrabold leading-none text-cream text-[44px] sm:text-[48px] md:text-[56px] lg:text-[64px]">17</span>
+              <span data-unit="days" class="font-display font-black leading-none text-cream text-[56px] sm:text-[64px] md:text-[72px] lg:text-[84px]">17</span>
               <span class="card-rule h-px w-8"></span>
               <span class="i18n-stack">
                 <span data-i18n="vi" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">NGÀY</span>
@@ -645,7 +647,7 @@
               href="tel:+842437471322"
               class="hotline-shadow flex items-center gap-3 rounded-full bg-crimson px-5 py-3 transition hover:bg-crimson/90 sm:gap-3.5 sm:px-7 sm:py-4"
             >
-              <i class="icon-phone" style="font-size:18px;color:#FFFFFF;"></i>
+              <i class="icon-phone" style="font-size:34px;color:#FFFFFF;"></i>
               <span class="flex flex-col items-start leading-tight">
                 <span class="hotline-label i18n-stack">
                   <span data-i18n="vi" data-rotate="vi" data-stagger="6" class="font-display text-[10px] font-bold tracking-wider2 text-white/70">
