@@ -208,22 +208,25 @@
         backdrop-filter: blur(10px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       }
-      /* Hotline label rotation — slide-in-from-left + fade swap controlled by
-         JS via .is-swapping. Override the i18n-stack's center alignment so the
-         rotating label hugs the left edge of the button text column, matching
-         the phone number underneath it. */
+      /* Hotline label rotation — full-cycle keyframe so the leave drifts right
+         and the arrival drifts in from the left (asymmetric directions can't
+         be done with a single transition pair, which would interpolate the
+         same path in both phases). Override the i18n-stack's center alignment
+         so the rotating label hugs the left edge of the button text column. */
       .hotline-label.i18n-stack {
         justify-items: start;
         text-align: left;
       }
-      .hotline-label [data-rotate] {
-        transition: opacity 0.3s ease,
-          transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
-        transform: translateX(0);
+      @keyframes hotlineSwapCycle {
+        0%   { opacity: 1; transform: translateX(0); }
+        40%  { opacity: 0; transform: translateX(16px); }
+        /* Hold invisible 40–50% — JS swaps the text in this window so the
+           jump from +16px to −16px is never seen. */
+        50%  { opacity: 0; transform: translateX(-16px); }
+        100% { opacity: 1; transform: translateX(0); }
       }
-      .hotline-label.is-swapping [data-rotate] {
-        opacity: 0;
-        transform: translateX(-14px);
+      .hotline-label.is-swapping [data-rotate].is-i18n-active {
+        animation: hotlineSwapCycle 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       }
       /* Khuê Văn Các is at ~33% horizontally in the source image.
          Use cover on small screens (lots of horizontal overflow), zoom on
@@ -755,12 +758,19 @@
         setInterval(() => {
           hotlineIdx = (hotlineIdx + 1) % hotlineLabels.vi.length;
           hotlineLabelEl.classList.add("is-swapping");
+          // Swap text content during the 40–50% invisible window of the
+          // hotlineSwapCycle keyframe so the +16 → −16 jump is never visible.
           setTimeout(() => {
             for (const [lang, node] of Object.entries(rotateNodes)) {
               node.textContent = hotlineLabels[lang][hotlineIdx];
             }
+          }, 270);
+          // Remove the class after the 0.6s animation finishes so the next
+          // cycle can re-trigger it (CSS animations only restart on rule
+          // (re-)application).
+          setTimeout(() => {
             hotlineLabelEl.classList.remove("is-swapping");
-          }, 280);
+          }, 620);
         }, 2600);
       }
 
