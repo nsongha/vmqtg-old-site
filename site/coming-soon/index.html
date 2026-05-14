@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
       rel="stylesheet"
     />
     <link
@@ -21,8 +21,20 @@
         theme: {
           extend: {
             fontFamily: {
-              display: ["'Montserrat'", "sans-serif"],
-              body: ["'Be Vietnam Pro'", "sans-serif"],
+              display: [
+                "'Montserrat'",
+                "'Noto Sans SC'",
+                "'Noto Sans JP'",
+                "'Noto Sans KR'",
+                "sans-serif",
+              ],
+              body: [
+                "'Be Vietnam Pro'",
+                "'Noto Sans SC'",
+                "'Noto Sans JP'",
+                "'Noto Sans KR'",
+                "sans-serif",
+              ],
             },
             colors: {
               /* From Design System v1.0 */
@@ -51,8 +63,23 @@
     </script>
     <style>
       html, body { background: #1E1D1D; }
-      body { font-family: "Be Vietnam Pro", sans-serif; color: #E2DCCC; }
-      .font-display { font-family: "Montserrat", sans-serif; }
+      body {
+        font-family: "Be Vietnam Pro", "Noto Sans SC", "Noto Sans JP",
+          "Noto Sans KR", sans-serif;
+        color: #E2DCCC;
+      }
+      .font-display {
+        font-family: "Montserrat", "Noto Sans SC", "Noto Sans JP",
+          "Noto Sans KR", sans-serif;
+      }
+      /* Per-language font hints — when scene is JA/KO/ZH, pull the matching
+         Noto stack to the front so CJK glyphs render in their native style. */
+      .scene[data-lang="ja"] .font-display,
+      .scene[data-lang="ja"] { font-family: "Noto Sans JP", "Montserrat", sans-serif; }
+      .scene[data-lang="ko"] .font-display,
+      .scene[data-lang="ko"] { font-family: "Noto Sans KR", "Montserrat", sans-serif; }
+      .scene[data-lang="zh"] .font-display,
+      .scene[data-lang="zh"] { font-family: "Noto Sans SC", "Montserrat", sans-serif; }
       /* Logo "VM" mark from Design System v1.0 §2.1 */
       .vm-mark { display: block; width: 100%; height: 100%; }
 
@@ -77,16 +104,27 @@
         grid-area: x;
       }
 
-      /* Default: inactive language is faded out + offset up, no pointer events.
-         Active language sits in place (opacity 1, no transform). */
+      /* Default: visible. Pre-JS fallback below hides non-VI variants so the
+         page is readable without JS; once JS runs, the `.is-i18n-active` /
+         `.is-i18n-inactive` classes drive visibility (same specificity, source
+         order wins) so adding a new language never requires touching CSS. */
       [data-i18n] {
         opacity: 1;
         transform: translateY(0);
         transition: opacity 0.32s ease, transform 0.32s ease;
         will-change: opacity, transform;
       }
-      .scene[data-lang="vi"] [data-i18n="en"],
-      .scene[data-lang="en"] [data-i18n="vi"] {
+      [data-i18n]:not([data-i18n="vi"]) {
+        opacity: 0;
+        transform: translateY(-10px);
+        pointer-events: none;
+      }
+      [data-i18n].is-i18n-active {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+      [data-i18n].is-i18n-inactive {
         opacity: 0;
         transform: translateY(-10px);
         pointer-events: none;
@@ -99,8 +137,7 @@
         0%   { opacity: 0; transform: translateY(16px); }
         100% { opacity: 1; transform: translateY(0); }
       }
-      .scene[data-lang="vi"] [data-i18n="vi"],
-      .scene[data-lang="en"] [data-i18n="en"] {
+      [data-i18n].is-i18n-active {
         animation-name: textRise;
         animation-duration: 0.55s;
         animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
@@ -264,7 +301,7 @@
           </div>
 
           <div class="flex items-center gap-3 md:gap-6">
-            <span class="hidden font-display text-[10px] font-medium tracking-wider2 text-parchment-300 sm:inline">
+            <span class="hidden font-display text-[10px] font-medium tracking-wider2 text-parchment-300 lg:inline">
               EST. 1070
             </span>
             <div
@@ -277,7 +314,8 @@
                 data-action="set-lang"
                 data-lang="vi"
                 aria-pressed="true"
-                class="lang-btn is-active rounded-full bg-crimson px-3.5 py-1.5 font-display text-[10px] font-bold tracking-wider2 text-cream"
+                lang="vi"
+                class="lang-btn is-active rounded-full bg-crimson px-2.5 py-1.5 font-display text-[10px] font-bold tracking-wider2 text-cream sm:px-3"
               >
                 VI
               </button>
@@ -286,9 +324,53 @@
                 data-action="set-lang"
                 data-lang="en"
                 aria-pressed="false"
-                class="lang-btn rounded-full px-3.5 py-1.5 font-display text-[10px] font-bold tracking-wider2 text-parchment-300 hover:text-cream"
+                lang="en"
+                class="lang-btn rounded-full px-2.5 py-1.5 font-display text-[10px] font-bold tracking-wider2 text-parchment-300 hover:text-cream sm:px-3"
               >
                 EN
+              </button>
+              <button
+                type="button"
+                data-action="set-lang"
+                data-lang="zh"
+                aria-pressed="false"
+                aria-label="中文"
+                lang="zh"
+                class="lang-btn rounded-full px-2.5 py-1 font-display text-[13px] font-bold text-parchment-300 hover:text-cream sm:px-3"
+              >
+                中
+              </button>
+              <button
+                type="button"
+                data-action="set-lang"
+                data-lang="ko"
+                aria-pressed="false"
+                aria-label="한국어"
+                lang="ko"
+                class="lang-btn rounded-full px-2.5 py-1 font-display text-[13px] font-bold text-parchment-300 hover:text-cream sm:px-3"
+              >
+                한
+              </button>
+              <button
+                type="button"
+                data-action="set-lang"
+                data-lang="ja"
+                aria-pressed="false"
+                aria-label="日本語"
+                lang="ja"
+                class="lang-btn rounded-full px-2.5 py-1 font-display text-[13px] font-bold text-parchment-300 hover:text-cream sm:px-3"
+              >
+                日
+              </button>
+              <button
+                type="button"
+                data-action="set-lang"
+                data-lang="fr"
+                aria-pressed="false"
+                lang="fr"
+                class="lang-btn rounded-full px-2.5 py-1.5 font-display text-[10px] font-bold tracking-wider2 text-parchment-300 hover:text-cream sm:px-3"
+              >
+                FR
               </button>
             </div>
           </div>
@@ -300,17 +382,36 @@
           <div class="flex items-center gap-3 rounded-full bg-white/[0.04] px-4 py-2 ring-1 ring-inset ring-parchment-400/40">
             <span class="h-2 w-2 rounded-full bg-crimson"></span>
             <span class="i18n-stack">
+              <span data-i18n="vi" data-stagger="1" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">
+                SẮP RA MẮT
+              </span>
               <span data-i18n="en" data-stagger="1" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">
                 COMING SOON
               </span>
-              <span data-i18n="vi" data-stagger="1" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">
-                SẮP RA MẮT
+              <span data-i18n="zh" lang="zh" data-stagger="1" class="font-display text-[11px] font-bold tracking-wider2 text-cream sm:text-[12px]">
+                即将上线
+              </span>
+              <span data-i18n="ko" lang="ko" data-stagger="1" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">
+                곧 공개
+              </span>
+              <span data-i18n="ja" lang="ja" data-stagger="1" class="font-display text-[11px] font-bold tracking-wider2 text-cream sm:text-[12px]">
+                近日公開
+              </span>
+              <span data-i18n="fr" lang="fr" data-stagger="1" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">
+                BIENTÔT EN LIGNE
               </span>
             </span>
           </div>
 
-          <!-- Headlines: VI and EN share one grid cell — no layout shift on switch -->
+          <!-- Headlines: all langs share one grid cell — no layout shift on switch -->
           <div class="i18n-stack-block w-full text-shadow">
+            <h1
+              data-i18n="vi"
+              data-stagger="2"
+              class="text-center font-display font-black italic tracking-tight text-cream leading-[1.02] text-[32px] sm:text-[44px] md:text-[60px] lg:text-[72px] xl:text-[80px]"
+            >
+              Trang web đang xây dựng
+            </h1>
             <h1
               data-i18n="en"
               data-stagger="2"
@@ -319,11 +420,36 @@
               Under Construction
             </h1>
             <h1
-              data-i18n="vi"
+              data-i18n="zh"
+              lang="zh"
               data-stagger="2"
-              class="text-center font-display font-black italic tracking-tight text-cream leading-[1.02] text-[32px] sm:text-[44px] md:text-[60px] lg:text-[72px] xl:text-[80px]"
+              class="text-center font-display font-black tracking-tight text-cream leading-[1.02] text-[48px] sm:text-[64px] md:text-[84px] lg:text-[100px] xl:text-[112px]"
             >
-              Trang web đang xây dựng
+              网站建设中
+            </h1>
+            <h1
+              data-i18n="ko"
+              lang="ko"
+              data-stagger="2"
+              class="text-center font-display font-black tracking-tight text-cream leading-[1.02] text-[40px] sm:text-[56px] md:text-[72px] lg:text-[88px] xl:text-[96px]"
+            >
+              사이트 준비 중
+            </h1>
+            <h1
+              data-i18n="ja"
+              lang="ja"
+              data-stagger="2"
+              class="text-center font-display font-black tracking-tight text-cream leading-[1.02] text-[44px] sm:text-[60px] md:text-[80px] lg:text-[96px] xl:text-[108px]"
+            >
+              準備中
+            </h1>
+            <h1
+              data-i18n="fr"
+              lang="fr"
+              data-stagger="2"
+              class="text-center font-display font-black tracking-tight text-cream leading-[1.02] text-[36px] sm:text-[52px] md:text-[68px] lg:text-[84px] xl:text-[92px]"
+            >
+              Site en construction
             </h1>
           </div>
 
@@ -333,6 +459,14 @@
           <!-- Description -->
           <div class="i18n-stack-block w-full max-w-[760px]">
             <p
+              data-i18n="vi"
+              data-stagger="3"
+              class="text-center font-medium leading-[1.55] text-parchment-50 text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px]"
+            >
+              Chúng tôi đang hoàn thiện trải nghiệm số xứng tầm với di sản đầu
+              tiên của nền giáo dục Việt Nam. Hẹn quý khách ngày 31.05.2026.
+            </p>
+            <p
               data-i18n="en"
               data-stagger="3"
               class="text-center font-medium leading-[1.55] text-parchment-50 text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px]"
@@ -341,12 +475,40 @@
               first university. We will be back on May 31, 2026.
             </p>
             <p
-              data-i18n="vi"
+              data-i18n="zh"
+              lang="zh"
+              data-stagger="3"
+              class="text-center font-medium leading-[1.75] text-parchment-50 text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px]"
+            >
+              我们正在为越南第一所大学精心打造数字体验，
+              将于 2026 年 5 月 31 日重新与您相见。
+            </p>
+            <p
+              data-i18n="ko"
+              lang="ko"
+              data-stagger="3"
+              class="text-center font-medium leading-[1.7] text-parchment-50 text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px]"
+            >
+              베트남 최초의 대학에 걸맞은 디지털 경험을 정성껏 준비하고 있습니다.
+              2026년 5월 31일에 다시 만나요.
+            </p>
+            <p
+              data-i18n="ja"
+              lang="ja"
+              data-stagger="3"
+              class="text-center font-medium leading-[1.75] text-parchment-50 text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px]"
+            >
+              ベトナム初の大学にふさわしいデジタル体験を、心を込めて準備しております。
+              2026 年 5 月 31 日に改めてお会いしましょう。
+            </p>
+            <p
+              data-i18n="fr"
+              lang="fr"
               data-stagger="3"
               class="text-center font-medium leading-[1.55] text-parchment-50 text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px]"
             >
-              Chúng tôi đang hoàn thiện trải nghiệm số xứng tầm với di sản đầu
-              tiên của nền giáo dục Việt Nam. Hẹn quý khách ngày 31.05.2026.
+              Nous préparons une expérience numérique à la hauteur de la
+              première université du Vietnam. Rendez-vous le 31 mai 2026.
             </p>
           </div>
 
@@ -357,8 +519,12 @@
               <span data-unit="days" class="font-display font-extrabold leading-none text-cream text-[44px] sm:text-[48px] md:text-[56px] lg:text-[64px]">17</span>
               <span class="card-rule h-px w-8"></span>
               <span class="i18n-stack">
-                <span data-i18n="en" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">DAYS</span>
                 <span data-i18n="vi" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">NGÀY</span>
+                <span data-i18n="en" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">DAYS</span>
+                <span data-i18n="zh" lang="zh" data-stagger="4" class="font-display text-[11px] font-bold tracking-wider2 text-cream sm:text-[12px]">天</span>
+                <span data-i18n="ko" lang="ko" data-stagger="4" class="font-display text-[11px] font-bold tracking-wider2 text-cream sm:text-[12px]">일</span>
+                <span data-i18n="ja" lang="ja" data-stagger="4" class="font-display text-[11px] font-bold tracking-wider2 text-cream sm:text-[12px]">日</span>
+                <span data-i18n="fr" lang="fr" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">JOURS</span>
               </span>
             </div>
 
@@ -367,8 +533,12 @@
               <span data-unit="hours" class="font-display font-extrabold leading-none text-cream text-[44px] sm:text-[48px] md:text-[56px] lg:text-[64px]">08</span>
               <span class="card-rule h-px w-8"></span>
               <span class="i18n-stack">
-                <span data-i18n="en" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">HOURS</span>
                 <span data-i18n="vi" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">GIỜ</span>
+                <span data-i18n="en" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">HOURS</span>
+                <span data-i18n="zh" lang="zh" data-stagger="4" class="font-display text-[11px] font-bold tracking-wider2 text-cream sm:text-[12px]">时</span>
+                <span data-i18n="ko" lang="ko" data-stagger="4" class="font-display text-[11px] font-bold tracking-wider2 text-cream sm:text-[12px]">시간</span>
+                <span data-i18n="ja" lang="ja" data-stagger="4" class="font-display text-[11px] font-bold tracking-wider2 text-cream sm:text-[12px]">時間</span>
+                <span data-i18n="fr" lang="fr" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">HEURES</span>
               </span>
             </div>
 
@@ -377,8 +547,12 @@
               <span data-unit="minutes" class="font-display font-extrabold leading-none text-cream text-[44px] sm:text-[48px] md:text-[56px] lg:text-[64px]">42</span>
               <span class="card-rule h-px w-8"></span>
               <span class="i18n-stack">
-                <span data-i18n="en" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">MINUTES</span>
                 <span data-i18n="vi" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">PHÚT</span>
+                <span data-i18n="en" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">MINUTES</span>
+                <span data-i18n="zh" lang="zh" data-stagger="4" class="font-display text-[11px] font-bold tracking-wider2 text-cream sm:text-[12px]">分</span>
+                <span data-i18n="ko" lang="ko" data-stagger="4" class="font-display text-[11px] font-bold tracking-wider2 text-cream sm:text-[12px]">분</span>
+                <span data-i18n="ja" lang="ja" data-stagger="4" class="font-display text-[11px] font-bold tracking-wider2 text-cream sm:text-[12px]">分</span>
+                <span data-i18n="fr" lang="fr" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">MINUTES</span>
               </span>
             </div>
 
@@ -387,8 +561,12 @@
               <span data-unit="seconds" class="font-display font-extrabold leading-none text-white text-[44px] sm:text-[48px] md:text-[56px] lg:text-[64px]">15</span>
               <span class="card-rule-crimson h-px w-8"></span>
               <span class="i18n-stack">
-                <span data-i18n="en" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-white sm:text-[11px]">SECONDS</span>
                 <span data-i18n="vi" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-white sm:text-[11px]">GIÂY</span>
+                <span data-i18n="en" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-white sm:text-[11px]">SECONDS</span>
+                <span data-i18n="zh" lang="zh" data-stagger="4" class="font-display text-[11px] font-bold tracking-wider2 text-white sm:text-[12px]">秒</span>
+                <span data-i18n="ko" lang="ko" data-stagger="4" class="font-display text-[11px] font-bold tracking-wider2 text-white sm:text-[12px]">초</span>
+                <span data-i18n="ja" lang="ja" data-stagger="4" class="font-display text-[11px] font-bold tracking-wider2 text-white sm:text-[12px]">秒</span>
+                <span data-i18n="fr" lang="fr" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-white sm:text-[11px]">SECONDES</span>
               </span>
             </div>
           </div>
@@ -397,11 +575,23 @@
           <div class="flex items-center justify-center gap-3 sm:gap-4">
             <span class="h-px w-8 bg-bronze sm:w-10"></span>
             <span class="i18n-stack">
+              <span data-i18n="vi" data-stagger="5" class="whitespace-nowrap font-display text-[11px] font-bold tracking-wider3 text-bronze sm:text-[12px] md:text-[13px]">
+                RA MẮT &nbsp;·&nbsp; 31 . 05 . 2026
+              </span>
               <span data-i18n="en" data-stagger="5" class="whitespace-nowrap font-display text-[11px] font-bold tracking-wider3 text-bronze sm:text-[12px] md:text-[13px]">
                 LAUNCHING &nbsp;·&nbsp; 31 . 05 . 2026
               </span>
-              <span data-i18n="vi" data-stagger="5" class="whitespace-nowrap font-display text-[11px] font-bold tracking-wider3 text-bronze sm:text-[12px] md:text-[13px]">
-                RA MẮT &nbsp;·&nbsp; 31 . 05 . 2026
+              <span data-i18n="zh" lang="zh" data-stagger="5" class="whitespace-nowrap font-display text-[12px] font-bold tracking-wider2 text-bronze sm:text-[13px] md:text-[14px]">
+                上线 &nbsp;·&nbsp; 2026 . 05 . 31
+              </span>
+              <span data-i18n="ko" lang="ko" data-stagger="5" class="whitespace-nowrap font-display text-[12px] font-bold tracking-wider2 text-bronze sm:text-[13px] md:text-[14px]">
+                공개 &nbsp;·&nbsp; 2026 . 05 . 31
+              </span>
+              <span data-i18n="ja" lang="ja" data-stagger="5" class="whitespace-nowrap font-display text-[12px] font-bold tracking-wider2 text-bronze sm:text-[13px] md:text-[14px]">
+                公開 &nbsp;·&nbsp; 2026 . 05 . 31
+              </span>
+              <span data-i18n="fr" lang="fr" data-stagger="5" class="whitespace-nowrap font-display text-[11px] font-bold tracking-wider3 text-bronze sm:text-[12px] md:text-[13px]">
+                LANCEMENT &nbsp;·&nbsp; 31 . 05 . 2026
               </span>
             </span>
             <span class="h-px w-8 bg-bronze sm:w-10"></span>
@@ -416,10 +606,22 @@
               <i class="icon-phone" style="font-size:18px;color:#FFFFFF;"></i>
               <span class="flex flex-col leading-tight">
                 <span class="hotline-label i18n-stack">
+                  <span data-i18n="vi" data-rotate="vi" data-stagger="6" class="font-display text-[10px] font-bold tracking-wider2 text-white/70">
+                    HOTLINE
+                  </span>
                   <span data-i18n="en" data-rotate="en" data-stagger="6" class="font-display text-[10px] font-bold tracking-wider2 text-white/70">
                     HOTLINE
                   </span>
-                  <span data-i18n="vi" data-rotate="vi" data-stagger="6" class="font-display text-[10px] font-bold tracking-wider2 text-white/70">
+                  <span data-i18n="zh" lang="zh" data-rotate="zh" data-stagger="6" class="font-display text-[11px] font-bold tracking-wider2 text-white/70">
+                    服务热线
+                  </span>
+                  <span data-i18n="ko" lang="ko" data-rotate="ko" data-stagger="6" class="font-display text-[11px] font-bold tracking-wider2 text-white/70">
+                    핫라인
+                  </span>
+                  <span data-i18n="ja" lang="ja" data-rotate="ja" data-stagger="6" class="font-display text-[11px] font-bold tracking-wider2 text-white/70">
+                    ホットライン
+                  </span>
+                  <span data-i18n="fr" lang="fr" data-rotate="fr" data-stagger="6" class="font-display text-[10px] font-bold tracking-wider2 text-white/70">
                     HOTLINE
                   </span>
                 </span>
@@ -491,23 +693,34 @@
       tick();
       setInterval(tick, 1000);
 
-      // Hotline label rotation — cycles VI + EN in lockstep so a language
-      // switch never lands on an out-of-sync word.
+      // Hotline label rotation — cycles all supported langs in lockstep so a
+      // language switch never lands on an out-of-sync word.
       const hotlineLabels = {
         vi: ["HOTLINE", "LIÊN HỆ", "ĐẶT VÉ", "ĐẶT TOUR", "GIẢI ĐÁP", "HỖ TRỢ"],
         en: ["HOTLINE", "CONTACT", "BOOK TICKETS", "BOOK TOUR", "INQUIRIES", "SUPPORT"],
+        zh: ["服务热线", "联系我们", "购票", "预订游览", "咨询", "支持"],
+        ko: ["핫라인", "문의", "티켓 예약", "투어 예약", "상담", "지원"],
+        ja: ["ホットライン", "お問い合わせ", "チケット予約", "ツアー予約", "ご相談", "サポート"],
+        fr: ["HOTLINE", "CONTACT", "BILLETS", "RÉSERVER UN TOUR", "RENSEIGNEMENTS", "SUPPORT"],
       };
       const hotlineLabelEl = document.querySelector(".hotline-label");
-      const hotlineVi = hotlineLabelEl?.querySelector('[data-rotate="vi"]');
-      const hotlineEn = hotlineLabelEl?.querySelector('[data-rotate="en"]');
+      const rotateNodes = hotlineLabelEl
+        ? Object.fromEntries(
+            Object.keys(hotlineLabels).map((l) => [
+              l,
+              hotlineLabelEl.querySelector(`[data-rotate="${l}"]`),
+            ])
+          )
+        : {};
       let hotlineIdx = 0;
-      if (hotlineLabelEl && hotlineVi && hotlineEn) {
+      if (hotlineLabelEl && Object.values(rotateNodes).every(Boolean)) {
         setInterval(() => {
           hotlineIdx = (hotlineIdx + 1) % hotlineLabels.vi.length;
           hotlineLabelEl.classList.add("is-swapping");
           setTimeout(() => {
-            hotlineVi.textContent = hotlineLabels.vi[hotlineIdx];
-            hotlineEn.textContent = hotlineLabels.en[hotlineIdx];
+            for (const [lang, node] of Object.entries(rotateNodes)) {
+              node.textContent = hotlineLabels[lang][hotlineIdx];
+            }
             hotlineLabelEl.classList.remove("is-swapping");
           }, 280);
         }, 2600);
@@ -539,35 +752,67 @@
       );
       updateScroll();
 
-      // Language switch — CSS handles transitions via [data-lang] selectors.
-      // Force animation restart by toggling a sentinel class so the keyframe
-      // replays even when the same animation-name is reused.
+      // Language switch — JS toggles `.is-i18n-active`/`.is-i18n-inactive` on
+      // every `[data-i18n]` node so visibility scales to any number of langs
+      // without adding CSS rules. Choice persists in localStorage.
+      const SUPPORTED_LANGS = ["vi", "en", "zh", "ko", "ja", "fr"];
+      const STORAGE_KEY = "vmqtg.lang";
       const scene = document.querySelector(".scene");
       const langBtns = document.querySelectorAll('[data-action="set-lang"]');
+      const allI18nNodes = document.querySelectorAll("[data-i18n]");
+
+      function applyLang(target, { animate = true } = {}) {
+        if (!SUPPORTED_LANGS.includes(target)) return;
+        scene.dataset.lang = target;
+        document.documentElement.lang = target;
+        try {
+          localStorage.setItem(STORAGE_KEY, target);
+        } catch (_) {
+          // private mode / storage disabled — silently ignore
+        }
+        allI18nNodes.forEach((el) => {
+          const isActive = el.dataset.i18n === target;
+          el.classList.toggle("is-i18n-active", isActive);
+          el.classList.toggle("is-i18n-inactive", !isActive);
+          if (animate && isActive) {
+            // Force keyframe restart so the entrance animation replays.
+            el.style.animation = "none";
+            void el.offsetWidth;
+            el.style.animation = "";
+          }
+        });
+        langBtns.forEach((b) => {
+          const isActive = b.dataset.lang === target;
+          b.classList.toggle("is-active", isActive);
+          b.setAttribute("aria-pressed", isActive ? "true" : "false");
+          b.classList.toggle("bg-crimson", isActive);
+          b.classList.toggle("text-cream", isActive);
+          b.classList.toggle("text-parchment-300", !isActive);
+        });
+      }
+
       langBtns.forEach((btn) => {
         btn.addEventListener("click", () => {
           const target = btn.dataset.lang;
           if (scene.dataset.lang === target) return;
-          scene.dataset.lang = target;
-          // Restart enter animation on newly-active i18n elements
-          const incoming = scene.querySelectorAll(`[data-i18n="${target}"]`);
-          incoming.forEach((el) => {
-            el.style.animation = "none";
-            // force reflow
-            void el.offsetWidth;
-            el.style.animation = "";
-          });
-          // Update button states
-          langBtns.forEach((b) => {
-            const isActive = b.dataset.lang === target;
-            b.classList.toggle("is-active", isActive);
-            b.setAttribute("aria-pressed", isActive ? "true" : "false");
-            b.classList.toggle("bg-crimson", isActive);
-            b.classList.toggle("text-cream", isActive);
-            b.classList.toggle("text-parchment-300", !isActive);
-          });
+          applyLang(target);
         });
       });
+
+      // Initial language — saved preference > browser default > VI
+      let initialLang = "vi";
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved && SUPPORTED_LANGS.includes(saved)) {
+          initialLang = saved;
+        } else if (navigator.language) {
+          const browserBase = navigator.language.toLowerCase().split("-")[0];
+          if (SUPPORTED_LANGS.includes(browserBase)) initialLang = browserBase;
+        }
+      } catch (_) {
+        // ignore — keep VI fallback
+      }
+      applyLang(initialLang, { animate: false });
     </script>
   </body>
 </html>
