@@ -1,0 +1,422 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  background:#f7f7f5;color:#111110;line-height:1.65;
+}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+ul,ol{list-style:none}
+
+.container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
+
+/* ── HEADER ── */
+.site-header{
+  background:#111110;color:#fff;
+  position:sticky;top:0;z-index:100;
+  border-bottom:1px solid #222;
+}
+.header-inner{
+  display:flex;align-items:center;gap:2rem;
+  max-width:1200px;margin:0 auto;padding:0 1.5rem;
+  height:60px;
+}
+.brand{display:flex;align-items:center;gap:.7rem;flex-shrink:0}
+.brand-mark{
+  width:34px;height:34px;
+  border:1.5px solid rgba(255,255,255,.35);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;letter-spacing:.05em;
+}
+.brand-text{display:flex;flex-direction:column}
+.brand-name{font-size:.8rem;font-weight:600;line-height:1.2;color:#fff}
+.brand-sub{font-size:.58rem;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase}
+
+/* ── NAV ── */
+.main-nav{display:flex;align-items:center;flex:1}
+.nav-item{position:relative;display:flex;align-items:center}
+.nav-item > a{
+  font-size:.78rem;color:rgba(255,255,255,.65);
+  padding:.5rem .85rem;font-weight:400;white-space:nowrap;
+  display:block;height:60px;line-height:46px;
+}
+.nav-item > a:hover,.nav-item.active > a{color:#fff}
+.nav-item.has-menu > a::after{
+  content:' ▾';font-size:.65rem;opacity:.6;margin-left:.15rem;
+}
+.nav-cta{
+  margin-left:auto;
+  border:1px solid rgba(255,255,255,.4);
+  padding:.4rem 1rem;
+  color:#fff;font-size:.76rem;font-weight:500;
+  flex-shrink:0;
+}
+.nav-cta:hover{background:#fff;color:#111110}
+
+/* ── DROPDOWN ── */
+.dropdown{
+  display:none;
+  position:absolute;top:100%;left:0;
+  background:#fff;color:#111110;
+  border:1px solid #e4e4df;
+  min-width:240px;padding:.6rem 0;
+  box-shadow:0 8px 24px rgba(0,0,0,.04);
+  z-index:50;
+}
+.nav-item:hover .dropdown,.nav-item:focus-within .dropdown{display:block}
+.dropdown a{
+  display:block;
+  padding:.55rem 1.25rem;
+  font-size:.8rem;color:#444;
+  white-space:nowrap;
+}
+.dropdown a:hover{background:#f7f7f5;color:#111110}
+.dropdown-num{
+  display:inline-block;
+  font-size:.6rem;color:#bbb;font-weight:600;
+  margin-right:.5rem;letter-spacing:.04em;
+  min-width:1.8rem;
+}
+
+/* ── MEGA MENU ── */
+.dropdown.mega{
+  display:none;left:50%;transform:translateX(-50%);
+  width:1100px;max-width:calc(100vw - 2rem);
+  padding:1.5rem;
+  grid-template-columns:repeat(6,1fr);
+  gap:1.5rem;
+}
+.nav-item:hover .dropdown.mega{display:grid}
+.mega-col{}
+.mega-col-title{
+  font-size:.68rem;font-weight:700;color:#111110;
+  letter-spacing:.04em;margin-bottom:.55rem;
+  padding-bottom:.4rem;border-bottom:1px solid #e4e4df;
+}
+.mega-col-title a{color:#111110}
+.mega-col ul{display:flex;flex-direction:column;gap:.05rem;margin-top:.3rem}
+.mega-col li a{
+  display:block;font-size:.74rem;color:#666;
+  padding:.3rem 0;line-height:1.4;
+}
+.mega-col li a:hover{color:#111110}
+
+/* Dropdown for sub-groups (C, D, E) */
+.dropdown.simple{padding:.5rem 0}
+.dropdown.simple .group-title{
+  display:block;padding:.5rem 1.25rem .15rem;
+  font-size:.62rem;font-weight:700;color:#bbb;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+
+/* ── BREADCRUMB ── */
+.breadcrumb{
+  background:#fff;border-bottom:1px solid #e4e4df;
+  padding:.6rem 0;font-size:.73rem;color:#999;
+}
+.breadcrumb a{color:#666}
+.breadcrumb a:hover{color:#111110}
+.breadcrumb .sep{margin:0 .4rem;color:#ccc}
+
+/* ── HERO ── */
+.hero{position:relative;overflow:hidden;background:#ddd}
+.hero-img{
+  width:100%;height:420px;object-fit:cover;display:block;
+  filter:grayscale(100%) contrast(.85) brightness(1.08);
+}
+.hero-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.55) 0%,rgba(0,0,0,.1) 55%,transparent 100%);
+}
+.hero-content{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:2.5rem 3rem;color:#fff;
+  max-width:1260px;margin:0 auto;
+}
+.hero-title{font-size:2.2rem;font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:.5rem}
+.hero-sub{font-size:.95rem;opacity:.75;max-width:560px}
+
+/* ── QUICK INFO ── */
+.quick-bar{background:#fff;border-bottom:1px solid #e4e4df}
+.quick-bar-inner{display:flex;max-width:1200px;margin:0 auto;padding:0 1.5rem}
+.quick-item{flex:1;padding:1.2rem 1rem;border-right:1px solid #e4e4df}
+.quick-item:first-child{padding-left:0}
+.quick-item:last-child{border-right:none;padding-right:0}
+.quick-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:#aaa;margin-bottom:.25rem;font-weight:500}
+.quick-value{font-size:.88rem;font-weight:500;color:#111110}
+
+/* ── PAGE HEADER ── */
+.page-hd{background:#fff;border-bottom:1px solid #e4e4df;padding:2.5rem 0 2rem}
+.page-title{font-size:1.95rem;font-weight:700;letter-spacing:-.02em;color:#111110;margin-bottom:.5rem}
+.page-sub{font-size:.95rem;color:#777;max-width:640px;line-height:1.65}
+
+/* ── CONTENT ── */
+.content{padding:2.5rem 0 4rem}
+.content-inner{display:grid;grid-template-columns:1fr 280px;gap:3rem;align-items:start}
+
+/* ── GRID ── */
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
+
+/* ── CARD ── */
+.card{display:block;background:#fff;border:1px solid #e4e4df;overflow:hidden}
+.card:hover{border-color:#bbb}
+.card-img{aspect-ratio:16/9;background:#ebebE8;overflow:hidden;position:relative}
+.card-img img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(.85) brightness(1.06)}
+
+/* ── PLACEHOLDER (no image yet) ──
+   A real Văn Miếu photo (Khuê Văn Các, public-domain via Wikimedia Commons)
+   used as the default visual when an item has no img assigned.
+   Same grayscale treatment as real photos so the page feels uniform.
+   Label pill overlaid bottom-left so the user can still tell it's a stand-in. */
+.ph,.card-img-ph,.article-hero.is-placeholder{
+  position:relative;width:100%;height:100%;overflow:hidden;
+  background:#ececE8 url("../images/placeholder.jpg") center/cover no-repeat
+}
+.ph,.card-img-ph,.article-hero.is-placeholder{
+  filter:grayscale(100%) contrast(.85) brightness(1.06)
+}
+.ph::after,.card-img-ph::after,.article-hero.is-placeholder::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.18) 0%,transparent 45%);
+  pointer-events:none
+}
+.ph-label,.card-img-ph span,.article-hero.is-placeholder .ph-label{
+  position:absolute;left:.6rem;bottom:.55rem;z-index:1;
+  font-size:.58rem;color:#fff;text-transform:uppercase;letter-spacing:.08em;
+  background:rgba(0,0,0,.55);padding:.2rem .55rem;font-weight:500;
+  backdrop-filter:blur(2px)
+}
+.card-img-ph,.article-hero.is-placeholder{display:block}
+.card-body{padding:1.2rem}
+.card-num{font-size:.62rem;color:#bbb;font-weight:600;letter-spacing:.06em;margin-bottom:.5rem}
+.card-title{font-size:.92rem;font-weight:600;color:#111110;margin-bottom:.4rem;line-height:1.4}
+.card-desc{font-size:.78rem;color:#777;line-height:1.55}
+.card-arrow{display:inline-block;margin-top:.8rem;font-size:.72rem;color:#aaa}
+
+/* Compact card for many items */
+.card.compact .card-img{aspect-ratio:4/3}
+.card.compact .card-body{padding:.85rem 1rem 1rem}
+.card.compact .card-title{font-size:.83rem;margin-bottom:.2rem}
+.card.compact .card-desc{font-size:.72rem;line-height:1.5}
+
+/* ── ARTICLE ── */
+.article{max-width:720px}
+.article h1{font-size:1.7rem;font-weight:700;letter-spacing:-.02em;margin-bottom:1.5rem}
+.article h2{font-size:1.2rem;font-weight:600;margin:2rem 0 .65rem;letter-spacing:-.01em}
+.article h3{font-size:1rem;font-weight:600;margin:1.5rem 0 .45rem}
+.article p{margin-bottom:.95rem;color:#444;line-height:1.8}
+.article li{color:#444;line-height:1.7;margin-bottom:.4rem;padding-left:.25rem}
+.article ul{list-style:disc;margin:.5rem 0 1rem 1.25rem}
+.article ol{list-style:decimal;margin:.5rem 0 1rem 1.4rem}
+.article strong{color:#111110;font-weight:600}
+.article em{font-style:italic}
+.article-hero{margin:0 0 2rem;aspect-ratio:16/9;background:#e8e8e4;overflow:hidden;border:1px solid #e4e4df;position:relative}
+.article-hero img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(.85) brightness(1.06)}
+.article-hero.is-placeholder{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.6rem;
+  background-color:#ececE8;
+  background-image:
+    linear-gradient(135deg,transparent calc(50% - .5px),#dedeD9 calc(50% - .5px),#dedeD9 calc(50% + .5px),transparent calc(50% + .5px)),
+    linear-gradient(45deg, transparent calc(50% - .5px),#dedeD9 calc(50% - .5px),#dedeD9 calc(50% + .5px),transparent calc(50% + .5px))}
+.article-hero.is-placeholder::before{
+  content:"";display:block;width:42px;height:42px;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a8a8a3' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='1.5'/><circle cx='8.5' cy='10.5' r='1.6'/><path d='M21 16.5l-5.2-5.2-8.8 8.7'/></svg>") center/contain no-repeat;
+  opacity:.8}
+.article-hero.is-placeholder .ph-label{font-size:.65rem;color:#9a9a93;text-transform:uppercase;letter-spacing:.08em;background:#ececE8;padding:.2rem .6rem;font-weight:500}
+
+/* ── INFO TABLE ── */
+.info-table{width:100%;border-collapse:collapse;margin:1.5rem 0;border:1px solid #e4e4df}
+.info-table th,.info-table td{padding:.75rem 1rem;text-align:left;border-bottom:1px solid #e4e4df;font-size:.875rem}
+.info-table tr:last-child th,.info-table tr:last-child td{border-bottom:none}
+.info-table th{font-weight:600;background:#f7f7f5;width:35%;color:#444}
+.info-table td{color:#444}
+
+/* ── PRICE TABLE ── */
+.price-table{border:1px solid #e4e4df;margin:1.5rem 0;background:#fff}
+.price-row{display:flex;align-items:center;border-bottom:1px solid #e4e4df;padding:1rem 1.25rem;gap:1.5rem}
+.price-row:last-child{border:none}
+.price-cat{flex:1;font-size:.9rem;color:#444}
+.price-val{font-size:1.1rem;font-weight:600;color:#111110;white-space:nowrap}
+
+/* ── SIDEBAR ── */
+.sidebar-box{border:1px solid #e4e4df;background:#fff;padding:1.25rem;margin-bottom:1rem}
+.sidebar-title{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:#aaa;margin-bottom:.75rem;font-weight:600}
+.sidebar-links li{padding:.4rem 0;border-bottom:1px solid #f0f0ec}
+.sidebar-links li:last-child{border:none}
+.sidebar-links a{font-size:.8rem;color:#444;display:block}
+.sidebar-links a:hover{color:#111110}
+.sidebar-links a.active{font-weight:600;color:#111110}
+.sidebar-cta{display:block;background:#111110;color:#fff;padding:.95rem 1.25rem;text-align:center;font-size:.8rem;font-weight:500}
+
+/* ── HOME SECTIONS ── */
+.sections-overview{padding:2.5rem 0 3.5rem}
+.sections-title{font-size:.7rem;font-weight:600;color:#888;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.25rem}
+.sections-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:#e4e4df;border:1px solid #e4e4df}
+.section-block{background:#fff;padding:1.75rem 1.5rem;display:flex;flex-direction:column;gap:.6rem}
+.section-block:hover{background:#fafaf8}
+.section-block-num{font-size:.62rem;font-weight:700;color:#ccc;letter-spacing:.1em}
+.section-block-name{font-size:.95rem;font-weight:600;color:#111110;line-height:1.35}
+.section-block-sub{font-size:.74rem;color:#999;line-height:1.6}
+.section-block-count{margin-top:auto;padding-top:.85rem;border-top:1px solid #f0f0ec;font-size:.66rem;color:#bbb;letter-spacing:.04em}
+
+/* ── GALLERY ── */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#e4e4df;border:1px solid #e4e4df;margin:1.5rem 0}
+.gallery-item{background:#fff;aspect-ratio:4/3;overflow:hidden}
+.gallery-item img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(.85) brightness(1.06)}
+
+/* ── FOOTER ── */
+.site-footer{background:#111110;color:rgba(255,255,255,.55);padding:3rem 0 2rem}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem}
+.footer-brand{font-size:.85rem;font-weight:600;color:#fff;margin-bottom:.6rem}
+.footer-address{font-size:.76rem;line-height:1.85}
+.footer-col-title{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.3);margin-bottom:.85rem;font-weight:600}
+.footer-links li{padding:.3rem 0}
+.footer-links a{font-size:.76rem;color:rgba(255,255,255,.5)}
+.footer-links a:hover{color:rgba(255,255,255,.85)}
+.footer-copy{border-top:1px solid rgba(255,255,255,.08);padding-top:1.5rem;font-size:.72rem;color:rgba(255,255,255,.25)}
+
+/* ── UTILITY ── */
+.label{display:inline-block;font-size:.62rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border:1px solid #ddd;padding:.2rem .55rem;color:#888;margin-bottom:.75rem}
+.note{background:#fff;border-left:2px solid #ccc;padding:.9rem 1.1rem;font-size:.82rem;color:#666;line-height:1.65;margin:1.25rem 0;border-top:1px solid #e4e4df;border-right:1px solid #e4e4df;border-bottom:1px solid #e4e4df}
+
+/* ── HEADER TOOLS (search + language) ── */
+.header-tools{display:flex;align-items:center;gap:.6rem;flex-shrink:0;margin-left:auto}
+.search-wrap{position:relative}
+.search-input{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.18);
+  color:#fff;font:inherit;font-size:.74rem;
+  padding:.4rem .7rem .4rem .7rem;
+  width:180px;height:30px;outline:none;
+  transition:width .25s ease,background .2s,border-color .2s;
+}
+.search-input::placeholder{color:rgba(255,255,255,.45)}
+.search-input:focus{width:260px;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.4)}
+.search-results{
+  position:absolute;top:calc(100% + 6px);right:0;
+  background:#fff;color:#111110;
+  width:360px;max-height:60vh;overflow-y:auto;
+  border:1px solid #e4e4df;
+  box-shadow:0 12px 32px rgba(0,0,0,.08);
+  display:none;z-index:200;
+}
+.search-results.open{display:block}
+.search-result{
+  display:block;padding:.6rem .9rem;
+  border-bottom:1px solid #f0f0ec;
+  font-size:.78rem;color:#444;
+}
+.search-result:last-child{border:none}
+.search-result:hover,.search-result.selected{background:#f7f7f5}
+.search-result .sr-id{
+  display:inline-block;font-size:.62rem;color:#bbb;font-weight:600;
+  letter-spacing:.04em;margin-right:.5rem;min-width:2.4rem;
+}
+.search-result .sr-title{font-weight:500;color:#111110}
+.search-result .sr-sub{display:block;font-size:.7rem;color:#999;margin-top:.15rem;margin-left:2.9rem}
+.search-result mark{background:#fff3a3;color:#111110;padding:0 .1rem;border-radius:1px}
+.search-empty{padding:.85rem 1rem;font-size:.78rem;color:#999;text-align:center}
+
+.lang-switch{display:flex;border:1px solid rgba(255,255,255,.18);height:30px;overflow:hidden}
+.lang-btn{
+  background:transparent;color:rgba(255,255,255,.55);
+  border:none;cursor:pointer;font:inherit;
+  font-size:.7rem;font-weight:600;letter-spacing:.06em;
+  padding:0 .55rem;height:100%;
+  border-right:1px solid rgba(255,255,255,.12);
+  transition:background .15s,color .15s;
+}
+.lang-btn:last-child{border-right:none}
+.lang-btn:hover{color:#fff}
+.lang-btn.active{background:#fff;color:#111110}
+
+/* ── PAGE TRANSITIONS ── */
+/* html bg = body bg → no white flash between pages */
+html{background:#f7f7f5}
+
+/* Header & footer paint instantly (persistent feel).
+   Content sections cascade in from top → bottom with a light stagger.
+   Pure opacity, ease-out, short — should feel like a fast load, not an animation. */
+@keyframes pageFadeIn{
+  from{opacity:0;transform:translate3d(0,8px,0)}
+  to  {opacity:1;transform:none}
+}
+
+/* Top sections: tight 80ms stagger so any missing slot (e.g. no quick-bar
+   on a section page) doesn't leave a perceptible gap before the container. */
+.breadcrumb,.hero,.page-hd,.quick-bar,.sections-overview,.content,.site-footer{
+  animation:pageFadeIn .36s cubic-bezier(.2,.8,.2,1) both;
+  will-change:transform,opacity
+}
+.breadcrumb       {animation-delay:0ms}
+.hero,.page-hd    {animation-delay:80ms}
+.quick-bar        {animation-delay:160ms}
+.sections-overview,.content {animation-delay:200ms}
+.site-footer      {animation-delay:280ms}
+
+/* Inside the container, the real cascade: 120ms stagger, cap at item 8. */
+.sections-overview > *, .content > *{
+  animation:pageFadeIn .36s cubic-bezier(.2,.8,.2,1) both;
+  animation-delay:320ms
+}
+.sections-overview > *:nth-child(1),.content > *:nth-child(1){animation-delay:320ms}
+.sections-overview > *:nth-child(2),.content > *:nth-child(2){animation-delay:440ms}
+.sections-overview > *:nth-child(3),.content > *:nth-child(3){animation-delay:560ms}
+.sections-overview > *:nth-child(4),.content > *:nth-child(4){animation-delay:680ms}
+.sections-overview > *:nth-child(5),.content > *:nth-child(5){animation-delay:800ms}
+.sections-overview > *:nth-child(6),.content > *:nth-child(6){animation-delay:920ms}
+.sections-overview > *:nth-child(7),.content > *:nth-child(7){animation-delay:1040ms}
+.sections-overview > *:nth-child(n+8),.content > *:nth-child(n+8){animation-delay:1160ms}
+
+@media(prefers-reduced-motion:reduce){
+  .breadcrumb,.hero,.page-hd,.quick-bar,.sections-overview,.content,.site-footer,
+  .sections-overview > *,.content > *{animation:none!important}
+}
+
+/* ── LANG TRANSITION (directional split) ──
+   Header/menu slides left→right; everything else slides top→bottom.
+   Both run in parallel, same easing, capped stagger so total < 600ms. */
+@keyframes slideFromLeft{
+  from{opacity:0;transform:translate3d(-12px,0,0)}
+  to  {opacity:1;transform:translate3d(0,0,0)}
+}
+@keyframes slideFromTop{
+  from{opacity:0;transform:translate3d(0,-8px,0)}
+  to  {opacity:1;transform:translate3d(0,0,0)}
+}
+/* Menu animation: only top-level nav bar items, NOT submenu contents
+   (user doesn't see closed dropdowns, and indexing them makes nav bar uneven). */
+.lang-entering .site-header [data-i18n]:not(.dropdown [data-i18n]){
+  animation:slideFromLeft .35s cubic-bezier(.2,.8,.2,1) both;
+  animation-delay:calc(min(var(--i,0), 15) * 30ms);
+  will-change:transform,opacity;
+}
+/* Content animation: ONLY text nodes ([data-i18n] / [data-i18n-html]).
+   Images, backgrounds, card frames stay static. Stagger by parent section
+   so text reveals top-down, section by section. */
+.lang-entering :is(.breadcrumb,.hero,.quick-bar,.page-hd,.sections-overview,.content,.site-footer) :is([data-i18n],[data-i18n-html]){
+  animation:slideFromTop .35s cubic-bezier(.2,.8,.2,1) both;
+  will-change:transform,opacity;
+}
+.lang-entering .breadcrumb        :is([data-i18n],[data-i18n-html]){animation-delay:  0ms}
+.lang-entering .hero              :is([data-i18n],[data-i18n-html]){animation-delay: 80ms}
+.lang-entering .quick-bar         :is([data-i18n],[data-i18n-html]){animation-delay:160ms}
+.lang-entering .page-hd           :is([data-i18n],[data-i18n-html]){animation-delay:160ms}
+.lang-entering .sections-overview :is([data-i18n],[data-i18n-html]){animation-delay:240ms}
+.lang-entering .content           :is([data-i18n],[data-i18n-html]){animation-delay:240ms}
+.lang-entering .site-footer       :is([data-i18n],[data-i18n-html]){animation-delay:320ms}
+
+@media (prefers-reduced-motion: reduce){
+  .lang-entering [data-i18n],
+  .lang-entering [data-i18n-html]{animation:none !important}
+}
+
+@media (max-width:900px){
+  .search-input{width:120px}
+  .search-input:focus{width:160px}
+  .search-results{width:280px}
+}

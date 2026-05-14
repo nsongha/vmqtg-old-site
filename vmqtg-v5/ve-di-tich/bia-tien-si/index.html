@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>82 Bia Tiến sĩ – Văn Miếu Quốc Tử Giám</title>
+<meta name="description" content="Khám phá 82 tấm bia đề danh Tiến sĩ tại Văn Miếu – Quốc Tử Giám, di sản tư liệu thế giới UNESCO, ghi danh hơn 1.300 vị Tiến sĩ từ năm 1442 đến 1779.">
+<link rel="stylesheet" href="../../assets/css/style.css">
+<style>
+/* ── VIEWER SHELL ── */
+.viewer-wrap{background:#0d0d0b;color:#e8e4d9}
+
+/* Dynasty strip */
+.viewer-dynasty{
+  display:flex;align-items:baseline;gap:1.5rem;
+  padding:.55rem 2rem;border-bottom:1px solid #1e1e1c;
+}
+.viewer-dynasty-badge{
+  font-size:.6rem;color:#c9a84c;letter-spacing:.12em;
+  text-transform:uppercase;font-weight:600;white-space:nowrap;
+}
+.viewer-dynasty-name{
+  font-size:.8rem;color:#666;letter-spacing:.04em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+
+/* Nav bar */
+.viewer-nav-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.65rem 2rem;border-bottom:1px solid #1e1e1c;
+  gap:1rem;
+}
+.viewer-nav-btn{
+  background:none;border:1px solid #2e2e2c;color:#888;
+  padding:.38rem 1.1rem;cursor:pointer;font-size:.75rem;
+  font-family:inherit;letter-spacing:.05em;flex-shrink:0;
+  transition:border-color .15s,color .15s;
+}
+.viewer-nav-btn:hover:not(:disabled){border-color:#c9a84c;color:#c9a84c}
+.viewer-nav-btn:disabled{opacity:.3;cursor:not-allowed}
+.viewer-nav-center{text-align:center;flex:1;min-width:0}
+.viewer-nav-title{
+  font-size:.88rem;font-weight:600;letter-spacing:.07em;
+  color:#e8e4d9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.viewer-nav-sub{font-size:.6rem;color:#555;letter-spacing:.1em;margin-top:.1rem}
+.viewer-nav-right{display:flex;align-items:center;gap:.65rem;flex-shrink:0}
+.viewer-nav-counter{font-size:.75rem;color:#666;letter-spacing:.04em}
+
+/* 3-col body */
+.viewer-body{
+  display:grid;
+  grid-template-columns:250px 1fr 340px;
+  min-height:480px;
+  border-bottom:1px solid #1e1e1c;
+}
+.viewer-col{
+  padding:1.5rem;
+  border-right:1px solid #1e1e1c;
+}
+.viewer-col:last-child{border-right:none}
+
+/* ─ Left col ─ */
+.v-section-label{
+  font-size:.58rem;color:#c9a84c;letter-spacing:.12em;
+  text-transform:uppercase;font-weight:600;margin-bottom:1.1rem;
+}
+.v-info-row{margin-bottom:.85rem}
+.v-info-label{
+  font-size:.58rem;color:#555;letter-spacing:.07em;
+  text-transform:uppercase;margin-bottom:.18rem;
+}
+.v-info-value{font-size:.82rem;color:#ccc}
+.v-info-value.gold{color:#c9a84c;font-weight:700;font-size:1.05rem}
+.v-info-value.frac .pass{color:#c9a84c;font-weight:700}
+.v-info-value.frac .total{color:#666}
+
+/* ─ Center col ─ */
+.viewer-center-col{
+  padding:1.25rem 1.5rem;
+  display:flex;flex-direction:column;align-items:center;
+}
+.viewer-img-frame{
+  position:relative;width:100%;max-width:320px;
+  background:#000;cursor:zoom-in;
+}
+.viewer-img-frame img{
+  width:100%;display:block;
+  aspect-ratio:3/4;object-fit:contain;
+}
+.viewer-img-badge{
+  position:absolute;top:.65rem;left:.65rem;
+  font-size:.6rem;color:rgba(255,255,255,.5);
+  background:rgba(0,0,0,.65);padding:.18rem .55rem;
+  letter-spacing:.04em;backdrop-filter:blur(4px);
+}
+.viewer-img-zoom-btn{
+  position:absolute;top:.65rem;right:.65rem;
+  background:rgba(0,0,0,.65);border:1px solid #333;
+  width:1.9rem;height:1.9rem;display:flex;
+  align-items:center;justify-content:center;
+  cursor:pointer;font-size:.95rem;color:#888;
+  backdrop-filter:blur(4px);transition:border-color .15s,color .15s;
+}
+.viewer-img-zoom-btn:hover{border-color:#c9a84c;color:#c9a84c}
+.viewer-img-meta{
+  display:flex;justify-content:space-between;
+  align-items:flex-start;width:100%;max-width:320px;
+  margin-top:.85rem;
+}
+.viewer-bia-label{font-size:.85rem;font-weight:600;color:#e8e4d9}
+.viewer-bia-sub{font-size:.68rem;color:#555;margin-top:.25rem}
+.viewer-bia-num{
+  background:#c9a84c;color:#0d0d0b;
+  font-size:.68rem;font-weight:700;padding:.2rem .55rem;
+  flex-shrink:0;margin-left:.75rem;margin-top:.05rem;
+}
+
+/* ─ Right col ─ */
+.viewer-laureate-list{margin-bottom:1.25rem}
+.viewer-laureate-item{
+  display:flex;align-items:flex-start;gap:.65rem;
+  padding:.55rem 0;border-bottom:1px solid #1a1a18;
+}
+.viewer-laureate-item:last-child{border-bottom:none}
+.v-l-num{font-size:.65rem;color:#555;min-width:1.1rem;padding-top:.12rem}
+.v-l-body{flex:1;min-width:0}
+.v-l-name{font-size:.84rem;font-weight:600;color:#e8e4d9;margin-bottom:.12rem}
+.v-l-meta{font-size:.68rem;color:#666;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v-l-rank{font-size:.68rem;font-weight:500;white-space:nowrap;flex-shrink:0}
+.v-l-rank.r1{color:#c9a84c}
+.v-l-rank.r2{color:#a0a0a0}
+.v-l-rank.r3{color:#c87941}
+.v-l-rank.rx{color:#777}
+.viewer-see-all{
+  font-size:.74rem;color:#c9a84c;cursor:pointer;
+  margin-bottom:1.4rem;display:inline-flex;align-items:center;gap:.3rem;
+}
+.viewer-see-all:hover{text-decoration:underline}
+.viewer-context-text{
+  font-size:.76rem;color:#888;line-height:1.7;
+  margin-bottom:1.5rem;
+  display:-webkit-box;-webkit-line-clamp:5;
+  -webkit-box-orient:vertical;overflow:hidden;
+}
+.viewer-actions{display:flex;gap:.65rem}
+.v-btn-primary{
+  background:#c9a84c;color:#0d0d0b;border:none;
+  padding:.58rem 1.1rem;cursor:pointer;font-size:.75rem;
+  font-weight:600;font-family:inherit;flex:1;
+  transition:background .15s;
+}
+.v-btn-primary:hover{background:#dbb85e}
+.v-btn-secondary{
+  background:transparent;color:#ccc;
+  border:1px solid #333;padding:.58rem 1.1rem;
+  cursor:pointer;font-size:.75rem;font-family:inherit;flex:1;
+  transition:border-color .15s,color .15s;
+}
+.v-btn-secondary:hover{border-color:#888;color:#e8e4d9}
+
+/* ── TIMELINE ── */
+.viewer-timeline{
+  background:#111110;padding:1rem 2rem 1.1rem;
+}
+.viewer-tl-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:.8rem;
+}
+.viewer-tl-year{font-size:1.05rem;font-weight:700;color:#c9a84c;min-width:3.5rem}
+.viewer-tl-hint{font-size:.65rem;color:#555;text-align:center}
+.viewer-tl-year-end{font-size:.75rem;color:#444;text-align:right;min-width:3.5rem}
+.viewer-tl-track-wrap{position:relative;padding:.5rem 0;cursor:pointer;user-select:none}
+.viewer-tl-track{
+  width:100%;height:2px;background:#2a2a28;
+  position:relative;border-radius:1px;
+}
+.viewer-tl-fill{
+  position:absolute;left:0;top:0;height:100%;
+  background:#c9a84c;border-radius:1px;pointer-events:none;
+  transition:width .12s;
+}
+.viewer-tl-dots{
+  position:absolute;top:50%;left:0;right:0;height:0;
+  pointer-events:none;
+}
+.viewer-tl-dot{
+  position:absolute;width:5px;height:5px;border-radius:50%;
+  background:#2e2e2c;transform:translate(-50%,-50%);
+  cursor:pointer;pointer-events:all;
+  transition:background .12s,transform .12s;
+}
+.viewer-tl-dot:hover{background:#666;transform:translate(-50%,-50%) scale(1.4)}
+.viewer-tl-dot.active{background:#c9a84c;width:9px;height:9px}
+.viewer-tl-thumb{
+  position:absolute;top:50%;
+  width:14px;height:14px;border-radius:50%;
+  background:#c9a84c;border:2px solid #0d0d0b;
+  transform:translate(-50%,-50%);
+  cursor:grab;z-index:2;
+  transition:left .1s;
+}
+.viewer-tl-thumb:active{cursor:grabbing}
+.viewer-tl-labels{
+  display:flex;justify-content:space-between;margin-top:.4rem;
+}
+.viewer-tl-label{font-size:.58rem;color:#444}
+
+/* ── LOADING ── */
+.viewer-loading{
+  display:flex;align-items:center;justify-content:center;
+  min-height:360px;color:#555;font-size:.85rem;letter-spacing:.04em;
+}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.88);
+  z-index:500;display:none;align-items:flex-start;
+  justify-content:center;padding:3rem 1.5rem;overflow-y:auto;
+}
+.modal-overlay.open{display:flex}
+.modal-box{
+  background:#141412;border:1px solid #2a2a28;
+  width:100%;max-width:760px;padding:2rem;
+  position:relative;
+}
+.modal-close{
+  position:absolute;top:.9rem;right:.9rem;
+  background:none;border:none;color:#666;font-size:1.1rem;
+  cursor:pointer;padding:.3rem .5rem;
+  transition:color .12s;
+}
+.modal-close:hover{color:#e8e4d9}
+.modal-title{
+  font-size:.95rem;font-weight:600;color:#e8e4d9;
+  margin-bottom:1.5rem;line-height:1.5;
+  padding-right:2rem;
+}
+.modal-section{margin-bottom:1.75rem}
+.modal-section-title{
+  font-size:.58rem;color:#c9a84c;letter-spacing:.12em;
+  text-transform:uppercase;font-weight:600;
+  margin-bottom:.75rem;padding-bottom:.4rem;
+  border-bottom:1px solid #2a2a28;
+}
+.modal-group{margin-bottom:1rem}
+.modal-group-title{
+  font-size:.72rem;color:#888;font-weight:600;
+  margin-bottom:.4rem;
+}
+.modal-row{
+  display:flex;justify-content:space-between;
+  align-items:baseline;gap:1rem;
+  padding:.3rem 0;border-bottom:1px solid #1a1a18;
+  font-size:.78rem;color:#ccc;
+}
+.modal-row .muted{font-size:.68rem;color:#555;text-align:right;max-width:60%}
+.modal-row.header{font-size:.65rem;color:#555;font-weight:600}
+.modal-content-text{
+  font-size:.78rem;color:#888;line-height:1.85;
+  white-space:pre-line;max-height:40vh;overflow-y:auto;
+  padding-right:.5rem;
+}
+.modal-content-text::-webkit-scrollbar{width:4px}
+.modal-content-text::-webkit-scrollbar-track{background:#1a1a18}
+.modal-content-text::-webkit-scrollbar-thumb{background:#333}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .viewer-body{grid-template-columns:1fr}
+  .viewer-col{border-right:none;border-bottom:1px solid #1e1e1c}
+  .viewer-col:last-child{border-bottom:none}
+  .viewer-center-col{align-items:stretch}
+  .viewer-img-frame,.viewer-img-meta{max-width:100%}
+  .viewer-nav-bar{flex-wrap:wrap;gap:.5rem}
+  .viewer-nav-center{order:-1;width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER (paths adjusted for 2-level deep) ── -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="../../index.html">
+      <span class="brand-mark">VM</span>
+      <span class="brand-text">
+        <span class="brand-name" data-i18n="ui.site_name">Văn Miếu – Quốc Tử Giám</span>
+        <span class="brand-sub" data-i18n="ui.site_sub">Di tích Quốc gia đặc biệt</span>
+      </span>
+    </a>
+    <nav class="main-nav">
+<div class="nav-item"><a href="../../tham-quan/index.html"><span data-i18n="label.A">Tham quan</span></a></div>
+<div class="nav-item has-menu active">
+  <a href="../../ve-di-tich/index.html"><span data-i18n="label.B">Về di tích</span></a>
+  <div class="dropdown mega"><div class="mega-col">
+      <div class="mega-col-title"><a href="../../ve-di-tich/lich-su/index.html"><span data-i18n="label.B1">Lịch sử</span></a></div>
+      <ul><li><a href="../../ve-di-tich/lich-su/thoi-ly/index.html"><span class="dropdown-num">B1.1</span><span data-i18n="label.B1.1">Thời Lý</span></a></li><li><a href="../../ve-di-tich/lich-su/thoi-tran/index.html"><span class="dropdown-num">B1.2</span><span data-i18n="label.B1.2">Thời Trần</span></a></li><li><a href="../../ve-di-tich/lich-su/thoi-le/index.html"><span class="dropdown-num">B1.3</span><span data-i18n="label.B1.3">Thời Lê</span></a></li><li><a href="../../ve-di-tich/lich-su/thoi-nguyen/index.html"><span class="dropdown-num">B1.4</span><span data-i18n="label.B1.4">Thời Nguyễn</span></a></li></ul>
+  </div><div class="mega-col">
+      <div class="mega-col-title"><a href="../../ve-di-tich/phan-khu/index.html"><span data-i18n="label.B2">Các phân khu</span></a></div>
+      <ul><li><a href="../../ve-di-tich/phan-khu/noi-tu/index.html"><span class="dropdown-num">B2.1</span>Nội tự</a></li><li><a href="../../ve-di-tich/phan-khu/vuon-giam/index.html"><span class="dropdown-num">B2.2</span>Vườn Giám</a></li><li><a href="../../ve-di-tich/phan-khu/ho-van/index.html"><span class="dropdown-num">B2.3</span>Hồ Văn</a></li></ul>
+  </div><div class="mega-col">
+      <div class="mega-col-title"><a href="../../ve-di-tich/kien-truc/index.html"><span data-i18n="label.B3">Công trình kiến trúc</span></a></div>
+      <ul><li><a href="../../ve-di-tich/kien-truc/nha-che-bia/index.html"><span class="dropdown-num">B3.5</span>Nhà che bia</a></li><li><a href="../../ve-di-tich/kien-truc/khue-van-cac/index.html"><span class="dropdown-num">B3.4</span>Khuê Văn Các</a></li></ul>
+  </div><div class="mega-col">
+      <div class="mega-col-title"><a href="../../ve-di-tich/danh-nhan/index.html"><span data-i18n="label.B4">Danh nhân</span></a></div>
+      <ul><li><a href="../../ve-di-tich/danh-nhan/vua-le-thanh-tong/index.html"><span class="dropdown-num">B4.3</span>Vua Lê Thánh Tông</a></li><li><a href="../../ve-di-tich/danh-nhan/chu-van-an/index.html"><span class="dropdown-num">B4.5</span>Chu Văn An</a></li></ul>
+  </div><div class="mega-col">
+      <div class="mega-col-title"><a href="../../ve-di-tich/bia-tien-si/index.html">82 Bia Tiến sĩ</a></div>
+      <ul><li><a href="../../ve-di-tich/bia-tien-si/index.html" style="color:#c9a84c">→ Khám phá 82 bia</a></li></ul>
+  </div><div class="mega-col">
+      <div class="mega-col-title"><a href="../../ve-di-tich/thu-vien/index.html"><span data-i18n="label.B6">Thư viện</span></a></div>
+      <ul><li><a href="../../ve-di-tich/thu-vien/thu-vien-anh/index.html"><span class="dropdown-num">B6.1</span>Thư viện ảnh</a></li><li><a href="../../ve-di-tich/thu-vien/video/index.html"><span class="dropdown-num">B6.2</span>Video</a></li></ul>
+  </div></div>
+</div>
+<div class="nav-item has-menu">
+  <a href="../../trung-bay-trien-lam/index.html"><span data-i18n="label.C">Trưng bày, triển lãm</span></a>
+  <div class="dropdown simple"><a href="../../trung-bay-trien-lam/co-dinh/index.html"><span class="dropdown-num">C1</span>Trưng bày cố định</a><a href="../../trung-bay-trien-lam/chuyen-de/index.html"><span class="dropdown-num">C2</span>Trưng bày chuyên đề</a><a href="../../trung-bay-trien-lam/trien-lam/index.html"><span class="dropdown-num">C3</span>Triển lãm</a></div>
+</div>
+<div class="nav-item has-menu">
+  <a href="../../cac-hoat-dong/index.html"><span data-i18n="label.D">Các hoạt động</span></a>
+  <div class="dropdown simple"><a href="../../cac-hoat-dong/su-kien/index.html"><span class="dropdown-num">D1</span>Sự kiện</a><a href="../../cac-hoat-dong/giao-duc-di-san/index.html"><span class="dropdown-num">D2</span>Giáo dục di sản</a><a href="../../cac-hoat-dong/trai-nghiem/index.html"><span class="dropdown-num">D3</span>Trải nghiệm</a></div>
+</div>
+<div class="nav-item has-menu">
+  <a href="../../dich-vu/index.html"><span data-i18n="label.E">Dịch vụ</span></a>
+  <div class="dropdown simple"><a href="../../dich-vu/tour-dem/index.html"><span class="dropdown-num">E1</span>Tour đêm</a><a href="../../dich-vu/audio-guide/index.html"><span class="dropdown-num">E2</span>Audio guide</a><a href="../../dich-vu/thu-phap/index.html"><span class="dropdown-num">E5</span>Thư pháp</a></div>
+</div>
+    </nav>
+    <div class="header-tools">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" class="lang-btn" data-lang="vi">VI</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <a href="../../tham-quan/index.html#mua-ve" class="nav-cta">Mua vé</a>
+    </div>
+  </div>
+</header>
+
+<nav class="breadcrumb">
+  <div class="container">
+    <a href="../../index.html">Trang chủ</a>
+    <span class="sep">/</span>
+    <a href="../../ve-di-tich/index.html">Về di tích</a>
+    <span class="sep">/</span>
+    <span>82 Bia Tiến sĩ</span>
+  </div>
+</nav>
+
+<!-- ── VIEWER ── -->
+<div class="viewer-wrap">
+
+  <div class="viewer-loading" id="viewer-loading">Đang tải dữ liệu…</div>
+
+  <div id="viewer-content" style="display:none">
+
+    <!-- Dynasty strip -->
+    <div class="viewer-dynasty">
+      <div class="viewer-dynasty-badge" id="v-dynasty-badge">BIA SỐ 01 / 82</div>
+      <div class="viewer-dynasty-name" id="v-dynasty-name">—</div>
+    </div>
+
+    <!-- Nav bar -->
+    <div class="viewer-nav-bar">
+      <button class="viewer-nav-btn" id="btn-prev" disabled>← Trước</button>
+      <div class="viewer-nav-center">
+        <div class="viewer-nav-title" id="v-nav-title">KHOA THI HỘI</div>
+        <div class="viewer-nav-sub">VĂN MIẾU – QUỐC TỬ GIÁM · DI SẢN TƯ LIỆU UNESCO</div>
+      </div>
+      <div class="viewer-nav-right">
+        <span class="viewer-nav-counter" id="v-counter">01 / 82</span>
+        <button class="viewer-nav-btn" id="btn-next">Tiếp →</button>
+      </div>
+    </div>
+
+    <!-- 3-col body -->
+    <div class="viewer-body">
+
+      <!-- Left: info panel -->
+      <div class="viewer-col">
+        <div class="v-section-label">Thông tin khoa thi</div>
+
+        <div class="v-info-row">
+          <div class="v-info-label">Ký thi</div>
+          <div class="v-info-value" id="v-exam-type">Thi Hội</div>
+        </div>
+        <div class="v-info-row">
+          <div class="v-info-label">Năm</div>
+          <div class="v-info-value gold" id="v-year">1442</div>
+        </div>
+        <div class="v-info-row">
+          <div class="v-info-label">Triều đại</div>
+          <div class="v-info-value" id="v-dynasty">Lê sơ</div>
+        </div>
+        <div class="v-info-row">
+          <div class="v-info-label">Địa điểm</div>
+          <div class="v-info-value">Kinh thành Thăng Long</div>
+        </div>
+        <div class="v-info-row">
+          <div class="v-info-label">Số đỗ / Dự thi</div>
+          <div class="v-info-value frac">
+            <span class="pass" id="v-passed">33</span>
+            <span class="total"> / <span id="v-candidates">450</span></span>
+          </div>
+        </div>
+        <div class="v-info-row">
+          <div class="v-info-label">Năm dựng bia</div>
+          <div class="v-info-value" id="v-erection">1484</div>
+        </div>
+
+        <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #1e1e1c">
+          <div class="v-section-label">Người soạn &amp; khắc</div>
+          <div class="v-info-row">
+            <div class="v-info-label">Soạn bài ký</div>
+            <div class="v-info-value" id="v-author" style="font-size:.75rem">—</div>
+          </div>
+          <div class="v-info-row">
+            <div class="v-info-label">Khắc chữ</div>
+            <div class="v-info-value" id="v-engraver" style="font-size:.75rem">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: image -->
+      <div class="viewer-col viewer-center-col">
+        <div class="viewer-img-frame" id="v-img-frame">
+          <img src="../../assets/images/bia-ru.png" alt="Bia đá Tiến sĩ" id="v-img">
+          <div class="viewer-img-badge">📷 Placeholder</div>
+          <button class="viewer-img-zoom-btn" id="btn-zoom" title="Phóng to">⊕</button>
+        </div>
+        <div class="viewer-img-meta">
+          <div>
+            <div class="viewer-bia-label" id="v-bia-label">Bia đá số 01 / 82</div>
+            <div class="viewer-bia-sub" id="v-bia-sub">Khắc năm 1484 · Dựng tại Văn Miếu</div>
+          </div>
+          <div class="viewer-bia-num" id="v-bia-num">01</div>
+        </div>
+      </div>
+
+      <!-- Right: laureates + context -->
+      <div class="viewer-col">
+        <div class="v-section-label">Danh sách Tiến sĩ tiêu biểu</div>
+        <div class="viewer-laureate-list" id="v-laureate-list"></div>
+        <div class="viewer-see-all" id="v-see-all">
+          → Xem đầy đủ <span id="v-total-count">33</span> vị Tiến Sĩ
+        </div>
+
+        <div class="v-section-label">Bối cảnh lịch sử</div>
+        <div class="viewer-context-text" id="v-context">—</div>
+
+        <div class="viewer-actions">
+          <button class="v-btn-primary" id="btn-detail">Xem Chi Tiết Bia</button>
+          <button class="v-btn-secondary" id="btn-share">Chia Sẻ</button>
+        </div>
+      </div>
+
+    </div><!-- .viewer-body -->
+
+    <!-- Timeline -->
+    <div class="viewer-timeline">
+      <div class="viewer-tl-header">
+        <div class="viewer-tl-year" id="v-tl-year">1442</div>
+        <div class="viewer-tl-hint">Kéo để khám phá 82 kỳ thi qua các triều đại</div>
+        <div class="viewer-tl-year-end">1779</div>
+      </div>
+      <div class="viewer-tl-track-wrap" id="tl-wrap">
+        <div class="viewer-tl-track" id="tl-track">
+          <div class="viewer-tl-fill" id="tl-fill" style="width:0%"></div>
+          <div class="viewer-tl-dots" id="tl-dots"></div>
+          <div class="viewer-tl-thumb" id="tl-thumb" style="left:0%"></div>
+        </div>
+      </div>
+      <div class="viewer-tl-labels">
+        <span class="viewer-tl-label">1442</span>
+        <span class="viewer-tl-label">1484</span>
+        <span class="viewer-tl-label">1529</span>
+        <span class="viewer-tl-label">1580</span>
+        <span class="viewer-tl-label">1628</span>
+        <span class="viewer-tl-label">1676</span>
+        <span class="viewer-tl-label">1724</span>
+        <span class="viewer-tl-label">1779</span>
+      </div>
+    </div>
+
+  </div><!-- #viewer-content -->
+</div><!-- .viewer-wrap -->
+
+<!-- ── MODAL: full detail ── -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <button class="modal-close" id="modal-close" aria-label="Đóng">✕</button>
+    <div class="modal-title" id="modal-title">—</div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Danh sách Tiến sĩ đầy đủ</div>
+      <div id="modal-laureates"></div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Người soạn thảo &amp; khắc bia</div>
+      <div id="modal-contributors"></div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Nội dung văn bia (nguyên văn)</div>
+      <div class="modal-content-text" id="modal-content">—</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <p class="footer-brand">Văn Miếu – Quốc Tử Giám</p>
+        <p class="footer-address">
+          58 Phố Quốc Tử Giám, Phường Văn Miếu<br>
+          Quận Đống Đa, Hà Nội<br>
+          Điện thoại: 024.3747.1322<br>
+          Email: vanmieuqtg@hanoi.gov.vn
+        </p>
+      </div>
+      <div><p class="footer-col-title">Tham quan</p><ul class="footer-links"><li><a href="../../tham-quan/index.html">Tham quan</a></li></ul></div>
+      <div><p class="footer-col-title">Về di tích</p><ul class="footer-links"><li><a href="../../ve-di-tich/lich-su/index.html">Lịch sử</a></li><li><a href="../../ve-di-tich/kien-truc/index.html">Kiến trúc</a></li><li><a href="../../ve-di-tich/bia-tien-si/index.html">82 Bia Tiến sĩ</a></li><li><a href="../../ve-di-tich/danh-nhan/index.html">Danh nhân</a></li></ul></div>
+      <div><p class="footer-col-title">Trưng bày</p><ul class="footer-links"><li><a href="../../trung-bay-trien-lam/co-dinh/index.html">Trưng bày cố định</a></li><li><a href="../../trung-bay-trien-lam/trien-lam/index.html">Triển lãm</a></li></ul></div>
+      <div><p class="footer-col-title">Dịch vụ</p><ul class="footer-links"><li><a href="../../dich-vu/tour-dem/index.html">Tour đêm Văn Miếu</a></li><li><a href="../../dich-vu/audio-guide/index.html">Audio guide</a></li></ul></div>
+    </div>
+    <p class="footer-copy">© Trung tâm Hoạt động Văn hóa Khoa học Văn Miếu – Quốc Tử Giám</p>
+  </div>
+</footer>
+
+<script src="../../assets/js/data.js"></script>
+<script src="../../assets/js/app.js"></script>
+<script>
+(function(){
+'use strict';
+
+const DATA_URL = '../../docs/82-van-bia-tien-si.json';
+const MIN_YR = 1442, MAX_YR = 1779;
+
+let data = [];
+let cur = 0;
+let dragging = false;
+
+/* ── helpers ── */
+function pct(year){
+  return ((parseInt(year) - MIN_YR) / (MAX_YR - MIN_YR) * 100).toFixed(3);
+}
+
+function examName(title){
+  const m = title.match(/khoa\s+([\S]+(?:\s+[\S]+)?)\s+niên hiệu/i);
+  return m ? m[1].trim() : '';
+}
+
+function shortRank(rank){
+  if(!rank) return '';
+  const m = rank.match(/\(([^)]+)\)/);
+  if(m) return m[1];
+  if(rank.includes('nhất giáp')) return 'Nhất giáp';
+  if(rank.includes('nhị giáp'))  return 'Nhị giáp';
+  if(rank.includes('tam giáp'))  return 'Tam giáp';
+  return rank;
+}
+
+function rankClass(rank){
+  const sr = shortRank(rank);
+  if(sr === 'Trạng nguyên')                    return 'r1';
+  if(sr === 'Bảng nhãn')                       return 'r2';
+  if(sr === 'Thám hoa lang' || sr==='Thám hoa') return 'r3';
+  if(rank.includes('nhất giáp'))               return 'r1';
+  if(rank.includes('nhị giáp'))                return 'r2';
+  if(rank.includes('tam giáp'))                return 'r3';
+  return 'rx';
+}
+
+function pad2(n){ return String(n).padStart(2,'0'); }
+
+/* ── render one record ── */
+function render(idx){
+  cur = idx;
+  const r = data[idx];
+  const en = examName(r.title);
+
+  /* dynasty strip */
+  document.getElementById('v-dynasty-badge').textContent =
+    'BIA SỐ ' + pad2(idx+1) + ' / 82  ·  ' + r.dynasty.toUpperCase();
+  document.getElementById('v-dynasty-name').textContent =
+    r.title.length > 90 ? r.title.slice(0,90) + '…' : r.title;
+
+  /* nav bar */
+  document.getElementById('v-nav-title').textContent =
+    en ? 'KHOA THI HỘI · NĂM ' + en.toUpperCase() + ' ' + r.year
+       : 'KHOA THI HỘI · NĂM ' + r.year;
+  document.getElementById('v-counter').textContent = pad2(idx+1) + ' / 82';
+
+  /* info panel */
+  document.getElementById('v-year').textContent       = r.year;
+  document.getElementById('v-dynasty').textContent    = r.dynasty;
+  document.getElementById('v-passed').textContent     = r.passed_count;
+  document.getElementById('v-candidates').textContent = r.candidates_count;
+  document.getElementById('v-erection').textContent   = r.erection_year || '—';
+  document.getElementById('v-author').textContent   = (r.contributors && r.contributors.author)   || '—';
+  document.getElementById('v-engraver').textContent = (r.contributors && r.contributors.engraver) || '—';
+
+  /* bia meta */
+  document.getElementById('v-bia-label').textContent = 'Bia đá số ' + pad2(idx+1) + ' / 82';
+  document.getElementById('v-bia-sub').textContent   =
+    'Khắc năm ' + (r.erection_year || '?') + ' · Dựng tại Văn Miếu';
+  document.getElementById('v-bia-num').textContent   = pad2(idx+1);
+
+  /* laureates (top 3) */
+  const top = r.laureates ? r.laureates.slice(0,3) : [];
+  document.getElementById('v-laureate-list').innerHTML = top.map((l,i) => {
+    const sr = shortRank(l.rank);
+    const rc = rankClass(l.rank);
+    const loc = l.hometown ? l.hometown.replace(/^huyện\s+/,'').split(',')[0] : '';
+    return '<div class="viewer-laureate-item">'
+      + '<div class="v-l-num">' + pad2(i+1) + '</div>'
+      + '<div class="v-l-body">'
+      + '<div class="v-l-name">' + l.name + '</div>'
+      + '<div class="v-l-meta">' + loc + '</div>'
+      + '</div>'
+      + '<div class="v-l-rank ' + rc + '">' + sr + '</div>'
+      + '</div>';
+  }).join('');
+  document.getElementById('v-total-count').textContent = r.total_laureates || (r.laureates && r.laureates.length) || 0;
+
+  /* context */
+  const ctx = (r.historical_notes && r.historical_notes[0])
+    || (r.content ? r.content.slice(0,300) + '…' : '—');
+  document.getElementById('v-context').textContent = ctx;
+
+  /* timeline thumb + fill */
+  const p = pct(r.year);
+  document.getElementById('tl-fill').style.width  = p + '%';
+  document.getElementById('tl-thumb').style.left  = p + '%';
+  document.getElementById('v-tl-year').textContent = r.year;
+
+  /* active dot */
+  document.querySelectorAll('.viewer-tl-dot').forEach((d,i) => {
+    d.classList.toggle('active', i === idx);
+  });
+
+  /* nav buttons */
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').disabled = idx === data.length - 1;
+}
+
+/* ── timeline ── */
+function buildTimeline(){
+  const dotsEl = document.getElementById('tl-dots');
+  dotsEl.innerHTML = data.map((r,i) =>
+    '<div class="viewer-tl-dot" style="left:' + pct(r.year) + '%" '
+    + 'data-i="' + i + '" title="' + r.year + '"></div>'
+  ).join('');
+  dotsEl.querySelectorAll('.viewer-tl-dot').forEach(d => {
+    d.addEventListener('click', () => render(parseInt(d.dataset.i)));
+  });
+
+  function moveToRatio(ratio){
+    const yr = MIN_YR + ratio * (MAX_YR - MIN_YR);
+    let best = 0, bestDist = Infinity;
+    data.forEach((r,i) => {
+      const d = Math.abs(parseInt(r.year) - yr);
+      if(d < bestDist){ bestDist = d; best = i; }
+    });
+    render(best);
+  }
+
+  function ratioFromEvent(clientX){
+    const rect = document.getElementById('tl-track').getBoundingClientRect();
+    return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+  }
+
+  const track = document.getElementById('tl-track');
+  track.addEventListener('click', e => {
+    if(!dragging) moveToRatio(ratioFromEvent(e.clientX));
+  });
+
+  const thumb = document.getElementById('tl-thumb');
+  thumb.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
+  document.addEventListener('mousemove', e => { if(dragging) moveToRatio(ratioFromEvent(e.clientX)); });
+  document.addEventListener('mouseup',  () => { dragging = false; });
+
+  thumb.addEventListener('touchstart', () => { dragging = true; }, {passive:true});
+  document.addEventListener('touchmove', e => {
+    if(dragging) moveToRatio(ratioFromEvent(e.touches[0].clientX));
+  }, {passive:true});
+  document.addEventListener('touchend', () => { dragging = false; });
+}
+
+/* ── modal ── */
+function openModal(){
+  const r = data[cur];
+  document.getElementById('modal-title').textContent = r.title;
+
+  /* group laureates */
+  const groups = {};
+  const groupOrder = ['nhất giáp','nhị giáp','tam giáp'];
+  const groupLabels = {
+    'nhất giáp': 'Đệ nhất giáp Tiến sĩ cập đệ',
+    'nhị giáp':  'Đệ nhị giáp Tiến sĩ xuất thân',
+    'tam giáp':  'Đệ tam giáp đồng Tiến sĩ xuất thân',
+    'other':     'Khác'
+  };
+  (r.laureates || []).forEach(l => {
+    let key = 'other';
+    if(l.rank.includes('nhất giáp')) key = 'nhất giáp';
+    else if(l.rank.includes('nhị giáp'))  key = 'nhị giáp';
+    else if(l.rank.includes('tam giáp'))  key = 'tam giáp';
+    if(!groups[key]) groups[key] = [];
+    groups[key].push(l);
+  });
+
+  const allKeys = [...groupOrder.filter(k => groups[k]), ...(groups['other'] ? ['other'] : [])];
+  document.getElementById('modal-laureates').innerHTML = allKeys.map(k => {
+    const list = groups[k];
+    return '<div class="modal-group">'
+      + '<div class="modal-group-title">' + (groupLabels[k] || k) + ' (' + list.length + ' người)</div>'
+      + list.map(l =>
+          '<div class="modal-row">'
+          + '<span>' + l.name + '</span>'
+          + '<span class="muted">' + (l.hometown || '') + '</span>'
+          + '</div>'
+        ).join('')
+      + '</div>';
+  }).join('');
+
+  /* contributors */
+  const c = r.contributors || {};
+  document.getElementById('modal-contributors').innerHTML =
+    ['author:Soạn bài ký','calligrapher:Viết chữ','editor:Biên soạn','engraver:Khắc chữ'].map(s => {
+      const [key, label] = s.split(':');
+      return '<div class="modal-row"><span>' + label + '</span><span class="muted">' + (c[key] || '—') + '</span></div>';
+    }).join('');
+
+  /* content */
+  document.getElementById('modal-content').textContent = r.content || '(Không có nội dung)';
+
+  document.getElementById('modal').classList.add('open');
+}
+
+/* ── init ── */
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('btn-prev').addEventListener('click', () => { if(cur>0) render(cur-1); });
+  document.getElementById('btn-next').addEventListener('click', () => { if(cur<data.length-1) render(cur+1); });
+
+  document.getElementById('btn-detail').addEventListener('click', openModal);
+  document.getElementById('v-see-all').addEventListener('click', openModal);
+
+  document.getElementById('modal-close').addEventListener('click', () => {
+    document.getElementById('modal').classList.remove('open');
+  });
+  document.getElementById('modal').addEventListener('click', e => {
+    if(e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+  });
+
+  document.getElementById('btn-share').addEventListener('click', () => {
+    const r = data[cur];
+    const url = window.location.href.split('?')[0] + '?bia=' + (cur+1);
+    if(navigator.share){
+      navigator.share({ title: r.title, url });
+    } else if(navigator.clipboard){
+      navigator.clipboard.writeText(url).then(() => alert('Đã sao chép liên kết!'));
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if(document.getElementById('modal').classList.contains('open')){
+      if(e.key === 'Escape') document.getElementById('modal').classList.remove('open');
+      return;
+    }
+    if(e.key === 'ArrowLeft'  && cur > 0)             render(cur-1);
+    if(e.key === 'ArrowRight' && cur < data.length-1) render(cur+1);
+  });
+
+  /* check URL param for deep-link */
+  const urlBia = parseInt(new URLSearchParams(window.location.search).get('bia'));
+
+  fetch(DATA_URL)
+    .then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(d => {
+      data = d;
+      document.getElementById('viewer-loading').style.display  = 'none';
+      document.getElementById('viewer-content').style.display  = 'block';
+      buildTimeline();
+      const startIdx = (urlBia >= 1 && urlBia <= data.length) ? urlBia - 1 : 0;
+      render(startIdx);
+    })
+    .catch(err => {
+      document.getElementById('viewer-loading').textContent =
+        'Không thể tải dữ liệu. Vui lòng mở trang qua một web server cục bộ. (' + err.message + ')';
+    });
+});
+
+})();
+</script>
+</body>
+</html>

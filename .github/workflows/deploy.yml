@@ -27,6 +27,7 @@ jobs:
           mkdir -p _deploy
           cp -r site/. _deploy/
           cp -r vmqtg-new-site _deploy/vmqtg-new-site
+          cp -r vmqtg-v5 _deploy/vmqtg-v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _deploy

@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireframe – Cổng thông tin số Văn Miếu – Quốc Tử Giám</title>
+<style>
+  :root {
+    --crimson: #8B1A1A;
+    --crimson-light: #A52A2A;
+    --gold: #C9A227;
+    --gold-light: #E8C547;
+    --cream: #FAF8F3;
+    --dark: #1C1410;
+    --stone: #6B5E4E;
+    --border: #E0D5C5;
+    --muted: #F5F0E8;
+    --green: #2D5A27;
+    --blue: #1E4FA3;
+    --wire-gray: #E8E8E8;
+    --wire-mid: #BDBDBD;
+    --wire-dark: #757575;
+    --wire-text: #424242;
+    --annotation: #1565C0;
+    --persona-tourist: #D4380D;
+    --persona-program: #389E0D;
+    --persona-research: #1D39C4;
+    --persona-partner: #7B3FC4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Be Vietnam Pro', system-ui, sans-serif; background: #F0EDE8; color: var(--dark); }
+
+  /* ── Tab Nav ── */
+  .tab-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: var(--dark); display: flex; align-items: center; gap: 2px;
+    padding: 0 16px; height: 52px; overflow-x: auto;
+  }
+  .tab-bar-title { color: var(--gold); font-size: 13px; font-weight: 700; white-space: nowrap; margin-right: 16px; letter-spacing: .5px; }
+  .tab { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; color: #AAA; cursor: pointer; white-space: nowrap; border: none; background: none; transition: all .15s; }
+  .tab:hover { background: #2A2A2A; color: #DDD; }
+  .tab.active { background: var(--crimson); color: #FFF; }
+
+  /* ── Screen Wrapper ── */
+  .screens { padding-top: 52px; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── Annotations ── */
+  .note {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #E3F2FD; border: 1px solid #90CAF9; border-radius: 4px;
+    font-size: 11px; color: var(--annotation); padding: 3px 8px; font-style: italic;
+  }
+  .badge-persona {
+    display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; color: #FFF; letter-spacing: .3px;
+  }
+  .badge-tourist   { background: var(--persona-tourist); }
+  .badge-program   { background: var(--persona-program); }
+  .badge-research  { background: var(--persona-research); }
+  .badge-partner   { background: var(--persona-partner); }
+
+  /* ── Wireframe common ── */
+  .img-placeholder {
+    background: var(--wire-gray); border: 1px dashed var(--wire-mid);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--wire-dark); font-size: 12px; font-weight: 500; text-align: center; line-height: 1.4;
+  }
+  .wire-box {
+    background: #FFF; border: 1.5px solid var(--border); border-radius: 6px;
+  }
+  .section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--stone); margin-bottom: 10px;
+  }
+  .screen-title {
+    background: var(--dark); color: var(--gold); padding: 10px 20px;
+    font-size: 13px; font-weight: 700; letter-spacing: .5px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .screen-title .sub { color: #888; font-size: 11px; font-weight: 400; }
+  .annotation-bar {
+    background: #E8F5E9; border-bottom: 1px solid #A5D6A7;
+    padding: 8px 20px; font-size: 12px; color: #2E7D32;
+    display: flex; gap: 16px; flex-wrap: wrap;
+  }
+  .annotation-bar b { font-weight: 700; }
+
+  /* ───────────────────────────────
+     SCREEN 1 – HOMEPAGE DESKTOP
+  ─────────────────────────────── */
+  .nav-wire {
+    background: var(--crimson); height: 60px; display: flex; align-items: center;
+    padding: 0 32px; gap: 0; border-bottom: 3px solid var(--gold);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; margin-right: 40px; }
+  .nav-logo-icon { width: 40px; height: 40px; background: var(--gold); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--dark); font-weight: 700; text-align: center; line-height: 1.2; }
+  .nav-logo-text { color: #FFF; font-size: 14px; font-weight: 700; line-height: 1.3; }
+  .nav-links { display: flex; gap: 2px; flex: 1; }
+  .nav-link { padding: 8px 16px; color: rgba(255,255,255,.85); font-size: 13px; font-weight: 500; border-radius: 4px; cursor: pointer; }
+  .nav-link:hover, .nav-link.active { background: rgba(255,255,255,.15); color: #FFF; }
+  .nav-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+  .lang-btn { padding: 5px 10px; border: 1px solid rgba(255,255,255,.4); border-radius: 4px; color: #FFF; font-size: 12px; cursor: pointer; }
+  .buy-btn { background: var(--gold); color: var(--dark); padding: 8px 18px; border-radius: 4px; font-size: 13px; font-weight: 700; cursor: pointer; }
+
+  .hero-wire { position: relative; height: 540px; overflow: hidden; }
+  .hero-img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.2) 0%, rgba(28,20,16,.75) 100%); }
+  .hero-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 32px; }
+  .hero-eyebrow { color: var(--gold); font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .hero-h1 { color: #FFF; font-size: 40px; font-weight: 800; line-height: 1.15; margin-bottom: 8px; }
+  .hero-sub { color: rgba(255,255,255,.8); font-size: 15px; margin-bottom: 28px; }
+
+  /* Persona Cards */
+  .persona-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .persona-card {
+    background: rgba(255,255,255,.12); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,.25); border-radius: 10px;
+    padding: 16px; cursor: pointer; transition: all .2s; display: flex; flex-direction: column; gap: 8px;
+  }
+  .persona-card:hover { background: rgba(255,255,255,.22); transform: translateY(-2px); }
+  .persona-card.tourist  { border-top: 3px solid var(--persona-tourist); }
+  .persona-card.program  { border-top: 3px solid var(--persona-program); }
+  .persona-card.research { border-top: 3px solid var(--persona-research); }
+  .persona-card.partner  { border-top: 3px solid var(--persona-partner); }
+  .persona-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .persona-card.tourist  .persona-icon { background: rgba(212,56,13,.3); }
+  .persona-card.program  .persona-icon { background: rgba(56,158,13,.3); }
+  .persona-card.research .persona-icon { background: rgba(29,57,196,.3); }
+  .persona-card.partner  .persona-icon { background: rgba(123,63,196,.3); }
+  .persona-label { color: #FFF; font-size: 13px; font-weight: 700; }
+  .persona-desc { color: rgba(255,255,255,.7); font-size: 11px; line-height: 1.4; }
+  .persona-cta { color: var(--gold); font-size: 11px; font-weight: 600; margin-top: auto; }
+
+  /* Stats */
+  .stats-bar { background: var(--dark); display: flex; justify-content: center; gap: 0; }
+  .stat-item { flex: 1; max-width: 200px; padding: 20px; text-align: center; border-right: 1px solid rgba(255,255,255,.1); }
+  .stat-item:last-child { border-right: none; }
+  .stat-num { color: var(--gold); font-size: 28px; font-weight: 800; display: block; }
+  .stat-lbl { color: rgba(255,255,255,.6); font-size: 11px; margin-top: 2px; display: block; }
+
+  /* Content sections */
+  .content-section { padding: 48px 32px; }
+  .content-section.alt { background: var(--cream); }
+  .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
+  .section-h2 { font-size: 26px; font-weight: 800; color: var(--dark); }
+  .section-h2 span { color: var(--crimson); }
+  .see-all { color: var(--crimson); font-size: 13px; font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+  .card-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .card-grid-2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; }
+  .content-card { border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: #FFF; }
+  .card-img { height: 160px; }
+  .card-body { padding: 14px; }
+  .card-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--crimson); margin-bottom: 6px; }
+  .card-title { font-size: 15px; font-weight: 700; color: var(--dark); line-height: 1.3; margin-bottom: 6px; }
+  .card-meta { font-size: 11px; color: var(--stone); }
+
+  .event-list { display: flex; flex-direction: column; gap: 10px; }
+  .event-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px; background: var(--muted); border-radius: 8px; }
+  .event-date { min-width: 44px; text-align: center; background: var(--crimson); border-radius: 6px; padding: 6px 4px; }
+  .event-date .day { color: #FFF; font-size: 18px; font-weight: 800; display: block; }
+  .event-date .mon { color: var(--gold); font-size: 10px; font-weight: 700; display: block; }
+  .event-info .ev-title { font-size: 13px; font-weight: 700; color: var(--dark); }
+  .event-info .ev-meta { font-size: 11px; color: var(--stone); margin-top: 3px; }
+
+  /* Ticket CTA Banner */
+  .ticket-banner {
+    background: linear-gradient(135deg, var(--crimson) 0%, #5C1010 100%);
+    padding: 40px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  }
+  .ticket-banner h2 { color: #FFF; font-size: 24px; font-weight: 800; }
+  .ticket-banner p { color: rgba(255,255,255,.75); font-size: 14px; margin-top: 6px; }
+  .ticket-banner-cta { background: var(--gold); color: var(--dark); padding: 14px 28px; border-radius: 8px; font-size: 15px; font-weight: 800; white-space: nowrap; cursor: pointer; }
+
+  /* Footer */
+  .footer-wire { background: #111; padding: 40px 32px 20px; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; margin-bottom: 32px; }
+  .footer-col h4 { color: var(--gold); font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+  .footer-col p, .footer-col a { color: #888; font-size: 12px; display: block; line-height: 2; cursor: pointer; }
+  .footer-col a:hover { color: #CCC; }
+  .footer-bottom { border-top: 1px solid #2A2A2A; padding-top: 16px; display: flex; justify-content: space-between; font-size: 11px; color: #555; }
+
+  /* ───────────────────────────────
+     SCREEN 2 – HOMEPAGE MOBILE
+  ─────────────────────────────── */
+  .mobile-frame { max-width: 390px; margin: 24px auto; background: #FFF; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,.25); border: 2px solid #333; }
+  .mobile-status { height: 44px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+  .mobile-status span { color: #FFF; font-size: 12px; font-weight: 700; }
+  .mobile-nav { background: var(--crimson); height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 2px solid var(--gold); }
+  .mobile-logo { color: #FFF; font-size: 13px; font-weight: 800; }
+  .hamburger { display: flex; flex-direction: column; gap: 4px; cursor: pointer; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: #FFF; border-radius: 2px; }
+  .mobile-hero { height: 260px; position: relative; }
+  .mobile-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.1), rgba(28,20,16,.8)); }
+  .mobile-hero-content { position: absolute; bottom: 16px; left: 16px; right: 16px; }
+  .mobile-h1 { color: #FFF; font-size: 22px; font-weight: 800; line-height: 1.2; margin-bottom: 4px; }
+  .mobile-sub { color: rgba(255,255,255,.8); font-size: 12px; }
+  .mobile-persona-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px; background: var(--cream); }
+  .mobile-persona-card { background: #FFF; border-radius: 8px; padding: 12px; border: 1px solid var(--border); }
+  .mobile-persona-card.tourist  { border-top: 3px solid var(--persona-tourist); }
+  .mobile-persona-card.program  { border-top: 3px solid var(--persona-program); }
+  .mobile-persona-card.research { border-top: 3px solid var(--persona-research); }
+  .mobile-persona-card.partner  { border-top: 3px solid var(--persona-partner); }
+  .mp-icon { font-size: 20px; margin-bottom: 6px; display: block; }
+  .mp-label { font-size: 12px; font-weight: 700; color: var(--dark); }
+  .mp-cta { font-size: 10px; color: var(--crimson); font-weight: 600; margin-top: 4px; }
+  .mobile-section { padding: 16px; }
+  .mobile-section h3 { font-size: 16px; font-weight: 800; color: var(--dark); margin-bottom: 12px; }
+  .mobile-card { border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: #FFF; margin-bottom: 10px; display: flex; }
+  .mobile-card-img { width: 90px; min-width: 90px; }
+  .mobile-card-body { padding: 10px; flex: 1; }
+  .mobile-card-body .card-tag { font-size: 9px; }
+  .mobile-card-body .card-title { font-size: 13px; }
+  .mobile-bottom-bar { position: sticky; bottom: 0; background: #FFF; border-top: 1px solid var(--border); display: flex; padding: 8px 0 4px; }
+  .mobile-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; }
+  .mobile-tab span.icon { font-size: 20px; }
+  .mobile-tab span.lbl { font-size: 9px; color: var(--stone); font-weight: 500; }
+  .mobile-tab.active span.lbl { color: var(--crimson); }
+  .mobile-tab.active span.icon { filter: hue-rotate(0deg); }
+  .mobile-buy-bar { background: var(--crimson); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .mobile-buy-bar p { color: rgba(255,255,255,.85); font-size: 11px; }
+  .mobile-buy-bar p b { color: #FFF; font-weight: 800; display: block; font-size: 13px; }
+  .mobile-buy-btn { background: var(--gold); color: var(--dark); padding: 10px 18px; border-radius: 6px; font-size: 13px; font-weight: 800; cursor: pointer; }
+
+  /* ───────────────────────────────
+     SCREEN 3 – TICKET FLOW
+  ─────────────────────────────── */
+  .ticket-layout { display: grid; grid-template-columns: 1fr 360px; gap: 24px; padding: 32px; max-width: 1100px; margin: 0 auto; }
+  .ticket-main { }
+  .ticket-sidebar { }
+  .ticket-step-bar { display: flex; align-items: center; margin-bottom: 32px; }
+  .t-step { display: flex; align-items: center; gap: 8px; }
+  .t-step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
+  .t-step.done .t-step-num { background: var(--green); color: #FFF; }
+  .t-step.active .t-step-num { background: var(--crimson); color: #FFF; }
+  .t-step.pending .t-step-num { background: var(--wire-gray); color: var(--wire-dark); }
+  .t-step-lbl { font-size: 12px; font-weight: 600; color: var(--dark); }
+  .t-step.pending .t-step-lbl { color: var(--stone); }
+  .t-divider { flex: 1; height: 2px; background: var(--wire-gray); margin: 0 8px; }
+  .t-divider.done { background: var(--green); }
+
+  .ticket-card { background: #FFF; border-radius: 10px; border: 1px solid var(--border); padding: 24px; margin-bottom: 20px; }
+  .ticket-card h3 { font-size: 16px; font-weight: 700; color: var(--dark); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .cal-nav { width: 28px; height: 28px; border-radius: 50%; background: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; color: var(--stone); }
+  .cal-month { font-size: 14px; font-weight: 700; color: var(--dark); }
+  .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-day-header { text-align: center; font-size: 10px; font-weight: 700; color: var(--stone); padding: 4px 0; }
+  .cal-day { text-align: center; padding: 7px 4px; border-radius: 6px; font-size: 13px; cursor: pointer; color: var(--dark); }
+  .cal-day:hover { background: var(--muted); }
+  .cal-day.today { background: var(--crimson); color: #FFF; font-weight: 700; }
+  .cal-day.selected { background: var(--gold); color: var(--dark); font-weight: 700; }
+  .cal-day.disabled { color: var(--wire-mid); cursor: not-allowed; }
+  .cal-day.available::after { content: ''; display: block; width: 4px; height: 4px; background: var(--green); border-radius: 50%; margin: 2px auto 0; }
+
+  .timeslot-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .timeslot { padding: 10px 6px; border-radius: 6px; border: 1.5px solid var(--border); text-align: center; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--dark); }
+  .timeslot.selected { border-color: var(--crimson); background: rgba(139,26,26,.08); color: var(--crimson); }
+  .timeslot.full { background: var(--wire-gray); color: var(--wire-mid); cursor: not-allowed; text-decoration: line-through; }
+  .timeslot .slot-avail { display: block; font-size: 9px; font-weight: 500; color: var(--green); margin-top: 2px; }
+  .timeslot.selected .slot-avail { color: var(--crimson); }
+  .timeslot.full .slot-avail { color: var(--wire-mid); }
+
+  .visitor-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--muted); }
+  .visitor-row:last-child { border-bottom: none; }
+  .visitor-type h4 { font-size: 14px; font-weight: 700; color: var(--dark); }
+  .visitor-type p { font-size: 11px; color: var(--stone); margin-top: 2px; }
+  .visitor-price { font-size: 14px; font-weight: 700; color: var(--crimson); min-width: 80px; text-align: right; }
+  .qty-ctrl { display: flex; align-items: center; gap: 10px; }
+  .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--border); background: #FFF; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; color: var(--dark); }
+  .qty-val { font-size: 16px; font-weight: 700; min-width: 20px; text-align: center; }
+
+  .order-summary { background: var(--cream); border-radius: 10px; border: 1px solid var(--border); padding: 20px; position: sticky; top: 76px; }
+  .order-summary h3 { font-size: 14px; font-weight: 700; color: var(--dark); margin-bottom: 16px; }
+  .order-line { display: flex; justify-content: space-between; font-size: 13px; color: var(--stone); margin-bottom: 8px; }
+  .order-line.total { color: var(--dark); font-weight: 800; font-size: 16px; padding-top: 12px; margin-top: 8px; border-top: 1.5px solid var(--border); margin-bottom: 16px; }
+  .order-line span:last-child { color: var(--crimson); }
+  .order-line.total span:last-child { color: var(--crimson); }
+  .payment-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .pm-option { border: 1.5px solid var(--border); border-radius: 6px; padding: 8px; display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 11px; font-weight: 600; color: var(--dark); }
+  .pm-option.selected { border-color: var(--crimson); background: rgba(139,26,26,.05); }
+  .pm-logo { width: 32px; height: 20px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 800; color: #FFF; }
+  .pm-logo.vnpay { background: #0066B2; }
+  .pm-logo.momo  { background: #A50064; }
+  .pm-logo.zalo  { background: #0068FF; }
+  .pm-logo.visa  { background: #1A1F71; }
+  .pm-logo.master { background: #EB001B; }
+  .pm-logo.apple { background: #000; }
+  .pm-logo.google { background: #FFF; color: #333; border: 1px solid #DDD; }
+  .proceed-btn { width: 100%; background: var(--crimson); color: #FFF; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 800; cursor: pointer; text-align: center; }
+
+  /* ───────────────────────────────
+     SCREEN 4 – CONTENT PAGE (Di tích)
+  ─────────────────────────────── */
+  .page-layout { display: grid; grid-template-columns: 1fr 280px; gap: 24px; padding: 32px; max-width: 1200px; margin: 0 auto; }
+  .breadcrumb { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--stone); margin-bottom: 20px; }
+  .breadcrumb span { color: var(--wire-mid); }
+  .breadcrumb a { color: var(--crimson); text-decoration: underline; cursor: pointer; }
+  .layer-nav { display: flex; gap: 2px; background: var(--muted); border-radius: 8px; padding: 3px; margin-bottom: 24px; }
+  .layer-tab { flex: 1; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; color: var(--stone); }
+  .layer-tab.active { background: #FFF; color: var(--crimson); box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+  .layer-badge { display: inline-block; background: var(--crimson); color: #FFF; border-radius: 10px; font-size: 9px; padding: 1px 6px; margin-left: 4px; }
+  .page-hero-img { height: 320px; border-radius: 10px; overflow: hidden; margin-bottom: 24px; }
+  .page-title { font-size: 32px; font-weight: 800; color: var(--dark); line-height: 1.2; margin-bottom: 12px; }
+  .page-meta-row { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .page-meta-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--stone); }
+  .page-content-area { color: var(--dark); font-size: 15px; line-height: 1.7; }
+  .page-content-area p { margin-bottom: 16px; }
+  .page-content-area .text-placeholder { height: 14px; background: var(--wire-gray); border-radius: 3px; margin-bottom: 8px; }
+  .page-content-area .text-placeholder.short { width: 60%; }
+  .page-content-area .text-placeholder.medium { width: 85%; }
+  .intermap { height: 280px; border-radius: 10px; overflow: hidden; margin: 24px 0; border: 1px solid var(--border); position: relative; background: #E8E4DB; }
+  .intermap-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; color: var(--stone); font-size: 13px; font-weight: 600; }
+  .hotspot { position: absolute; width: 28px; height: 28px; border-radius: 50%; background: var(--crimson); border: 3px solid #FFF; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: #FFF; }
+  .page-sidebar {}
+  .sidebar-card { background: #FFF; border-radius: 10px; border: 1px solid var(--border); padding: 16px; margin-bottom: 16px; }
+  .sidebar-card h4 { font-size: 12px; font-weight: 700; color: var(--stone); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 12px; }
+  .info-row { display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0; border-bottom: 1px solid var(--muted); color: var(--dark); }
+  .info-row:last-child { border-bottom: none; }
+  .info-row span:first-child { color: var(--stone); }
+  .related-item { display: flex; gap: 10px; margin-bottom: 10px; }
+  .related-item-img { width: 60px; height: 60px; border-radius: 6px; min-width: 60px; }
+  .related-item-text .r-title { font-size: 12px; font-weight: 700; color: var(--dark); line-height: 1.3; }
+  .related-item-text .r-meta { font-size: 10px; color: var(--stone); margin-top: 3px; }
+  .layer2-cta { background: var(--muted); border-radius: 8px; padding: 14px; text-align: center; border: 1.5px dashed var(--border); cursor: pointer; }
+  .layer2-cta p { font-size: 12px; color: var(--stone); margin-bottom: 6px; }
+  .layer2-cta a { font-size: 13px; font-weight: 700; color: var(--crimson); }
+
+  /* ───────────────────────────────
+     SCREEN 5 – IA / SITEMAP
+  ─────────────────────────────── */
+  .ia-container { padding: 32px; overflow-x: auto; }
+  .ia-tree { display: flex; flex-direction: column; align-items: flex-start; min-width: 960px; }
+  .ia-root { background: var(--crimson); color: #FFF; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 800; margin-bottom: 8px; align-self: stretch; text-align: center; }
+  .ia-level1-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; width: 100%; margin-top: 16px; }
+  .ia-section { }
+  .ia-section-head { padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 800; color: #FFF; margin-bottom: 12px; text-align: center; }
+  .ia-section-head.home    { background: #5C1010; }
+  .ia-section-head.ditich  { background: var(--crimson); }
+  .ia-section-head.sukien  { background: #1D6A3D; }
+  .ia-section-head.khampha { background: var(--blue); }
+  .ia-items { display: flex; flex-direction: column; gap: 6px; }
+  .ia-item { padding: 8px 12px; border-radius: 6px; font-size: 12px; color: var(--dark); background: #FFF; border: 1px solid var(--border); }
+  .ia-item.layer2 { background: var(--cream); border-left: 3px solid var(--gold); }
+  .ia-item.layer3 { background: var(--muted); border-left: 3px solid var(--stone); font-size: 11px; }
+  .ia-item .ia-count { float: right; background: var(--crimson); color: #FFF; border-radius: 10px; font-size: 9px; padding: 1px 6px; font-weight: 700; }
+  .ia-connector { width: 2px; background: var(--wire-mid); height: 16px; margin: 0 auto; }
+  .ia-layer-legend { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .ia-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--dark); }
+  .ia-legend-color { width: 14px; height: 14px; border-radius: 3px; }
+  .ia-ticket-box { background: var(--gold); padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 800; color: var(--dark); margin-top: 16px; }
+  .ia-ticket-items { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+  .ia-ticket-item { background: rgba(255,255,255,.7); border-radius: 4px; padding: 6px 10px; font-size: 11px; font-weight: 600; color: var(--dark); }
+
+  /* Annotation callout */
+  .callout { background: #FFF9C4; border-left: 4px solid #F9A825; padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 12px; color: #5D4037; margin: 12px 0; }
+  .callout b { color: #E65100; }
+
+  /* General helpers */
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .gap-8 { gap: 8px; }
+  .gap-12 { gap: 12px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-16 { margin-bottom: 16px; }
+  .text-sm { font-size: 12px; }
+  .text-muted { color: var(--stone); }
+  .font-bold { font-weight: 700; }
+  .w-full { width: 100%; }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+</head>
+<body>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <div class="tab-bar-title">VM Wireframes</div>
+  <button class="tab active" onclick="showScreen('s1')">1 · Trang chủ Desktop</button>
+  <button class="tab" onclick="showScreen('s2')">2 · Trang chủ Mobile</button>
+  <button class="tab" onclick="showScreen('s3')">3 · Mua vé điện tử</button>
+  <button class="tab" onclick="showScreen('s4')">4 · Trang Di tích</button>
+  <button class="tab" onclick="showScreen('s5')">5 · Sơ đồ thông tin</button>
+</div>
+
+<div class="screens">
+
+<!-- ══════════════════════════════════
+     SCREEN 1 – HOMEPAGE DESKTOP
+══════════════════════════════════ -->
+<div id="s1" class="screen active">
+  <div class="screen-title">
+    Trang chủ — Desktop <span class="sub">1440px · Giai đoạn 1</span>
+    <span class="note">Persona Routing + Hero Section</span>
+  </div>
+  <div class="annotation-bar">
+    <span><b>Kiến trúc:</b> Nav 3 mục chính · Hero full-bleed · Persona routing 4 luồng · Stats bar · Nội dung phân vùng · Ticket CTA · Footer</span>
+    <span><b>Font:</b> Be Vietnam Pro (heading) + Noto Sans (body)</span>
+    <span><b>Màu chủ:</b> Đỏ son #8B1A1A + Vàng đồng #C9A227</span>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div class="nav-wire">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">VM<br>QTG</div>
+      <div class="nav-logo-text">Văn Miếu<br><span style="font-weight:400;font-size:11px;opacity:.8">Quốc Tử Giám</span></div>
+    </div>
+    <div class="nav-links">
+      <div class="nav-link active">Di tích</div>
+      <div class="nav-link">Sự kiện &amp; Trưng bày</div>
+      <div class="nav-link">Khám phá</div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-btn">VI / EN</div>
+      <div class="buy-btn">Mua vé →</div>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:10px;color:var(--annotation);background:#EEF2FF;padding:4px;">↑ Sticky nav · crimson bg · gold CTA button · lang switcher · Logo trái</div>
+
+  <!-- HERO -->
+  <div class="hero-wire">
+    <div class="img-placeholder" style="position:absolute;inset:0;font-size:14px;color:#888;">
+      [Ảnh toàn cảnh Khuê Văn Các · full-bleed · WebP · lazy-load off (above fold)]
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Di sản tư liệu thế giới UNESCO · Di tích quốc gia đặc biệt</div>
+      <div class="hero-h1">Văn Miếu – Quốc Tử Giám<br>Ngôi trường đại học đầu tiên của Việt Nam</div>
+      <div class="hero-sub">82 Bia Tiến sĩ · 1.304 danh nhân ghi danh · Kiến trúc nghìn năm lịch sử</div>
+
+      <!-- PERSONA ROUTING -->
+      <div style="margin-bottom:12px;font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.5px;">Bạn đang tìm kiếm điều gì? →</div>
+      <div class="persona-row">
+        <div class="persona-card tourist">
+          <div class="persona-icon">🏛️</div>
+          <div class="persona-label">Khách tham quan</div>
+          <div class="persona-desc">Mua vé, xem giờ mở cửa, bản đồ khu di tích</div>
+          <div class="persona-cta">Đặt vé ngay →</div>
+        </div>
+        <div class="persona-card program">
+          <div class="persona-icon">🎓</div>
+          <div class="persona-label">Đăng ký chương trình</div>
+          <div class="persona-desc">Tour có hướng dẫn, chương trình giáo dục di sản</div>
+          <div class="persona-cta">Xem chương trình →</div>
+        </div>
+        <div class="persona-card research">
+          <div class="persona-icon">📜</div>
+          <div class="persona-label">Nhà nghiên cứu</div>
+          <div class="persona-desc">Kho tư liệu 82 Bia Tiến sĩ, Hán Nôm, học thuật</div>
+          <div class="persona-cta">Tra cứu tư liệu →</div>
+        </div>
+        <div class="persona-card partner">
+          <div class="persona-icon">🤝</div>
+          <div class="persona-label">Đối tác hợp tác</div>
+          <div class="persona-desc">Sự kiện doanh nghiệp, tài trợ, hợp tác truyền thông</div>
+          <div class="persona-cta">Liên hệ hợp tác →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:10px;color:var(--annotation);background:#EEF2FF;padding:4px;">↑ Hero 540px · Persona routing 4 col · Glassmorphism cards · Border-top color-coded theo persona · CTA riêng biệt cho từng luồng</div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item"><span class="stat-num">82</span><span class="stat-lbl">Bia Tiến sĩ UNESCO</span></div>
+    <div class="stat-item"><span class="stat-num">1.304</span><span class="stat-lbl">Tiến sĩ ghi danh</span></div>
+    <div class="stat-item"><span class="stat-num">1076</span><span class="stat-lbl">Năm lịch sử</span></div>
+    <div class="stat-item"><span class="stat-num">12</span><span class="stat-lbl">Ngôn ngữ thuyết minh</span></div>
+    <div class="stat-item"><span class="stat-num">2M+</span><span class="stat-lbl">Lượt khách/năm</span></div>
+  </div>
+
+  <!-- DI TICH SECTION -->
+  <div class="content-section alt">
+    <div class="section-header">
+      <div>
+        <div class="section-label">Di tích · Lớp 1</div>
+        <div class="section-h2">Khám phá <span>Khu di tích</span></div>
+      </div>
+      <div class="see-all">Xem tất cả 10 công trình →</div>
+    </div>
+    <div class="card-grid-3">
+      <div class="content-card">
+        <div class="img-placeholder card-img">[Ảnh Khuê Văn Các · WebP]</div>
+        <div class="card-body">
+          <div class="card-tag">Công trình biểu tượng</div>
+          <div class="card-title">Khuê Văn Các</div>
+          <div class="card-meta">Kiến trúc thế kỷ XIX · Lầu Sao Khuê</div>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="img-placeholder card-img">[Ảnh Thiên Quang Tỉnh · WebP]</div>
+        <div class="card-body">
+          <div class="card-tag">Giếng cổ</div>
+          <div class="card-title">Giếng Thiên Quang</div>
+          <div class="card-meta">Biểu tượng tri thức · Phản chiếu Khuê Văn Các</div>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="img-placeholder card-img">[Ảnh 82 Bia Tiến sĩ · WebP]</div>
+        <div class="card-body">
+          <div class="card-tag">Di sản UNESCO</div>
+          <div class="card-title">Nhà bia 82 Tiến sĩ</div>
+          <div class="card-meta">Memory of the World · 1442–1779</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVENTS + MAP 2-COL -->
+  <div class="content-section">
+    <div class="card-grid-2">
+      <div>
+        <div class="section-header">
+          <div>
+            <div class="section-label">Sự kiện · Lớp 1</div>
+            <div class="section-h2">Sự kiện <span>sắp diễn ra</span></div>
+          </div>
+          <div class="see-all">Xem lịch →</div>
+        </div>
+        <div class="event-list">
+          <div class="event-item">
+            <div class="event-date"><span class="day">15</span><span class="mon">T5</span></div>
+            <div class="event-info"><div class="ev-title">Lễ dâng hương khai xuân Quốc Tử Giám</div><div class="ev-meta">08:00 · Đại Thành Điện · Miễn phí</div></div>
+          </div>
+          <div class="event-item">
+            <div class="event-date"><span class="day">22</span><span class="mon">T5</span></div>
+            <div class="event-info"><div class="ev-title">Triển lãm "Nghìn năm Văn hiến"</div><div class="ev-meta">09:00–17:00 · Nhà Thái Học</div></div>
+          </div>
+          <div class="event-item">
+            <div class="event-date"><span class="day">01</span><span class="mon">T6</span></div>
+            <div class="event-info"><div class="ev-title">Chương trình giáo dục di sản cho học sinh</div><div class="ev-meta">Thứ 7 hàng tuần · Đăng ký trước</div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-label" style="margin-bottom:10px;">Bản đồ tương tác</div>
+        <div class="intermap">
+          <div class="img-placeholder" style="position:absolute;inset:0;font-size:12px;color:#888;">[SVG bản đồ 5 khu + 10 hotspot tương tác]</div>
+          <div class="hotspot" style="top:30%;left:40%;">1</div>
+          <div class="hotspot" style="top:55%;left:55%;background:var(--blue);">2</div>
+          <div class="hotspot" style="top:45%;left:25%;background:var(--green);">3</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+          <span class="note">Khu I–V · Click để xem chi tiết</span>
+          <span class="note">SVG scalable · Mobile pinch-zoom</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TICKET BANNER -->
+  <div class="ticket-banner">
+    <div>
+      <h2>Đặt vé tham quan ngay hôm nay</h2>
+      <p>Chọn giờ vào cổng · 7 cổng thanh toán · QR code tức thì · Không chờ hàng</p>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <div style="color:rgba(255,255,255,.7);font-size:13px;text-align:right;">Giá vé từ <span style="color:var(--gold);font-size:20px;font-weight:800;display:block;">30.000đ</span></div>
+      <div class="ticket-banner-cta">Mua vé điện tử →</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-wire">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Văn Miếu – Quốc Tử Giám</h4>
+        <p>58 Quốc Tử Giám, Đống Đa, Hà Nội</p>
+        <p>📞 (024) 3747 2566</p>
+        <p>✉ info@vanmieu.vn</p>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <div class="img-placeholder" style="width:30px;height:30px;border-radius:50%;font-size:10px;">FB</div>
+          <div class="img-placeholder" style="width:30px;height:30px;border-radius:50%;font-size:10px;">YT</div>
+          <div class="img-placeholder" style="width:30px;height:30px;border-radius:50%;font-size:10px;">IG</div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Di tích</h4>
+        <a>Khuê Văn Các</a>
+        <a>82 Bia Tiến sĩ</a>
+        <a>Bản đồ khu di tích</a>
+        <a>Lịch sử 1.000 năm</a>
+      </div>
+      <div class="footer-col">
+        <h4>Tham quan</h4>
+        <a>Mua vé điện tử</a>
+        <a>Giờ mở cửa</a>
+        <a>Quy định tham quan</a>
+        <a>Hướng dẫn đi lại</a>
+      </div>
+      <div class="footer-col">
+        <h4>Kết nối</h4>
+        <a>Báo chí &amp; Truyền thông</a>
+        <a>Hợp tác doanh nghiệp</a>
+        <a>Nghiên cứu học thuật</a>
+        <a>Tuyển dụng</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Văn Miếu – Quốc Tử Giám. Bảo lưu mọi quyền.</span>
+      <span>Chính sách bảo mật · Điều khoản sử dụng · Sơ đồ trang</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 2 – HOMEPAGE MOBILE
+══════════════════════════════════ -->
+<div id="s2" class="screen">
+  <div class="screen-title">
+    Trang chủ — Mobile <span class="sub">390px (iPhone 14 Pro) · Mobile-first</span>
+    <span class="note">Target Lighthouse mobile &gt;85/100</span>
+  </div>
+  <div class="annotation-bar">
+    <span><b>Mobile-first:</b> Bắt đầu từ 375px · Bottom tab bar ≤5 items · Touch targets ≥44pt · Persona grid 2×2</span>
+    <span><b>Sticky CTA bar:</b> Luôn hiển thị nút mua vé ở cuối màn hình</span>
+  </div>
+
+  <div style="display:flex;gap:24px;padding:24px;flex-wrap:wrap;align-items:flex-start;">
+
+  <!-- MOBILE FRAME 1: Homepage -->
+  <div>
+    <div style="font-size:11px;font-weight:700;color:var(--stone);margin-bottom:8px;text-transform:uppercase;letter-spacing:.8px;">Trang chủ</div>
+    <div class="mobile-frame">
+      <div class="mobile-status">
+        <span>9:41</span>
+        <span>📶 100%</span>
+      </div>
+      <div class="mobile-nav">
+        <div class="mobile-logo">Văn Miếu</div>
+        <div class="hamburger"><span></span><span></span><span></span></div>
+      </div>
+      <div class="mobile-hero">
+        <div class="img-placeholder" style="position:absolute;inset:0;font-size:11px;">[Ảnh Khuê Văn Các · WebP · eager]</div>
+        <div class="mobile-hero-overlay"></div>
+        <div class="mobile-hero-content">
+          <div class="mobile-h1">Văn Miếu<br>Quốc Tử Giám</div>
+          <div class="mobile-sub">Di sản tư liệu thế giới UNESCO</div>
+        </div>
+      </div>
+      <!-- PERSONA GRID 2x2 -->
+      <div class="mobile-persona-grid">
+        <div class="mobile-persona-card tourist">
+          <span class="mp-icon">🏛️</span>
+          <div class="mp-label">Tham quan</div>
+          <div class="mp-cta">Đặt vé →</div>
+        </div>
+        <div class="mobile-persona-card program">
+          <span class="mp-icon">🎓</span>
+          <div class="mp-label">Chương trình</div>
+          <div class="mp-cta">Đăng ký →</div>
+        </div>
+        <div class="mobile-persona-card research">
+          <span class="mp-icon">📜</span>
+          <div class="mp-label">Nghiên cứu</div>
+          <div class="mp-cta">Tra cứu →</div>
+        </div>
+        <div class="mobile-persona-card partner">
+          <span class="mp-icon">🤝</span>
+          <div class="mp-label">Hợp tác</div>
+          <div class="mp-cta">Liên hệ →</div>
+        </div>
+      </div>
+      <!-- STATS MINI -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--dark);text-align:center;">
+        <div style="padding:10px;border-right:1px solid rgba(255,255,255,.1);">
+          <div style="color:var(--gold);font-size:16px;font-weight:800;">82</div>
+          <div style="color:rgba(255,255,255,.6);font-size:9px;">Bia UNESCO</div>
+        </div>
+        <div style="padding:10px;border-right:1px solid rgba(255,255,255,.1);">
+          <div style="color:var(--gold);font-size:16px;font-weight:800;">1.304</div>
+          <div style="color:rgba(255,255,255,.6);font-size:9px;">Tiến sĩ</div>
+        </div>
+        <div style="padding:10px;">
+          <div style="color:var(--gold);font-size:16px;font-weight:800;">1076</div>
+          <div style="color:rgba(255,255,255,.6);font-size:9px;">Năm LS</div>
+        </div>
+      </div>
+      <!-- FEATURED -->
+      <div class="mobile-section">
+        <h3>Di tích nổi bật</h3>
+        <div class="mobile-card">
+          <div class="img-placeholder mobile-card-img" style="height:80px;">[Khuê Văn Các]</div>
+          <div class="mobile-card-body">
+            <div class="card-tag">Biểu tượng</div>
+            <div class="card-title">Khuê Văn Các</div>
+            <div class="card-meta">Thế kỷ XIX</div>
+          </div>
+        </div>
+        <div class="mobile-card">
+          <div class="img-placeholder mobile-card-img" style="height:80px;">[Bia Tiến sĩ]</div>
+          <div class="mobile-card-body">
+            <div class="card-tag">Di sản UNESCO</div>
+            <div class="card-title">82 Bia Tiến sĩ</div>
+            <div class="card-meta">Memory of the World</div>
+          </div>
+        </div>
+      </div>
+      <!-- STICKY BUY BAR -->
+      <div class="mobile-buy-bar">
+        <div><p>Đặt vé ngay<b>Từ 30.000đ · QR code</b></p></div>
+        <div class="mobile-buy-btn">Mua vé</div>
+      </div>
+      <!-- BOTTOM TAB -->
+      <div class="mobile-bottom-bar">
+        <div class="mobile-tab active">
+          <span class="icon">🏠</span><span class="lbl">Trang chủ</span>
+        </div>
+        <div class="mobile-tab">
+          <span class="icon">🏛️</span><span class="lbl">Di tích</span>
+        </div>
+        <div class="mobile-tab">
+          <span class="icon">🎫</span><span class="lbl">Mua vé</span>
+        </div>
+        <div class="mobile-tab">
+          <span class="icon">📅</span><span class="lbl">Sự kiện</span>
+        </div>
+        <div class="mobile-tab">
+          <span class="icon">☰</span><span class="lbl">Khám phá</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE FRAME 2: Hamburger Menu Open -->
+  <div>
+    <div style="font-size:11px;font-weight:700;color:var(--stone);margin-bottom:8px;text-transform:uppercase;letter-spacing:.8px;">Menu mở (Drawer)</div>
+    <div class="mobile-frame">
+      <div class="mobile-status"><span>9:41</span><span>📶 100%</span></div>
+      <div class="mobile-nav">
+        <div class="mobile-logo">Văn Miếu</div>
+        <div style="color:#FFF;font-size:20px;cursor:pointer;">✕</div>
+      </div>
+      <div style="padding:0 16px;">
+        <div style="padding:16px 0;border-bottom:1px solid var(--border);">
+          <div style="font-size:11px;font-weight:700;color:var(--stone);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;">Điều hướng chính</div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="padding:12px;background:rgba(139,26,26,.08);border-radius:8px;font-size:15px;font-weight:700;color:var(--crimson);display:flex;justify-content:space-between;align-items:center;">Di tích <span>›</span></div>
+            <div style="padding:12px;border-radius:8px;font-size:15px;font-weight:600;color:var(--dark);display:flex;justify-content:space-between;align-items:center;">Sự kiện &amp; Trưng bày <span>›</span></div>
+            <div style="padding:12px;border-radius:8px;font-size:15px;font-weight:600;color:var(--dark);display:flex;justify-content:space-between;align-items:center;">Khám phá <span>›</span></div>
+          </div>
+        </div>
+        <div style="padding:16px 0;">
+          <div style="font-size:11px;font-weight:700;color:var(--stone);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;">Thông tin tham quan</div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="padding:10px;font-size:13px;color:var(--stone);">⏰ Giờ mở cửa: 8:00–17:00</div>
+            <div style="padding:10px;font-size:13px;color:var(--stone);">📍 58 Quốc Tử Giám, Đống Đa</div>
+            <div style="padding:10px;font-size:13px;color:var(--stone);">📞 (024) 3747 2566</div>
+          </div>
+        </div>
+        <div style="background:var(--gold);border-radius:8px;padding:14px;text-align:center;font-size:15px;font-weight:800;color:var(--dark);">
+          🎫 Mua vé điện tử
+        </div>
+        <div style="display:flex;justify-content:center;gap:12px;padding:16px 0;border-top:1px solid var(--border);margin-top:16px;">
+          <div style="padding:6px 16px;border:1px solid var(--border);border-radius:20px;font-size:13px;font-weight:600;color:var(--crimson);">Tiếng Việt</div>
+          <div style="padding:6px 16px;border:1px solid var(--border);border-radius:20px;font-size:13px;color:var(--stone);">English</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Annotations -->
+  <div style="max-width:280px;">
+    <div class="callout"><b>Bottom Tab Bar:</b> 5 items tối đa · Icons + Labels · Tab "Mua vé" nổi bật giữa · Touch target ≥44pt</div>
+    <div class="callout" style="margin-top:8px;"><b>Sticky Buy Bar:</b> Luôn hiển thị phía trên bottom tab · Màu crimson · Gold CTA · Giá từ hiển thị rõ</div>
+    <div class="callout" style="margin-top:8px;"><b>Persona Grid 2×2:</b> Thay vì 4 col ở desktop, mobile xuống 2×2 grid · Border-top color-coded · Icon + Label + CTA arrow</div>
+    <div class="callout" style="margin-top:8px;"><b>Drawer Menu:</b> Từ hamburger → full-screen drawer · Nav 3 mục + thông tin liên hệ + CTA + lang switcher</div>
+  </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 3 – TICKET PURCHASE FLOW
+══════════════════════════════════ -->
+<div id="s3" class="screen">
+  <div class="screen-title">
+    Mua vé điện tử — Timed Entry <span class="sub">Desktop · Phase P4 (Tuần 7–10)</span>
+    <span class="note">7 cổng thanh toán · QR verification · Chống gian lận</span>
+  </div>
+  <div class="annotation-bar">
+    <span><b>Flow:</b> Chọn ngày → Chọn giờ → Số lượng khách → Thanh toán → QR code</span>
+    <span><b>Timed-entry:</b> Giới hạn lượng khách mỗi khung giờ, giảm ùn tắc cổng</span>
+    <span><b>Chống scalping:</b> Mỗi vé gắn QR duy nhất · Không cho transfer · Verified tại cổng</span>
+  </div>
+
+  <!-- STEP BAR -->
+  <div style="background:#FFF;padding:16px 32px;border-bottom:1px solid var(--border);">
+    <div class="ticket-step-bar">
+      <div class="t-step done">
+        <div class="t-step-num">✓</div>
+        <div class="t-step-lbl">Chọn ngày</div>
+      </div>
+      <div class="t-divider done"></div>
+      <div class="t-step active">
+        <div class="t-step-num">2</div>
+        <div class="t-step-lbl">Chọn giờ vào cổng</div>
+      </div>
+      <div class="t-divider"></div>
+      <div class="t-step pending">
+        <div class="t-step-num">3</div>
+        <div class="t-step-lbl">Số lượng &amp; loại vé</div>
+      </div>
+      <div class="t-divider"></div>
+      <div class="t-step pending">
+        <div class="t-step-num">4</div>
+        <div class="t-step-lbl">Thanh toán</div>
+      </div>
+      <div class="t-divider"></div>
+      <div class="t-step pending">
+        <div class="t-step-num">5</div>
+        <div class="t-step-lbl">Nhận QR vé</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ticket-layout">
+    <div class="ticket-main">
+
+      <!-- CALENDAR -->
+      <div class="ticket-card">
+        <h3>Bước 1: Chọn ngày tham quan</h3>
+        <div class="calendar-header">
+          <div class="cal-nav">‹</div>
+          <div class="cal-month">Tháng 5, 2026</div>
+          <div class="cal-nav">›</div>
+        </div>
+        <div class="calendar-grid">
+          <div class="cal-day-header">T2</div><div class="cal-day-header">T3</div>
+          <div class="cal-day-header">T4</div><div class="cal-day-header">T5</div>
+          <div class="cal-day-header">T6</div><div class="cal-day-header">T7</div>
+          <div class="cal-day-header">CN</div>
+          <div class="cal-day disabled"></div><div class="cal-day disabled"></div>
+          <div class="cal-day disabled"></div><div class="cal-day today">7</div>
+          <div class="cal-day available">8</div><div class="cal-day available">9</div>
+          <div class="cal-day available">10</div>
+          <div class="cal-day available">11</div><div class="cal-day available">12</div>
+          <div class="cal-day available">13</div><div class="cal-day available">14</div>
+          <div class="cal-day available">15</div><div class="cal-day selected">16</div>
+          <div class="cal-day available">17</div>
+          <div class="cal-day available">18</div><div class="cal-day available">19</div>
+          <div class="cal-day available">20</div><div class="cal-day available">21</div>
+          <div class="cal-day available">22</div><div class="cal-day">23</div>
+          <div class="cal-day">24</div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:12px;font-size:11px;">
+          <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:var(--green);border-radius:50%;display:inline-block;"></span> Còn chỗ</span>
+          <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:var(--gold);border-radius:50%;display:inline-block;"></span> Đang chọn</span>
+          <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:var(--wire-gray);border-radius:50%;display:inline-block;"></span> Hết chỗ</span>
+        </div>
+      </div>
+
+      <!-- TIME SLOTS -->
+      <div class="ticket-card">
+        <h3>Bước 2: Chọn khung giờ vào cổng — Thứ 7, 16/5/2026</h3>
+        <div class="timeslot-grid">
+          <div class="timeslot full">08:00–08:30<span class="slot-avail">Hết chỗ</span></div>
+          <div class="timeslot full">08:30–09:00<span class="slot-avail">Hết chỗ</span></div>
+          <div class="timeslot">09:00–09:30<span class="slot-avail">Còn 12 chỗ</span></div>
+          <div class="timeslot selected">09:30–10:00<span class="slot-avail">Đang chọn</span></div>
+          <div class="timeslot">10:00–10:30<span class="slot-avail">Còn 45 chỗ</span></div>
+          <div class="timeslot">10:30–11:00<span class="slot-avail">Còn 60 chỗ</span></div>
+          <div class="timeslot">14:00–14:30<span class="slot-avail">Còn 80 chỗ</span></div>
+          <div class="timeslot">14:30–15:00<span class="slot-avail">Còn 95 chỗ</span></div>
+        </div>
+        <div class="callout">
+          <b>Timed-entry logic:</b> Mỗi slot giới hạn 120 người · Tự động mở thêm slot khi gần đầy · Backend đếm realtime
+        </div>
+      </div>
+
+      <!-- VISITOR COUNT -->
+      <div class="ticket-card">
+        <h3>Bước 3: Số lượng và loại vé</h3>
+        <div class="visitor-row">
+          <div class="visitor-type"><h4>Người lớn</h4><p>Từ 18 tuổi</p></div>
+          <div class="visitor-price">70.000đ</div>
+          <div class="qty-ctrl">
+            <div class="qty-btn">−</div>
+            <div class="qty-val">2</div>
+            <div class="qty-btn">+</div>
+          </div>
+        </div>
+        <div class="visitor-row">
+          <div class="visitor-type"><h4>Trẻ em</h4><p>6–17 tuổi</p></div>
+          <div class="visitor-price">30.000đ</div>
+          <div class="qty-ctrl">
+            <div class="qty-btn">−</div>
+            <div class="qty-val">1</div>
+            <div class="qty-btn">+</div>
+          </div>
+        </div>
+        <div class="visitor-row">
+          <div class="visitor-type"><h4>Trẻ em nhỏ</h4><p>Dưới 6 tuổi</p></div>
+          <div class="visitor-price">Miễn phí</div>
+          <div class="qty-ctrl">
+            <div class="qty-btn">−</div>
+            <div class="qty-val">0</div>
+            <div class="qty-btn">+</div>
+          </div>
+        </div>
+        <div class="visitor-row">
+          <div class="visitor-type"><h4>Người cao tuổi / Người khuyết tật</h4><p>Từ 60 tuổi · Xuất trình CMND</p></div>
+          <div class="visitor-price">30.000đ</div>
+          <div class="qty-ctrl">
+            <div class="qty-btn">−</div>
+            <div class="qty-val">0</div>
+            <div class="qty-btn">+</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ORDER SUMMARY SIDEBAR -->
+    <div class="ticket-sidebar">
+      <div class="order-summary">
+        <h3>Tóm tắt đơn hàng</h3>
+        <div class="order-line"><span>📅 Ngày:</span><span>Thứ 7, 16/5/2026</span></div>
+        <div class="order-line"><span>⏰ Giờ vào:</span><span>09:30–10:00</span></div>
+        <div class="order-line"><span>Người lớn × 2</span><span>140.000đ</span></div>
+        <div class="order-line"><span>Trẻ em × 1</span><span>30.000đ</span></div>
+        <div class="order-line total"><span>Tổng cộng</span><span>170.000đ</span></div>
+
+        <div style="font-size:11px;font-weight:700;color:var(--stone);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Phương thức thanh toán</div>
+        <div class="payment-methods">
+          <div class="pm-option selected">
+            <div class="pm-logo vnpay">VN</div> VNPay
+          </div>
+          <div class="pm-option">
+            <div class="pm-logo momo">Mo</div> MoMo
+          </div>
+          <div class="pm-option">
+            <div class="pm-logo zalo">Za</div> ZaloPay
+          </div>
+          <div class="pm-option">
+            <div class="pm-logo visa">VISA</div> Visa
+          </div>
+          <div class="pm-option">
+            <div class="pm-logo master">MC</div> Mastercard
+          </div>
+          <div class="pm-option">
+            <div class="pm-logo apple"></div> Apple Pay
+          </div>
+        </div>
+
+        <div class="proceed-btn">Tiến hành thanh toán →</div>
+
+        <div style="margin-top:12px;font-size:11px;color:var(--stone);text-align:center;line-height:1.5;">
+          🔒 Bảo mật PCI-DSS · Không lưu thông tin thẻ<br>
+          QR code gửi về email và SMS ngay sau thanh toán
+        </div>
+
+        <!-- QR PREVIEW -->
+        <div style="margin-top:16px;background:var(--muted);border-radius:8px;padding:14px;text-align:center;border:1px dashed var(--border);">
+          <div style="font-size:11px;color:var(--stone);margin-bottom:8px;">Sau thanh toán bạn nhận được:</div>
+          <div class="img-placeholder" style="width:80px;height:80px;margin:0 auto 8px;border-radius:6px;font-size:9px;">QR CODE</div>
+          <div style="font-size:10px;color:var(--stone);">QR duy nhất per vé · Scan tại cổng vào</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 4 – DI TICH CONTENT PAGE
+══════════════════════════════════ -->
+<div id="s4" class="screen">
+  <div class="screen-title">
+    Trang Di tích — Kiến trúc nội dung 3 lớp <span class="sub">Desktop · Lớp 1→2→3</span>
+    <span class="note">54 bài di tích · 21 bài danh nhân · 3-layer navigation</span>
+  </div>
+  <div class="annotation-bar">
+    <span><b>3 lớp:</b> Lớp 1 (Trang mục, tóm tắt) → Lớp 2 (Trang chủ đề, bản đồ tương tác) → Lớp 3 (Bài chi tiết học thuật)</span>
+    <span><b>Nguyên tắc:</b> Phòng nội dung không mất bài nào · Tối đa 3 lớp điều hướng · Khách phổ thông không bị áp đảo</span>
+  </div>
+
+  <!-- SUBNAV -->
+  <div style="background:#FFF;border-bottom:2px solid var(--border);padding:0 32px;">
+    <div style="display:flex;gap:0;max-width:1200px;margin:0 auto;">
+      <div style="padding:14px 20px;font-size:13px;font-weight:700;color:var(--crimson);border-bottom:3px solid var(--crimson);cursor:pointer;">Tất cả công trình</div>
+      <div style="padding:14px 20px;font-size:13px;color:var(--stone);border-bottom:3px solid transparent;cursor:pointer;">Khuê Văn Các</div>
+      <div style="padding:14px 20px;font-size:13px;color:var(--stone);border-bottom:3px solid transparent;cursor:pointer;">Bia Tiến sĩ</div>
+      <div style="padding:14px 20px;font-size:13px;color:var(--stone);border-bottom:3px solid transparent;cursor:pointer;">Đại Thành Điện</div>
+      <div style="padding:14px 20px;font-size:13px;color:var(--stone);border-bottom:3px solid transparent;cursor:pointer;">Nhà Thái Học</div>
+      <div style="padding:14px 20px;font-size:13px;color:var(--stone);border-bottom:3px solid transparent;cursor:pointer;">Thêm +5</div>
+    </div>
+  </div>
+
+  <div class="page-layout">
+    <div class="page-main">
+      <!-- BREADCRUMB + LAYER NAV -->
+      <div class="breadcrumb">
+        <a>Trang chủ</a><span>›</span>
+        <a>Di tích</a><span>›</span>
+        <span style="color:var(--dark);">Bia Tiến sĩ</span>
+      </div>
+
+      <!-- 3-LAYER TAB -->
+      <div class="layer-nav">
+        <div class="layer-tab active">
+          Lớp 1 · Tổng quan
+          <span class="layer-badge">Phổ thông</span>
+        </div>
+        <div class="layer-tab">
+          Lớp 2 · Chuyên sâu
+          <span class="layer-badge" style="background:var(--blue);">Quan tâm</span>
+        </div>
+        <div class="layer-tab">
+          Lớp 3 · Học thuật
+          <span class="layer-badge" style="background:var(--stone);">Nghiên cứu</span>
+        </div>
+      </div>
+
+      <!-- HERO IMAGE -->
+      <div class="page-hero-img">
+        <div class="img-placeholder" style="height:100%;font-size:14px;">[Ảnh Nhà bia 82 Tiến sĩ · WebP · 1200×400 · lazy-load]</div>
+      </div>
+
+      <div class="page-title">82 Bia Tiến sĩ Văn Miếu – Quốc Tử Giám</div>
+
+      <div class="page-meta-row">
+        <div class="page-meta-item">📅 <span>1442 – 1779</span></div>
+        <div class="page-meta-item">🌍 <span>Di sản tư liệu thế giới UNESCO 2010</span></div>
+        <div class="page-meta-item">📍 <span>Khu III · Vườn bia</span></div>
+        <div class="page-meta-item">⏱ <span>Đọc trong 3 phút</span></div>
+      </div>
+
+      <!-- LAYER 1 CONTENT -->
+      <div class="page-content-area">
+        <div style="background:rgba(139,26,26,.06);border-left:4px solid var(--crimson);padding:14px 16px;border-radius:0 8px 8px 0;margin-bottom:20px;font-size:14px;color:var(--dark);">
+          <b>Tóm tắt:</b> 82 tấm bia đá ghi danh 1.304 Tiến sĩ từ 1442 đến 1779, được UNESCO công nhận là Di sản tư liệu thế giới năm 2010 — một trong những hồ sơ học thuật bằng đá quý giá nhất châu Á.
+        </div>
+        <div class="text-placeholder"></div>
+        <div class="text-placeholder medium"></div>
+        <div class="text-placeholder"></div>
+        <div class="text-placeholder short"></div>
+        <div class="text-placeholder" style="margin-top:16px;"></div>
+        <div class="text-placeholder medium"></div>
+      </div>
+
+      <!-- INTERACTIVE MAP -->
+      <div style="font-size:14px;font-weight:700;color:var(--dark);margin-top:24px;margin-bottom:12px;">Vị trí trong khu di tích</div>
+      <div class="intermap" style="height:240px;">
+        <div class="img-placeholder" style="position:absolute;inset:0;font-size:12px;">[SVG bản đồ 5 khu · Highlight khu III · Clickable hotspot]</div>
+        <div class="hotspot" style="top:35%;left:45%;">III</div>
+        <div class="hotspot" style="top:20%;left:30%;background:var(--stone);opacity:.6;">I</div>
+        <div class="hotspot" style="top:60%;left:60%;background:var(--stone);opacity:.6;">IV</div>
+      </div>
+
+      <!-- LAYER 2 TEASER -->
+      <div class="layer2-cta" style="margin-top:20px;">
+        <p>Muốn tìm hiểu sâu hơn về nội dung khắc trên bia, kỹ thuật tạo tác, và hành trình bảo tồn?</p>
+        <a>Xem Lớp 2: Nội dung chuyên sâu →</a>
+      </div>
+
+      <!-- LAYER 3 TEASER -->
+      <div class="layer2-cta" style="margin-top:10px;border-color:var(--stone);">
+        <p>Nhà nghiên cứu? Truy cập toàn bộ 192 tài liệu học thuật và dữ liệu Hán Nôm đầy đủ.</p>
+        <a style="color:var(--blue);">Xem Lớp 3: Tư liệu học thuật →</a>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="page-sidebar">
+      <!-- Visitor Info -->
+      <div class="sidebar-card">
+        <h4>Thông tin tham quan</h4>
+        <div class="info-row"><span>Vị trí</span><span>Khu III</span></div>
+        <div class="info-row"><span>Số bia</span><span>82 tấm</span></div>
+        <div class="info-row"><span>Thời kỳ</span><span>1442–1779</span></div>
+        <div class="info-row"><span>Chất liệu</span><span>Đá xanh</span></div>
+        <div class="info-row"><span>UNESCO</span><span>2010</span></div>
+        <div style="margin-top:12px;">
+          <div class="proceed-btn" style="font-size:13px;padding:10px;">Đặt vé tham quan →</div>
+        </div>
+      </div>
+
+      <!-- Audio Guide -->
+      <div class="sidebar-card">
+        <h4>Thuyết minh tự động</h4>
+        <div style="background:var(--muted);border-radius:6px;padding:12px;display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--crimson);display:flex;align-items:center;justify-content:center;color:#FFF;font-size:16px;cursor:pointer;">▶</div>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--dark);">Bia Tiến sĩ – Giới thiệu</div>
+            <div style="font-size:10px;color:var(--stone);">3:24 · Tiếng Việt</div>
+          </div>
+        </div>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
+          <span style="font-size:10px;padding:3px 8px;background:var(--muted);border-radius:10px;color:var(--stone);cursor:pointer;">Việt</span>
+          <span style="font-size:10px;padding:3px 8px;background:var(--crimson);border-radius:10px;color:#FFF;">English</span>
+          <span style="font-size:10px;padding:3px 8px;background:var(--muted);border-radius:10px;color:var(--stone);cursor:pointer;">中文</span>
+          <span style="font-size:10px;padding:3px 8px;background:var(--muted);border-radius:10px;color:var(--stone);cursor:pointer;">+9</span>
+        </div>
+      </div>
+
+      <!-- Related -->
+      <div class="sidebar-card">
+        <h4>Di tích liên quan</h4>
+        <div class="related-item">
+          <div class="img-placeholder related-item-img"></div>
+          <div class="related-item-text">
+            <div class="r-title">Giếng Thiên Quang</div>
+            <div class="r-meta">Khu III · Kề bên nhà bia</div>
+          </div>
+        </div>
+        <div class="related-item">
+          <div class="img-placeholder related-item-img"></div>
+          <div class="related-item-text">
+            <div class="r-title">Khuê Văn Các</div>
+            <div class="r-meta">Khu III · Biểu tượng di tích</div>
+          </div>
+        </div>
+        <div class="related-item">
+          <div class="img-placeholder related-item-img"></div>
+          <div class="related-item-text">
+            <div class="r-title">Đại Thành Điện</div>
+            <div class="r-meta">Khu IV · Thờ Khổng Tử</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 5 – INFORMATION ARCHITECTURE
+══════════════════════════════════ -->
+<div id="s5" class="screen">
+  <div class="screen-title">
+    Sơ đồ thông tin (IA) — Giai đoạn 1 <span class="sub">3 mục nav chính · 3 lớp nội dung</span>
+    <span class="note">54+21+192 bài · Persona routing · Vé điện tử</span>
+  </div>
+  <div class="annotation-bar">
+    <span><b>Giai đoạn 1:</b> 3 nav chính · Persona routing · Vé điện tử · CMS i18n · Bản đồ tương tác</span>
+    <span><b>Giai đoạn 2 (tham khảo):</b> Bảo tàng ảo 82 Bia · Thư viện số UNESCO · Tra cứu 1.304 Tiến sĩ</span>
+  </div>
+
+  <div class="ia-container">
+    <!-- LEGEND -->
+    <div class="ia-layer-legend">
+      <div class="ia-legend-item"><div class="ia-legend-color" style="background:var(--crimson);"></div> Nav chính (Giai đoạn 1)</div>
+      <div class="ia-legend-item"><div class="ia-legend-color" style="background:#FFF;border:1.5px solid var(--gold);"></div> Lớp 1 · Trang mục (Phổ thông)</div>
+      <div class="ia-legend-item"><div class="ia-legend-color" style="background:var(--cream);border:1.5px solid var(--gold);"></div> Lớp 2 · Chủ đề sâu</div>
+      <div class="ia-legend-item"><div class="ia-legend-color" style="background:var(--muted);border:1.5px solid var(--stone);"></div> Lớp 3 · Học thuật</div>
+      <div class="ia-legend-item"><div class="ia-legend-color" style="background:var(--gold);"></div> Vé điện tử</div>
+      <div class="ia-legend-item"><div class="ia-legend-color" style="background:#E0E0E0;"></div> Giai đoạn 2 (tương lai)</div>
+    </div>
+
+    <!-- ROOT -->
+    <div class="ia-root">vanmieu.vn — Cổng thông tin số Văn Miếu – Quốc Tử Giám</div>
+    <div style="display:flex;justify-content:center;"><div class="ia-connector" style="height:20px;"></div></div>
+
+    <!-- LEVEL 1 SECTIONS -->
+    <div class="ia-level1-row">
+
+      <!-- HOMEPAGE -->
+      <div class="ia-section">
+        <div class="ia-section-head home">Trang chủ</div>
+        <div class="ia-items">
+          <div class="ia-item">Hero + Persona Routing (4 luồng)</div>
+          <div class="ia-item">Stats: 82 Bia · 1.304 Tiến sĩ</div>
+          <div class="ia-item">Di tích nổi bật (3 card)</div>
+          <div class="ia-item">Sự kiện sắp tới (3 item)</div>
+          <div class="ia-item">Bản đồ tương tác mini</div>
+          <div class="ia-item">Ticket CTA Banner</div>
+          <div class="ia-item layer2">
+            <div style="font-size:10px;font-weight:700;color:var(--gold);">Persona → Luồng khách</div>
+            <span class="badge-persona badge-tourist">Tham quan</span>
+            <span class="badge-persona badge-program" style="margin-left:4px;">Chương trình</span>
+            <span class="badge-persona badge-research" style="margin-left:4px;">Nghiên cứu</span>
+            <span class="badge-persona badge-partner" style="margin-left:4px;">Đối tác</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DI TICH -->
+      <div class="ia-section">
+        <div class="ia-section-head ditich">Di tích</div>
+        <div class="ia-items">
+          <div class="ia-item">Tổng quan Khu di tích (5 khu)</div>
+          <div class="ia-item">Bản đồ tương tác SVG (10 hotspot)</div>
+          <div class="ia-item" style="border-left:3px solid var(--gold);">
+            <b>10 công trình · Lớp 1</b> <span class="ia-count">10</span>
+            <div style="font-size:10px;color:var(--stone);margin-top:3px;">Tóm tắt · Ảnh · CTA tham quan</div>
+          </div>
+          <div class="ia-item layer2">
+            <b>54 bài chi tiết · Lớp 2</b> <span class="ia-count" style="background:var(--blue);">54</span>
+            <div style="font-size:10px;color:var(--stone);margin-top:3px;">Lịch sử · Kiến trúc · Bản đồ · Audio</div>
+          </div>
+          <div class="ia-item layer3">
+            <b>Tư liệu học thuật · Lớp 3</b> <span class="ia-count" style="background:var(--stone);">∞</span>
+            <div style="font-size:10px;color:var(--stone);margin-top:3px;">Hán Nôm · PDF · Citation · G2</div>
+          </div>
+          <div class="ia-item" style="border-left:3px solid var(--crimson);">
+            <b>21 bài Danh nhân</b> <span class="ia-count">21</span>
+            <div style="font-size:10px;color:var(--stone);margin-top:3px;">Tiểu sử · Đóng góp · Trích dẫn</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SU KIEN -->
+      <div class="ia-section">
+        <div class="ia-section-head sukien">Sự kiện &amp; Trưng bày</div>
+        <div class="ia-items">
+          <div class="ia-item">Lịch sự kiện (Calendar view)</div>
+          <div class="ia-item">Trưng bày thường trực</div>
+          <div class="ia-item" style="border-left:3px solid var(--gold);">
+            Chương trình Giáo dục di sản
+            <div style="font-size:10px;color:var(--stone);margin-top:3px;">Tour có HD · Lớp học · Workshop</div>
+          </div>
+          <div class="ia-item layer2">
+            <b>192 tài liệu GD di sản · Lớp 3</b> <span class="ia-count" style="background:var(--blue);">192</span>
+            <div style="font-size:10px;color:var(--stone);margin-top:3px;">Giáo viên · Học sinh · Giáo án</div>
+          </div>
+          <div class="ia-item">Đăng ký tham gia online</div>
+          <div class="ia-item" style="border-left:3px solid var(--stone);background:#F0F0F0;">
+            <span style="color:#999;">Bảo tàng ảo · Giai đoạn 2</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- KHAM PHA -->
+      <div class="ia-section">
+        <div class="ia-section-head khampha">Khám phá</div>
+        <div class="ia-items">
+          <div class="ia-item">Hành trình tự thiết kế (Tour builder)</div>
+          <div class="ia-item" style="border-left:3px solid var(--gold);">
+            Thông tin thực tế
+            <div style="font-size:10px;color:var(--stone);margin-top:3px;">Giờ mở cửa · Giá vé · Đi lại · FAQ</div>
+          </div>
+          <div class="ia-item layer2">
+            Lịch sử Văn Miếu (Timeline)
+            <div style="font-size:10px;color:var(--stone);margin-top:3px;">1070 → Hiện tại · 950+ năm</div>
+          </div>
+          <div class="ia-item" style="border-left:3px solid var(--stone);background:#F0F0F0;">
+            <span style="color:#999;">Tra cứu 1.304 Tiến sĩ · G2</span>
+          </div>
+          <div class="ia-item" style="border-left:3px solid var(--stone);background:#F0F0F0;">
+            <span style="color:#999;">Thư viện số UNESCO · G2</span>
+          </div>
+          <div class="ia-item">Báo chí &amp; Đối tác</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TICKET SYSTEM -->
+    <div style="margin-top:24px;padding:0 0 24px;">
+      <div class="ia-ticket-box">
+        Vé điện tử Timed-Entry (module riêng biệt — xuất hiện ở mọi trang qua sticky CTA)
+        <div class="ia-ticket-items">
+          <div class="ia-ticket-item">Chọn ngày trên Calendar</div>
+          <div class="ia-ticket-item">Chọn khung giờ (timed-entry)</div>
+          <div class="ia-ticket-item">Số lượng + loại vé (4 loại)</div>
+          <div class="ia-ticket-item">7 cổng thanh toán</div>
+          <div class="ia-ticket-item">QR code per vé (anti-scalping)</div>
+          <div class="ia-ticket-item">Email + SMS confirmation</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 2 NOTE -->
+    <div class="callout" style="margin-top:0;">
+      <b>Giai đoạn 2 (sau go-live 3 tháng):</b> Bảo tàng ảo 82 Bia Tiến sĩ (chuẩn UNESCO Dive into Heritage · 1,8–2,2 tỷ VNĐ) · Thư viện số UNESCO PERSIST (900M–1,1 tỷ) · Tra cứu 1.304 Tiến sĩ (700–900M) · Cửa hàng lưu niệm (350–500M)
+    </div>
+
+    <!-- BREAKPOINTS TABLE -->
+    <div style="margin-top:24px;background:#FFF;border-radius:10px;border:1px solid var(--border);overflow:hidden;">
+      <div style="background:var(--dark);color:var(--gold);padding:12px 16px;font-size:12px;font-weight:700;letter-spacing:.5px;">BREAKPOINTS & RESPONSIVE BEHAVIOR</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);">
+        <div style="padding:12px;background:var(--muted);font-size:11px;font-weight:700;color:var(--stone);text-align:center;">Mobile 375px</div>
+        <div style="padding:12px;background:var(--muted);font-size:11px;font-weight:700;color:var(--stone);text-align:center;">Tablet 768px</div>
+        <div style="padding:12px;background:var(--muted);font-size:11px;font-weight:700;color:var(--stone);text-align:center;">Laptop 1024px</div>
+        <div style="padding:12px;background:var(--muted);font-size:11px;font-weight:700;color:var(--stone);text-align:center;">Desktop 1440px</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);">
+        <div style="padding:12px;font-size:11px;color:var(--dark);border-right:1px solid var(--border);">Hamburger nav · Drawer menu · Bottom tab bar · Persona 2×2 · Sticky buy bar</div>
+        <div style="padding:12px;font-size:11px;color:var(--dark);border-right:1px solid var(--border);">Top nav collapsed · Persona 2×2 · Side-by-side sections · No bottom bar</div>
+        <div style="padding:12px;font-size:11px;color:var(--dark);border-right:1px solid var(--border);">Full nav bar · Persona 4 col · 2-col content layout · Sidebar visible</div>
+        <div style="padding:12px;font-size:11px;color:var(--dark);">Full nav · Persona 4 col · 3-col cards · Wide hero · Max-w-7xl container</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- end .screens -->
+
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const idx = parseInt(id.replace('s','')) - 1;
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
