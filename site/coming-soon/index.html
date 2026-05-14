@@ -221,6 +221,12 @@
         justify-items: start;
         text-align: left;
       }
+      /* Address tooltip — left-align each i18n-stack inside so the labels
+         read like a regular info card, not centred chips. */
+      .address-tooltip .i18n-stack {
+        justify-items: start;
+        text-align: left;
+      }
       .hotline-label [data-rotate] {
         transition: opacity 0.3s ease,
           transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -560,7 +566,7 @@
           <div class="grid w-full max-w-md grid-cols-2 gap-3 sm:max-w-none sm:flex sm:items-center sm:justify-center sm:gap-4">
             <!-- card 1 -->
             <div class="countdown-card flex flex-col items-center gap-2 rounded-xl px-4 py-4 sm:w-32 sm:px-5 sm:py-5 md:w-36 md:py-6 lg:w-40 lg:px-7">
-              <span data-unit="days" class="font-display font-black leading-none text-cream text-[56px] sm:text-[64px] md:text-[72px] lg:text-[84px]">17</span>
+              <span data-unit="days" class="font-display font-black leading-none text-cream text-[44px] sm:text-[48px] md:text-[56px] lg:text-[64px]">17</span>
               <span class="card-rule h-px w-8"></span>
               <span class="i18n-stack">
                 <span data-i18n="vi" data-stagger="4" class="font-display text-[10px] font-bold tracking-wider2 text-cream sm:text-[11px]">NGÀY</span>
@@ -679,10 +685,56 @@
 
         <!-- FOOTER -->
         <footer class="flex flex-col items-center gap-4 px-5 py-6 text-center sm:px-8 md:grid md:grid-cols-3 md:items-center md:gap-0 md:px-12 md:py-8 md:text-left lg:px-20">
-          <div class="flex flex-wrap items-center justify-center gap-2 text-bronze sm:gap-3 md:justify-start">
-            <i class="icon-map-pin" style="font-size:14px;color:#B6A78E;"></i>
-            <span class="text-[11px] font-semibold sm:text-xs">58 Quốc Tử Giám, Đống Đa, Hà Nội</span>
-          </div>
+          <a
+            href="https://www.google.com/maps/search/?api=1&amp;query=V%C4%83n+Mi%E1%BA%BFu+Qu%E1%BB%91c+T%E1%BB%AD+Gi%C3%A1m+58+Qu%E1%BB%91c+T%E1%BB%AD+Gi%C3%A1m+%C4%90%E1%BB%91ng+%C4%90a+H%C3%A0+N%E1%BB%99i"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="address-link group relative inline-flex flex-wrap items-center justify-center gap-2 text-bronze transition hover:text-cream sm:gap-3 md:justify-start"
+            aria-label="58 Quốc Tử Giám, Đống Đa, Hà Nội — open in Google Maps"
+          >
+            <i class="icon-map-pin" style="font-size:14px;color:currentColor"></i>
+            <span class="text-[11px] font-semibold underline-offset-4 group-hover:underline sm:text-xs">58 Quốc Tử Giám, Đống Đa, Hà Nội</span>
+            <i class="icon-external-link" style="font-size:11px;color:currentColor;opacity:0.6"></i>
+
+            <span
+              role="tooltip"
+              class="address-tooltip pointer-events-none absolute bottom-full left-0 z-40 mb-3 hidden w-64 max-w-[calc(100vw-2rem)] -translate-y-1 rounded-xl border border-white/10 bg-ink/90 p-3 text-left opacity-0 shadow-2xl backdrop-blur-md transition sm:block group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
+            >
+              <span class="flex items-center gap-2 text-cream/90">
+                <i class="icon-clock" style="font-size:13px;color:#B6A78E"></i>
+                <span class="i18n-stack flex-1 text-[11px] font-medium">
+                  <span data-i18n="vi">Mở cửa: 7:30 – 17:30 hàng ngày</span>
+                  <span data-i18n="en">Open daily: 7:30 – 17:30</span>
+                  <span data-i18n="zh" lang="zh">每日开放 7:30 – 17:30</span>
+                  <span data-i18n="ko" lang="ko">매일 7:30 – 17:30</span>
+                  <span data-i18n="ja" lang="ja">毎日 7:30 – 17:30</span>
+                  <span data-i18n="fr" lang="fr">Ouvert tous les jours : 7h30 – 17h30</span>
+                </span>
+              </span>
+              <span class="mt-2 flex items-center gap-2 text-cream/90">
+                <i class="icon-ticket" style="font-size:13px;color:#B6A78E"></i>
+                <span class="i18n-stack flex-1 text-[11px] font-medium">
+                  <span data-i18n="vi">Vé tham quan: 30.000 ₫</span>
+                  <span data-i18n="en">Admission: 30,000 ₫</span>
+                  <span data-i18n="zh" lang="zh">门票：30,000 越南盾</span>
+                  <span data-i18n="ko" lang="ko">입장료: 30,000 VND</span>
+                  <span data-i18n="ja" lang="ja">入場料: 30,000 VND</span>
+                  <span data-i18n="fr" lang="fr">Billet : 30 000 ₫</span>
+                </span>
+              </span>
+              <span class="mt-2 flex items-center gap-2 border-t border-white/10 pt-2 text-bronze">
+                <i class="icon-external-link" style="font-size:11px;color:currentColor"></i>
+                <span class="i18n-stack flex-1 text-[10px] font-bold tracking-wider2">
+                  <span data-i18n="vi">Bấm để xem chỉ đường</span>
+                  <span data-i18n="en">Tap for directions</span>
+                  <span data-i18n="zh" lang="zh">点击查看路线</span>
+                  <span data-i18n="ko" lang="ko">길찾기 보기</span>
+                  <span data-i18n="ja" lang="ja">経路を表示</span>
+                  <span data-i18n="fr" lang="fr">Voir l'itinéraire</span>
+                </span>
+              </span>
+            </span>
+          </a>
 
           <span class="font-display text-[10px] font-bold tracking-wider text-bronze sm:text-[11px] md:justify-self-center">
             © 2026 · Văn Miếu — Quốc Tử Giám
