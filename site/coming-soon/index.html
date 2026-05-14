@@ -154,8 +154,28 @@
       [data-stagger="7"] { --stagger: 0.54s; }
       [data-stagger="8"] { --stagger: 0.63s; }
 
-      /* Lang toggle pill — active state highlight */
-      .lang-btn { transition: background 0.3s, color 0.3s; }
+      /* Lang dropdown — popover menu anchored to the trigger. Closed by default;
+         JS toggles `[data-state="open"]` on the wrapper to reveal. */
+      .lang-menu {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.97);
+        pointer-events: none;
+        transition: opacity 0.18s ease, transform 0.18s ease;
+      }
+      .lang-switcher[data-state="open"] .lang-menu {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+      }
+      .lang-switcher[data-state="open"] .lang-chev {
+        transform: rotate(180deg);
+      }
+      .lang-option.is-active {
+        background: rgba(139, 0, 0, 0.18);
+      }
+      .lang-option.is-active .lang-check {
+        opacity: 1;
+      }
       .scene {
         position: relative;
         width: 100%;
@@ -188,19 +208,22 @@
         backdrop-filter: blur(10px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       }
-      /* Hotline label rotation — fade swap controlled by JS via .is-swapping.
-         Override the i18n-stack's center alignment so the rotating label hugs
-         the left edge of the button text column, matching the phone number
-         underneath it. */
+      /* Hotline label rotation — slide-in-from-left + fade swap controlled by
+         JS via .is-swapping. Override the i18n-stack's center alignment so the
+         rotating label hugs the left edge of the button text column, matching
+         the phone number underneath it. */
       .hotline-label.i18n-stack {
         justify-items: start;
         text-align: left;
       }
       .hotline-label [data-rotate] {
-        transition: opacity 0.28s ease;
+        transition: opacity 0.3s ease,
+          transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateX(0);
       }
       .hotline-label.is-swapping [data-rotate] {
         opacity: 0;
+        transform: translateX(-14px);
       }
       /* Khuê Văn Các is at ~33% horizontally in the source image.
          Use cover on small screens (lots of horizontal overflow), zoom on
@@ -311,74 +334,82 @@
             <span class="hidden font-display text-[10px] font-medium tracking-wider2 text-parchment-300 lg:inline">
               EST. 1070
             </span>
-            <div
-              class="flex items-center rounded-full ring-1 ring-inset ring-parchment-300/30"
-              role="tablist"
-              aria-label="Language"
-            >
+            <div class="lang-switcher relative" data-state="closed">
               <button
                 type="button"
-                data-action="set-lang"
-                data-lang="vi"
-                aria-pressed="true"
-                lang="vi"
-                class="lang-btn is-active rounded-full bg-crimson px-2.5 py-1.5 font-display text-[10px] font-bold tracking-wider2 text-cream sm:px-3"
+                data-action="toggle-lang-menu"
+                aria-haspopup="menu"
+                aria-expanded="false"
+                aria-label="Choose language"
+                class="lang-trigger flex items-center gap-2 rounded-full bg-white/[0.04] px-2.5 py-1.5 ring-1 ring-inset ring-parchment-300/30 transition hover:ring-parchment-300/60 sm:gap-2.5 sm:px-3"
               >
-                VI
+                <img
+                  data-trigger-flag
+                  src="https://flagcdn.com/vn.svg"
+                  alt=""
+                  width="20"
+                  height="20"
+                  class="h-4 w-4 rounded-full object-cover ring-1 ring-white/10"
+                />
+                <span data-trigger-code class="font-display text-[10px] font-bold tracking-wider2 text-cream">VI</span>
+                <svg class="lang-chev h-3 w-3 text-parchment-300 transition-transform" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="3,4.5 6,7.5 9,4.5" />
+                </svg>
               </button>
-              <button
-                type="button"
-                data-action="set-lang"
-                data-lang="en"
-                aria-pressed="false"
-                lang="en"
-                class="lang-btn rounded-full px-2.5 py-1.5 font-display text-[10px] font-bold tracking-wider2 text-parchment-300 hover:text-cream sm:px-3"
+              <div
+                class="lang-menu absolute right-0 top-full z-50 mt-2 min-w-[208px] origin-top-right rounded-2xl border border-white/10 bg-ink/85 p-1.5 shadow-2xl backdrop-blur-md"
+                role="menu"
+                aria-label="Languages"
               >
-                EN
-              </button>
-              <button
-                type="button"
-                data-action="set-lang"
-                data-lang="zh"
-                aria-pressed="false"
-                aria-label="中文"
-                lang="zh"
-                class="lang-btn rounded-full px-2.5 py-1 font-display text-[13px] font-bold text-parchment-300 hover:text-cream sm:px-3"
-              >
-                中
-              </button>
-              <button
-                type="button"
-                data-action="set-lang"
-                data-lang="ko"
-                aria-pressed="false"
-                aria-label="한국어"
-                lang="ko"
-                class="lang-btn rounded-full px-2.5 py-1 font-display text-[13px] font-bold text-parchment-300 hover:text-cream sm:px-3"
-              >
-                한
-              </button>
-              <button
-                type="button"
-                data-action="set-lang"
-                data-lang="ja"
-                aria-pressed="false"
-                aria-label="日本語"
-                lang="ja"
-                class="lang-btn rounded-full px-2.5 py-1 font-display text-[13px] font-bold text-parchment-300 hover:text-cream sm:px-3"
-              >
-                日
-              </button>
-              <button
-                type="button"
-                data-action="set-lang"
-                data-lang="fr"
-                aria-pressed="false"
-                lang="fr"
-                class="lang-btn rounded-full px-2.5 py-1.5 font-display text-[10px] font-bold tracking-wider2 text-parchment-300 hover:text-cream sm:px-3"
-              >
-                FR
-              </button>
+                <button type="button" data-action="set-lang" data-lang="vi" role="menuitem" lang="vi" class="lang-option flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left transition hover:bg-white/5">
+                  <img src="https://flagcdn.com/vn.svg" alt="" width="20" height="20" class="h-5 w-5 rounded-full object-cover ring-1 ring-white/10" />
+                  <span class="flex-1 font-display text-[12px] font-semibold text-cream">Tiếng Việt</span>
+                  <span class="font-display text-[10px] font-bold tracking-wider2 text-parchment-300">VI</span>
+                  <svg class="lang-check ml-0.5 h-3.5 w-3.5 shrink-0 opacity-0 transition" style="color:#FF8080" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="2.5,7.5 5.5,10.5 11.5,4.5" />
+                  </svg>
+                </button>
+                <button type="button" data-action="set-lang" data-lang="en" role="menuitem" lang="en" class="lang-option flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left transition hover:bg-white/5">
+                  <img src="https://flagcdn.com/gb.svg" alt="" width="20" height="20" class="h-5 w-5 rounded-full object-cover ring-1 ring-white/10" />
+                  <span class="flex-1 font-display text-[12px] font-semibold text-cream">English</span>
+                  <span class="font-display text-[10px] font-bold tracking-wider2 text-parchment-300">EN</span>
+                  <svg class="lang-check ml-0.5 h-3.5 w-3.5 shrink-0 opacity-0 transition" style="color:#FF8080" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="2.5,7.5 5.5,10.5 11.5,4.5" />
+                  </svg>
+                </button>
+                <button type="button" data-action="set-lang" data-lang="fr" role="menuitem" lang="fr" class="lang-option flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left transition hover:bg-white/5">
+                  <img src="https://flagcdn.com/fr.svg" alt="" width="20" height="20" class="h-5 w-5 rounded-full object-cover ring-1 ring-white/10" />
+                  <span class="flex-1 font-display text-[12px] font-semibold text-cream">Français</span>
+                  <span class="font-display text-[10px] font-bold tracking-wider2 text-parchment-300">FR</span>
+                  <svg class="lang-check ml-0.5 h-3.5 w-3.5 shrink-0 opacity-0 transition" style="color:#FF8080" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="2.5,7.5 5.5,10.5 11.5,4.5" />
+                  </svg>
+                </button>
+                <button type="button" data-action="set-lang" data-lang="zh" role="menuitem" lang="zh" class="lang-option flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left transition hover:bg-white/5">
+                  <img src="https://flagcdn.com/cn.svg" alt="" width="20" height="20" class="h-5 w-5 rounded-full object-cover ring-1 ring-white/10" />
+                  <span class="flex-1 font-display text-[13px] font-semibold text-cream">中文</span>
+                  <span class="font-display text-[10px] font-bold tracking-wider2 text-parchment-300">ZH</span>
+                  <svg class="lang-check ml-0.5 h-3.5 w-3.5 shrink-0 opacity-0 transition" style="color:#FF8080" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="2.5,7.5 5.5,10.5 11.5,4.5" />
+                  </svg>
+                </button>
+                <button type="button" data-action="set-lang" data-lang="ja" role="menuitem" lang="ja" class="lang-option flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left transition hover:bg-white/5">
+                  <img src="https://flagcdn.com/jp.svg" alt="" width="20" height="20" class="h-5 w-5 rounded-full object-cover ring-1 ring-white/10" />
+                  <span class="flex-1 font-display text-[13px] font-semibold text-cream">日本語</span>
+                  <span class="font-display text-[10px] font-bold tracking-wider2 text-parchment-300">JA</span>
+                  <svg class="lang-check ml-0.5 h-3.5 w-3.5 shrink-0 opacity-0 transition" style="color:#FF8080" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="2.5,7.5 5.5,10.5 11.5,4.5" />
+                  </svg>
+                </button>
+                <button type="button" data-action="set-lang" data-lang="ko" role="menuitem" lang="ko" class="lang-option flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left transition hover:bg-white/5">
+                  <img src="https://flagcdn.com/kr.svg" alt="" width="20" height="20" class="h-5 w-5 rounded-full object-cover ring-1 ring-white/10" />
+                  <span class="flex-1 font-display text-[13px] font-semibold text-cream">한국어</span>
+                  <span class="font-display text-[10px] font-bold tracking-wider2 text-parchment-300">KO</span>
+                  <svg class="lang-check ml-0.5 h-3.5 w-3.5 shrink-0 opacity-0 transition" style="color:#FF8080" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="2.5,7.5 5.5,10.5 11.5,4.5" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         </header>
@@ -762,11 +793,29 @@
       // Language switch — JS toggles `.is-i18n-active`/`.is-i18n-inactive` on
       // every `[data-i18n]` node so visibility scales to any number of langs
       // without adding CSS rules. Choice persists in localStorage.
-      const SUPPORTED_LANGS = ["vi", "en", "zh", "ko", "ja", "fr"];
+      const LANG_META = {
+        vi: { code: "VI", flag: "vn" },
+        en: { code: "EN", flag: "gb" },
+        fr: { code: "FR", flag: "fr" },
+        zh: { code: "ZH", flag: "cn" },
+        ja: { code: "JA", flag: "jp" },
+        ko: { code: "KO", flag: "kr" },
+      };
+      const SUPPORTED_LANGS = Object.keys(LANG_META);
       const STORAGE_KEY = "vmqtg.lang";
       const scene = document.querySelector(".scene");
       const langBtns = document.querySelectorAll('[data-action="set-lang"]');
       const allI18nNodes = document.querySelectorAll("[data-i18n]");
+      const langSwitcher = document.querySelector(".lang-switcher");
+      const langTrigger = document.querySelector('[data-action="toggle-lang-menu"]');
+      const triggerFlag = document.querySelector("[data-trigger-flag]");
+      const triggerCode = document.querySelector("[data-trigger-code]");
+
+      function setLangMenuOpen(open) {
+        if (!langSwitcher) return;
+        langSwitcher.dataset.state = open ? "open" : "closed";
+        langTrigger?.setAttribute("aria-expanded", open ? "true" : "false");
+      }
 
       function applyLang(target, { animate = true } = {}) {
         if (!SUPPORTED_LANGS.includes(target)) return;
@@ -788,22 +837,41 @@
             el.style.animation = "";
           }
         });
+        // Menu items: highlight + check icon driven by `.is-active`.
         langBtns.forEach((b) => {
           const isActive = b.dataset.lang === target;
           b.classList.toggle("is-active", isActive);
           b.setAttribute("aria-pressed", isActive ? "true" : "false");
-          b.classList.toggle("bg-crimson", isActive);
-          b.classList.toggle("text-cream", isActive);
-          b.classList.toggle("text-parchment-300", !isActive);
         });
+        // Update the trigger pill's flag + code to match the active lang.
+        const meta = LANG_META[target];
+        if (meta) {
+          if (triggerFlag) triggerFlag.src = `https://flagcdn.com/${meta.flag}.svg`;
+          if (triggerCode) triggerCode.textContent = meta.code;
+        }
       }
 
       langBtns.forEach((btn) => {
         btn.addEventListener("click", () => {
           const target = btn.dataset.lang;
-          if (scene.dataset.lang === target) return;
-          applyLang(target);
+          if (scene.dataset.lang !== target) applyLang(target);
+          setLangMenuOpen(false);
         });
+      });
+
+      // Dropdown open/close — trigger click toggles; outside click + Esc close.
+      langTrigger?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isOpen = langSwitcher?.dataset.state === "open";
+        setLangMenuOpen(!isOpen);
+      });
+      document.addEventListener("click", (e) => {
+        if (langSwitcher && !langSwitcher.contains(e.target)) {
+          setLangMenuOpen(false);
+        }
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") setLangMenuOpen(false);
       });
 
       // Initial language — saved preference > browser default > VI
