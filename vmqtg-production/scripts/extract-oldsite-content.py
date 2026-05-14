@@ -324,10 +324,16 @@ def build_site_html(folder: Path, recursive: bool = False) -> str | None:
     return "\n\n".join(parts) if parts else None
 
 
+# Folders to skip entirely when walking v5/. Used when an item was dropped
+# from the sitemap (e.g. E6 Nước uống removed in v0.3).
+EXCLUDE_FOLDERS: set[str] = {
+    "dich-vu/nuoc-uong",
+}
+
 # Folder name → anchor id mapping for v5-aggregated pages. The nav links to
 # /<slug>#<id> so section ids must match the codes (C1, D1, E1...) rather than
 # the raw v5 folder names. Falls back to the folder name when not mapped.
-FOLDER_TO_ANCHOR: dict[str, dict[str, str]] = {
+FOLDER_TO_ANCHOR: dict[str, str] = {
     # hoat-dong (cac-hoat-dong)
     "cac-hoat-dong/su-kien": "D1",
     "cac-hoat-dong/giao-duc-di-san": "D2",
@@ -345,13 +351,12 @@ FOLDER_TO_ANCHOR: dict[str, dict[str, str]] = {
     "trung-bay-trien-lam/co-dinh/truong-quoc-hoc": "C1.1",
     "trung-bay-trien-lam/co-dinh/khoi-nguon-dao-hoc": "C1.2",
     "trung-bay-trien-lam/co-dinh/su-da-luu-danh": "C1.3",
-    # dich-vu
+    # dich-vu (E6 nuoc-uong removed in v0.3 sitemap)
     "dich-vu/tour-dem": "E1",
     "dich-vu/audio-guide": "E2",
     "dich-vu/huong-dan-vien": "E3",
     "dich-vu/qua-luu-niem": "E4",
     "dich-vu/thu-phap": "E5",
-    "dich-vu/nuoc-uong": "E6",
 }
 
 
@@ -379,6 +384,8 @@ def build_v5_html(folder: Path, v5: dict, key_prefix: str, recursive: bool = Tru
             continue
         sub_idx = sub / "index.html"
         sub_key = f"{key_prefix}/{sub.name}"
+        if sub_key in EXCLUDE_FOLDERS:
+            continue
         sub_anchor = FOLDER_TO_ANCHOR.get(sub_key, sub.name)
         # vi: prefer extracted HTML, fall back to v5 CONTENT vi if defined
         vi_html = extract_v5_article(sub_idx)
@@ -400,6 +407,8 @@ def build_v5_html(folder: Path, v5: dict, key_prefix: str, recursive: bool = Tru
                     continue
                 nested_idx = nested / "index.html"
                 nested_key = f"{key_prefix}/{sub.name}/{nested.name}"
+                if nested_key in EXCLUDE_FOLDERS:
+                    continue
                 nested_anchor = FOLDER_TO_ANCHOR.get(nested_key, f"{sub.name}-{nested.name}")
                 vi_n = extract_v5_article(nested_idx)
                 loc_n = v5.get(nested_key) or {}

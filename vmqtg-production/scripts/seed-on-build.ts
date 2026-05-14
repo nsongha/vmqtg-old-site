@@ -108,7 +108,7 @@ const NAV_ITEMS = [
   { label: 'Tham quan', href: '/tham-quan', mega_menu: false, children: [] },
 
   {
-    label: 'Về di tích', href: '/ve-di-tich', mega_menu: true,
+    label: 'Di tích', href: '/ve-di-tich', mega_menu: true,
     children: [
       // B1 — Lịch sử (4)
       { label: 'Lịch sử',         href: '/ve-di-tich#B1',   group_id: 'B1' },
@@ -158,7 +158,7 @@ const NAV_ITEMS = [
   },
 
   {
-    label: 'Trưng bày, triển lãm', href: '/trung-bay-trien-lam', mega_menu: true,
+    label: 'Trưng bày', href: '/trung-bay-trien-lam', mega_menu: true,
     children: [
       // C1 — Trưng bày cố định (3)
       { label: 'Trưng bày cố định', href: '/trung-bay-trien-lam#C1',   group_id: 'C1' },
@@ -196,7 +196,6 @@ const NAV_ITEMS = [
       { label: 'Thuyết minh tại điểm', href: '/dich-vu#E3', group_id: 'E3' },
       { label: 'Quà lưu niệm', href: '/dich-vu#E4', group_id: 'E4' },
       { label: 'Viết chữ thư pháp', href: '/dich-vu#E5', group_id: 'E5' },
-      { label: 'Nước uống', href: '/dich-vu#E6', group_id: 'E6' },
     ],
   },
 ]
