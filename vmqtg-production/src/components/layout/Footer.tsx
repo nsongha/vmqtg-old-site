@@ -50,6 +50,7 @@ export function Footer({ locale }: Props) {
               { href: '/dich-vu', label: { vi: 'Dịch vụ', en: 'Services', fr: 'Services' } },
               { href: '/bia-tien-si', label: { vi: '82 Bia Tiến Sĩ', en: '82 Doctoral Stelae', fr: '82 Stèles' } },
               { href: '/ve-chung-toi', label: { vi: 'Về chúng tôi', en: 'About us', fr: 'À propos de nous' } },
+              { href: '/thu-vien-anh', label: { vi: 'Thư viện ảnh', en: 'Photo library', fr: 'Photothèque' } },
             ].map((link) => (
               <li key={link.href}>
                 <Link href={`/${locale}${link.href}`} className="hover:text-[--color-gold]">

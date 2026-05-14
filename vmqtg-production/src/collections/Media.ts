@@ -17,5 +17,18 @@ export const Media: CollectionConfig = {
   fields: [
     { name: 'alt', type: 'text', localized: true },
     { name: 'caption', type: 'text', localized: true },
+    {
+      name: 'category',
+      type: 'select',
+      admin: { position: 'sidebar' },
+      options: [
+        { label: 'Kiến trúc', value: 'kien-truc' },
+        { label: 'Lịch sử', value: 'lich-su' },
+        { label: 'Danh nhân', value: 'danh-nhan' },
+        { label: 'Tượng thờ', value: 'tuong-tho' },
+        { label: 'Hoạt động', value: 'hoat-dong' },
+        { label: 'Khác', value: 'khac' },
+      ],
+    },
   ],
 }
