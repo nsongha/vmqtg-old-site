@@ -125,8 +125,38 @@
         min-height: 100svh;
         min-height: 100vh;
         margin: 0 auto;
-        overflow: hidden;
-        background: #1E1D1D;
+      }
+      /* Fixed background stack — sits behind the scene so it doesn't scroll
+         with the page. JS adds a translateY for a subtle parallax drift. */
+      .bg-stack {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .bg-cinematic {
+        will-change: transform;
+      }
+      /* Sticky header — glassy backdrop appears once the page has scrolled. */
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        transition: background-color 0.3s ease, backdrop-filter 0.3s ease,
+          border-color 0.3s ease;
+      }
+      .site-header.is-scrolled {
+        background-color: rgba(30, 29, 29, 0.55);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      /* Hotline label rotation — fade swap controlled by JS via .is-swapping */
+      .hotline-label[data-rotate] {
+        transition: opacity 0.28s ease;
+      }
+      .hotline-label.is-swapping [data-rotate] {
+        opacity: 0;
       }
       /* Khuê Văn Các is at ~33% horizontally in the source image.
          Use cover on small screens (lots of horizontal overflow), zoom on
@@ -195,18 +225,20 @@
   </head>
 
   <body>
-    <main class="scene" data-lang="vi">
-      <!-- Background image + overlays -->
+    <!-- Fixed background stack — translated on scroll for parallax effect -->
+    <div class="bg-stack" aria-hidden="true">
       <div class="bg-cinematic absolute inset-0"></div>
       <div class="overlay-gradient absolute inset-0"></div>
       <div class="vignette absolute inset-0"></div>
+    </div>
 
+    <main class="scene relative z-10" data-lang="vi">
       <!-- Content -->
-      <div class="relative z-10 flex min-h-screen w-full flex-col justify-between gap-10 py-6 sm:py-8 md:gap-0 md:py-0">
+      <div class="relative z-10 flex min-h-screen w-full flex-col justify-between gap-10 md:gap-0">
         <!-- HEADER -->
-        <header class="flex items-center justify-between px-5 sm:px-8 md:px-12 lg:px-20 md:py-7 lg:py-8">
+        <header class="site-header flex items-center justify-between px-5 sm:px-8 md:px-12 lg:px-20 py-4 md:py-5 lg:py-6">
           <!-- Logo: VM symbol + wordmark (DS v1.0 §2.1) -->
-          <a href="/" class="flex flex-col items-center gap-1.5 md:gap-2" aria-label="Văn Miếu — Quốc Tử Giám">
+          <div class="flex flex-col items-center gap-1.5 md:gap-2" aria-label="Văn Miếu — Quốc Tử Giám">
             <svg
               class="vm-mark h-10 w-8 md:h-12 md:w-9 lg:h-14 lg:w-11"
               viewBox="0 0 120 160"
@@ -229,7 +261,7 @@
                 QUỐC TỬ GIÁM
               </span>
             </div>
-          </a>
+          </div>
 
           <div class="flex items-center gap-3 md:gap-6">
             <span class="hidden font-display text-[10px] font-medium tracking-wider2 text-parchment-300 sm:inline">
@@ -383,12 +415,12 @@
             >
               <i class="icon-phone" style="font-size:18px;color:#FFFFFF;"></i>
               <span class="flex flex-col leading-tight">
-                <span class="i18n-stack">
-                  <span data-i18n="en" data-stagger="6" class="font-display text-[10px] font-bold tracking-wider2 text-white/70">
+                <span class="hotline-label i18n-stack">
+                  <span data-i18n="en" data-rotate="en" data-stagger="6" class="font-display text-[10px] font-bold tracking-wider2 text-white/70">
                     HOTLINE
                   </span>
-                  <span data-i18n="vi" data-stagger="6" class="font-display text-[10px] font-bold tracking-wider2 text-white/70">
-                    ĐƯỜNG DÂY NÓNG
+                  <span data-i18n="vi" data-rotate="vi" data-stagger="6" class="font-display text-[10px] font-bold tracking-wider2 text-white/70">
+                    HOTLINE
                   </span>
                 </span>
                 <span class="font-display text-[18px] font-extrabold text-white sm:text-[20px]">
@@ -458,6 +490,54 @@
       }
       tick();
       setInterval(tick, 1000);
+
+      // Hotline label rotation — cycles VI + EN in lockstep so a language
+      // switch never lands on an out-of-sync word.
+      const hotlineLabels = {
+        vi: ["HOTLINE", "LIÊN HỆ", "ĐẶT VÉ", "ĐẶT TOUR", "GIẢI ĐÁP", "HỖ TRỢ"],
+        en: ["HOTLINE", "CONTACT", "BOOK TICKETS", "BOOK TOUR", "INQUIRIES", "SUPPORT"],
+      };
+      const hotlineLabelEl = document.querySelector(".hotline-label");
+      const hotlineVi = hotlineLabelEl?.querySelector('[data-rotate="vi"]');
+      const hotlineEn = hotlineLabelEl?.querySelector('[data-rotate="en"]');
+      let hotlineIdx = 0;
+      if (hotlineLabelEl && hotlineVi && hotlineEn) {
+        setInterval(() => {
+          hotlineIdx = (hotlineIdx + 1) % hotlineLabels.vi.length;
+          hotlineLabelEl.classList.add("is-swapping");
+          setTimeout(() => {
+            hotlineVi.textContent = hotlineLabels.vi[hotlineIdx];
+            hotlineEn.textContent = hotlineLabels.en[hotlineIdx];
+            hotlineLabelEl.classList.remove("is-swapping");
+          }, 280);
+        }, 2600);
+      }
+
+      // Parallax — translate the fixed background at a slower rate than the
+      // page scroll. rAF batching keeps it cheap on scroll-heavy devices.
+      const parallaxBg = document.querySelector(".bg-cinematic");
+      const header = document.querySelector(".site-header");
+      let parallaxRaf = null;
+      function updateScroll() {
+        const y = window.scrollY || window.pageYOffset || 0;
+        if (parallaxBg) {
+          parallaxBg.style.transform = `translate3d(0, ${y * 0.35}px, 0)`;
+        }
+        if (header) {
+          header.classList.toggle("is-scrolled", y > 8);
+        }
+        parallaxRaf = null;
+      }
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (parallaxRaf === null) {
+            parallaxRaf = requestAnimationFrame(updateScroll);
+          }
+        },
+        { passive: true }
+      );
+      updateScroll();
 
       // Language switch — CSS handles transitions via [data-lang] selectors.
       // Force animation restart by toggling a sentinel class so the keyframe
