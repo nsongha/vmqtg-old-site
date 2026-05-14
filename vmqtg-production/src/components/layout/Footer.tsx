@@ -44,8 +44,8 @@ export function Footer({ locale }: Props) {
           <ul className="space-y-2 text-xs text-[--color-ink-muted]">
             {[
               { href: '/tham-quan', label: { vi: 'Thông tin tham quan', en: 'Visitor info', fr: 'Informations' } },
-              { href: '/ve-di-tich', label: { vi: 'Về di tích', en: 'About', fr: 'À propos' } },
-              { href: '/trung-bay-trien-lam', label: { vi: 'Trưng bày, triển lãm', en: 'Exhibitions', fr: 'Expositions' } },
+              { href: '/ve-di-tich', label: { vi: 'Di tích', en: 'About', fr: 'À propos' } },
+              { href: '/trung-bay-trien-lam', label: { vi: 'Trưng bày', en: 'Exhibitions', fr: 'Expositions' } },
               { href: '/hoat-dong', label: { vi: 'Các hoạt động', en: 'Activities', fr: 'Activités' } },
               { href: '/dich-vu', label: { vi: 'Dịch vụ', en: 'Services', fr: 'Services' } },
               { href: '/bia-tien-si', label: { vi: '82 Bia Tiến Sĩ', en: '82 Doctoral Stelae', fr: '82 Stèles' } },

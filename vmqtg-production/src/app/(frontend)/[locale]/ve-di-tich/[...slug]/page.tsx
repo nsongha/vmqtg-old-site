@@ -55,7 +55,7 @@ export default async function DiTichItemPage({ params }: Props) {
         </Link>
         <span>›</span>
         <Link href={`/${locale}/ve-di-tich`} className="hover:text-[--color-gold]">
-          {locale === 'vi' ? 'Về di tích' : locale === 'en' ? 'About' : 'À propos'}
+          {locale === 'vi' ? 'Di tích' : locale === 'en' ? 'About' : 'À propos'}
         </Link>
         <span>›</span>
         <span>{item.title}</span>

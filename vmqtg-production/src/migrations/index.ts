@@ -4,6 +4,7 @@ import * as migration_20260513_140000_polish_tham_quan_translations from './2026
 import * as migration_20260513_200000_refresh_hoat_dong_vi from './20260513_200000_refresh_hoat_dong_vi';
 import * as migration_20260513_220000_refresh_anchor_sections from './20260513_220000_refresh_anchor_sections';
 import * as migration_20260513_230000_refresh_dich_vu_drop_e6 from './20260513_230000_refresh_dich_vu_drop_e6';
+import * as migration_20260514_040000_short_page_titles from './20260514_040000_short_page_titles';
 
 export const migrations = [
   {
@@ -35,5 +36,10 @@ export const migrations = [
     up: migration_20260513_230000_refresh_dich_vu_drop_e6.up,
     down: migration_20260513_230000_refresh_dich_vu_drop_e6.down,
     name: '20260513_230000_refresh_dich_vu_drop_e6'
+  },
+  {
+    up: migration_20260514_040000_short_page_titles.up,
+    down: migration_20260514_040000_short_page_titles.down,
+    name: '20260514_040000_short_page_titles'
   },
 ];

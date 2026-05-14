@@ -243,12 +243,13 @@ PAGE_UI_KEY: dict[str, str] = {
 # empty values that would break required-field validation later.
 PAGE_VI_FALLBACK: dict[str, dict[str, str]] = {
     "tham-quan":           {"title": "Thông tin tham quan", "subtitle": "Vé, giờ mở cửa, nội quy, đường đến và các tiện ích."},
-    "ve-di-tich":          {"title": "Về di tích",          "subtitle": "Lịch sử, phân khu, kiến trúc, danh nhân, tượng thờ và thư viện."},
+    # v0.3 sitemap shortens nav labels — page headings match
+    "ve-di-tich":          {"title": "Di tích",             "subtitle": "Lịch sử, phân khu, kiến trúc, danh nhân, tượng thờ và thư viện."},
     "giao-duc-di-san":     {"title": "Giáo dục di sản",     "subtitle": "Các chương trình giáo dục dành cho mọi lứa tuổi từ mầm non đến THPT."},
     "hoat-dong":           {"title": "Các hoạt động",       "subtitle": "Sự kiện, giáo dục di sản, trải nghiệm, hội thảo và workshop."},
     "bia-tien-si":         {"title": "82 Bia Tiến Sĩ",      "subtitle": "Di sản tư liệu thế giới UNESCO · 1.307 tiến sĩ từ 1442–1779."},
     "ve-chung-toi":        {"title": "Về chúng tôi",        "subtitle": "Trung tâm hoạt động VHKH Văn Miếu – Quốc Tử Giám."},
-    "trung-bay-trien-lam": {"title": "Trưng bày, triển lãm","subtitle": "Trưng bày cố định, chuyên đề và các triển lãm tại di tích."},
+    "trung-bay-trien-lam": {"title": "Trưng bày",           "subtitle": "Trưng bày cố định, chuyên đề và các triển lãm tại di tích."},
     "dich-vu":             {"title": "Dịch vụ",             "subtitle": "Tour đêm, audio guide, thuyết minh, quà lưu niệm, viết thư pháp."},
 }
 
@@ -257,12 +258,16 @@ PAGE_SUB_RE = re.compile(r'<p\s+class="page-sub"[^>]*>(.*?)</p>', re.DOTALL)
 
 
 def extract_vi_title_subtitle(slug: str) -> tuple[str | None, str | None]:
-    """Pull VI page title + subtitle from site/<slug>/index.html when present.
+    """Resolve VI page title + subtitle.
 
-    Returns (title, subtitle). Falls back to PAGE_VI_FALLBACK[slug] if the
-    source doesn't have h2.page-title (or the page doesn't exist in site/).
+    Source of truth is PAGE_VI_FALLBACK (the v0.3 sitemap). When a slug has
+    no fallback entry, we scrape site/<slug>/index.html as a safety net.
     """
-    # Resolve slug → site/ folder
+    fb = PAGE_VI_FALLBACK.get(slug, {})
+    if fb.get("title") and fb.get("subtitle"):
+        return (fb["title"], fb["subtitle"])
+
+    # Resolve slug → site/ folder for safety-net extraction
     folder_map = {
         "tham-quan": "tham-quan",
         "ve-di-tich": "di-tich",
@@ -273,22 +278,21 @@ def extract_vi_title_subtitle(slug: str) -> tuple[str | None, str | None]:
         # trung-bay-trien-lam + dich-vu are v5-only; site/ has no equivalent
     }
     folder_rel = folder_map.get(slug)
-    title: str | None = None
-    subtitle: str | None = None
+    title: str | None = fb.get("title")
+    subtitle: str | None = fb.get("subtitle")
     if folder_rel:
         idx = OLDSITE / folder_rel / "index.html"
         if idx.exists():
             text = idx.read_text(encoding="utf-8")
-            m = PAGE_TITLE_RE.search(text)
-            if m:
-                # strip any inner tags, keep plain text
-                title = re.sub(r"<[^>]+>", "", m.group(1)).strip()
-            m = PAGE_SUB_RE.search(text)
-            if m:
-                subtitle = re.sub(r"<[^>]+>", "", m.group(1)).strip()
-    # Fallback
-    fb = PAGE_VI_FALLBACK.get(slug, {})
-    return (title or fb.get("title"), subtitle or fb.get("subtitle"))
+            if title is None:
+                m = PAGE_TITLE_RE.search(text)
+                if m:
+                    title = re.sub(r"<[^>]+>", "", m.group(1)).strip()
+            if subtitle is None:
+                m = PAGE_SUB_RE.search(text)
+                if m:
+                    subtitle = re.sub(r"<[^>]+>", "", m.group(1)).strip()
+    return (title, subtitle)
 
 
 def build_site_html(folder: Path, recursive: bool = False) -> str | None:

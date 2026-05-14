@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 
 const SLUG = 'trung-bay-trien-lam'
 const TITLES = {
-  vi: 'Trưng bày, triển lãm | Văn Miếu',
+  vi: 'Trưng bày | Văn Miếu',
   en: 'Exhibitions | Temple of Literature',
   fr: 'Expositions | Temple de la Littérature',
 } as const
@@ -39,7 +39,7 @@ export default async function Page({ params }: Props) {
     <div className="container mt-12 mb-[--spacing-section]">
       <div className="mb-10 animate-fade-up">
         <h1 className="font-serif text-3xl md:text-4xl font-bold mb-3">
-          {page?.title ?? 'Trưng bày, triển lãm'}
+          {page?.title ?? 'Trưng bày'}
         </h1>
         {page?.subtitle && <p className="text-[--color-ink-muted]">{page.subtitle}</p>}
       </div>
