@@ -222,12 +222,11 @@
         justify-items: start;
         text-align: left;
       }
-      /* Address tooltip — left-align each i18n-stack inside so the labels
-         read like a regular info card, not centred chips. */
-      .address-tooltip .i18n-stack {
-        justify-items: start;
-        text-align: left;
-      }
+      /* Address copy button — swap the affordance icon for a check while the
+         "copied" state is held (JS toggles `.is-copied` for ~1.5s). */
+      .address-link .address-icon-done { display: none; }
+      .address-link.is-copied .address-icon-idle { display: none; }
+      .address-link.is-copied .address-icon-done { display: inline-block; }
       .hotline-label [data-rotate] {
         transition: opacity 0.3s ease,
           transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -315,25 +314,15 @@
       <div class="relative z-10 flex min-h-screen w-full flex-col justify-between gap-10 md:gap-0">
         <!-- HEADER -->
         <header class="site-header flex items-center justify-between px-5 sm:px-8 md:px-12 lg:px-20 py-4 md:py-5 lg:py-6">
-          <!-- Logo: VM symbol + wordmark (DS v1.0 §2.1) -->
-          <div class="flex flex-col items-center gap-1.5 md:gap-2" aria-label="Văn Miếu — Quốc Tử Giám">
-            <img
-              src="./logo.svg"
-              alt=""
-              aria-hidden="true"
-              width="117"
-              height="141"
-              class="vm-mark h-10 w-auto md:h-12 lg:h-14"
-            />
-            <div class="hidden flex-col items-center gap-0.5 leading-none sm:flex">
-              <span class="font-display text-[14px] font-semibold tracking-wider2 text-cream md:text-[16px]">
-                Văn Miếu
-              </span>
-              <span class="font-display text-[7px] font-medium tracking-wider3 text-parchment-200 md:text-[8px]">
-                QUỐC TỬ GIÁM
-              </span>
-            </div>
-          </div>
+          <!-- Logo — wordmark "Văn Miếu / QUỐC TỬ GIÁM" is already part of the
+               SVG itself, so no companion text node is needed here. -->
+          <img
+            src="./logo.svg"
+            alt="Văn Miếu — Quốc Tử Giám"
+            width="117"
+            height="141"
+            class="vm-mark h-12 w-auto md:h-14 lg:h-16"
+          />
 
           <div class="flex items-center gap-3 md:gap-6">
             <span class="hidden font-display text-[10px] font-medium tracking-wider2 text-parchment-300 lg:inline">
@@ -680,56 +669,18 @@
 
         <!-- FOOTER -->
         <footer class="flex flex-col items-center gap-4 px-5 py-6 text-center sm:px-8 md:grid md:grid-cols-3 md:items-center md:gap-0 md:px-12 md:py-8 md:text-left lg:px-20">
-          <a
-            href="https://www.google.com/maps/search/?api=1&amp;query=V%C4%83n+Mi%E1%BA%BFu+Qu%E1%BB%91c+T%E1%BB%AD+Gi%C3%A1m+58+Qu%E1%BB%91c+T%E1%BB%AD+Gi%C3%A1m+%C4%90%E1%BB%91ng+%C4%90a+H%C3%A0+N%E1%BB%99i"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="address-link group relative inline-flex flex-wrap items-center justify-center gap-2 text-bronze transition hover:text-cream sm:gap-3 md:justify-start"
-            aria-label="58 Quốc Tử Giám, Đống Đa, Hà Nội — open in Google Maps"
+          <button
+            type="button"
+            data-action="copy-address"
+            data-address="58 Quốc Tử Giám, Đống Đa, Hà Nội"
+            class="address-link group inline-flex flex-wrap items-center justify-center gap-2 text-bronze transition hover:text-cream sm:gap-3 md:justify-start"
+            aria-label="Copy địa chỉ"
           >
             <i class="icon-map-pin" style="font-size:14px;color:currentColor"></i>
             <span class="text-[11px] font-semibold underline-offset-4 group-hover:underline sm:text-xs">58 Quốc Tử Giám, Đống Đa, Hà Nội</span>
-            <i class="icon-external-link" style="font-size:11px;color:currentColor;opacity:0.6"></i>
-
-            <span
-              role="tooltip"
-              class="address-tooltip pointer-events-none absolute bottom-full left-0 z-40 mb-3 hidden w-64 max-w-[calc(100vw-2rem)] -translate-y-1 rounded-xl border border-white/10 bg-ink/90 p-3 text-left opacity-0 shadow-2xl backdrop-blur-md transition sm:block group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
-            >
-              <span class="flex items-center gap-2 text-cream/90">
-                <i class="icon-clock" style="font-size:13px;color:#B6A78E"></i>
-                <span class="i18n-stack flex-1 text-[11px] font-medium">
-                  <span data-i18n="vi">Mở cửa: 7:30 – 17:30 hàng ngày</span>
-                  <span data-i18n="en">Open daily: 7:30 – 17:30</span>
-                  <span data-i18n="zh" lang="zh">每日开放 7:30 – 17:30</span>
-                  <span data-i18n="ko" lang="ko">매일 7:30 – 17:30</span>
-                  <span data-i18n="ja" lang="ja">毎日 7:30 – 17:30</span>
-                  <span data-i18n="fr" lang="fr">Ouvert tous les jours : 7h30 – 17h30</span>
-                </span>
-              </span>
-              <span class="mt-2 flex items-center gap-2 text-cream/90">
-                <i class="icon-ticket" style="font-size:13px;color:#B6A78E"></i>
-                <span class="i18n-stack flex-1 text-[11px] font-medium">
-                  <span data-i18n="vi">Vé tham quan: 30.000 ₫</span>
-                  <span data-i18n="en">Admission: 30,000 ₫</span>
-                  <span data-i18n="zh" lang="zh">门票：30,000 越南盾</span>
-                  <span data-i18n="ko" lang="ko">입장료: 30,000 VND</span>
-                  <span data-i18n="ja" lang="ja">入場料: 30,000 VND</span>
-                  <span data-i18n="fr" lang="fr">Billet : 30 000 ₫</span>
-                </span>
-              </span>
-              <span class="mt-2 flex items-center gap-2 border-t border-white/10 pt-2 text-bronze">
-                <i class="icon-external-link" style="font-size:11px;color:currentColor"></i>
-                <span class="i18n-stack flex-1 text-[10px] font-bold tracking-wider2">
-                  <span data-i18n="vi">Bấm để xem chỉ đường</span>
-                  <span data-i18n="en">Tap for directions</span>
-                  <span data-i18n="zh" lang="zh">点击查看路线</span>
-                  <span data-i18n="ko" lang="ko">길찾기 보기</span>
-                  <span data-i18n="ja" lang="ja">経路を表示</span>
-                  <span data-i18n="fr" lang="fr">Voir l'itinéraire</span>
-                </span>
-              </span>
-            </span>
-          </a>
+            <i class="icon-copy address-icon-idle" style="font-size:11px;color:currentColor;opacity:0.6"></i>
+            <i class="icon-check address-icon-done" style="font-size:13px;color:#FF8080"></i>
+          </button>
 
           <span class="font-display text-[10px] font-bold tracking-wider text-bronze sm:text-[11px] md:justify-self-center">
             © 2026 · Văn Miếu — Quốc Tử Giám
@@ -842,6 +793,22 @@
         { passive: true }
       );
       updateScroll();
+
+      // Address copy — clicking the address writes it to the clipboard and
+      // briefly swaps the trailing affordance icon to a check. Clipboard API
+      // is HTTPS-only; on insecure contexts the call rejects and the icon
+      // simply doesn't update (no toast, no fallback needed).
+      const copyBtn = document.querySelector('[data-action="copy-address"]');
+      copyBtn?.addEventListener("click", async () => {
+        const text = copyBtn.dataset.address || copyBtn.textContent.trim();
+        try {
+          await navigator.clipboard.writeText(text);
+          copyBtn.classList.add("is-copied");
+          setTimeout(() => copyBtn.classList.remove("is-copied"), 1500);
+        } catch (_) {
+          // clipboard unavailable — silently ignore
+        }
+      });
 
       // Language switch — JS toggles `.is-i18n-active`/`.is-i18n-inactive` on
       // every `[data-i18n]` node so visibility scales to any number of langs
