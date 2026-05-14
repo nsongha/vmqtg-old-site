@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thư Viện Ảnh — Văn Miếu Quốc Tử Giám</title>
+<style>
+:root {
+  --brick: #8b2e2e;
+  --brick-dark: #5a1818;
+  --gold: #c9a14a;
+  --gold-light: #e4c97e;
+  --cream: #f5efe2;
+  --ink: #2a221c;
+  --paper: #fbf8f1;
+  --muted: #6b5e52;
+  --line: #d8cdb8;
+  --shadow: rgba(42,34,28,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+}
+header {
+  background: var(--brick-dark);
+  color: var(--cream);
+  padding: 20px 32px 18px;
+  border-bottom: 3px solid var(--gold);
+}
+header h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.02em; }
+header p { font-size: 0.82rem; color: var(--gold-light); margin-top: 3px; }
+.controls {
+  background: var(--cream);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 32px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.search-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.search-input {
+  flex: 1; max-width: 280px;
+  padding: 6px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 20px;
+  font-size: 0.82rem;
+  background: white; color: var(--ink);
+  outline: none; transition: border-color 0.15s;
+}
+.search-input:focus { border-color: var(--gold); }
+.search-input::placeholder { color: var(--muted); }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.tab {
+  padding: 6px 14px; border-radius: 20px;
+  border: 1.5px solid var(--line);
+  background: white; color: var(--muted);
+  font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.tab:hover { border-color: var(--brick); color: var(--brick); }
+.tab.active { background: var(--brick); border-color: var(--brick); color: white; }
+.sub-tabs { display: flex; gap: 5px; flex-wrap: wrap; min-height: 28px; }
+.sub-tab {
+  padding: 4px 11px; border-radius: 14px;
+  border: 1.5px solid var(--line);
+  background: white; color: var(--muted);
+  font-size: 0.76rem; font-weight: 500;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.sub-tab:hover { border-color: var(--gold); color: var(--ink); }
+.sub-tab.active { background: var(--gold); border-color: var(--gold); color: var(--brick-dark); font-weight: 700; }
+.count-bar { padding: 8px 32px 0; font-size: 0.78rem; color: var(--muted); }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 10px;
+  padding: 16px 32px 48px;
+}
+.card {
+  position: relative; background: white;
+  border-radius: 6px; overflow: hidden;
+  border: 1px solid var(--line); cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  aspect-ratio: 4/3;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--shadow); border-color: var(--gold); }
+.card img { width: 100%; height: 100%; object-fit: cover; display: block; background: var(--cream); }
+.card-label {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(42,34,28,0.85));
+  color: white; font-size: 0.68rem;
+  padding: 18px 8px 7px;
+  opacity: 0; transition: opacity 0.15s;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.card:hover .card-label { opacity: 1; }
+.lightbox {
+  display: none; position: fixed; inset: 0;
+  background: rgba(10,6,3,0.94);
+  z-index: 1000; align-items: center; justify-content: center; flex-direction: column;
+}
+.lightbox.open { display: flex; }
+.lb-img { max-width: 90vw; max-height: 78vh; object-fit: contain; border-radius: 3px; box-shadow: 0 12px 60px rgba(0,0,0,0.7); }
+.lb-caption { margin-top: 14px; color: var(--gold-light); font-size: 0.82rem; text-align: center; max-width: 700px; padding: 0 20px; }
+.lb-caption .lb-sub { color: rgba(255,255,255,0.35); font-size: 0.72rem; margin-top: 3px; }
+.lb-counter { color: rgba(255,255,255,0.3); font-size: 0.72rem; margin-top: 5px; }
+.lb-close {
+  position: fixed; top: 18px; right: 24px;
+  background: rgba(255,255,255,0.08); border: none;
+  color: rgba(255,255,255,0.7); font-size: 1.5rem;
+  cursor: pointer; line-height: 1; padding: 6px 10px;
+  border-radius: 6px; transition: all 0.15s;
+}
+.lb-close:hover { background: rgba(255,255,255,0.18); color: white; }
+.lb-nav {
+  position: fixed; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,0.07); border: none;
+  color: rgba(255,255,255,0.7); font-size: 2.2rem;
+  cursor: pointer; padding: 20px 14px;
+  border-radius: 6px; transition: all 0.15s; line-height: 1;
+}
+.lb-nav:hover { background: rgba(255,255,255,0.17); color: white; }
+.lb-prev { left: 14px; }
+.lb-next { right: 14px; }
+.empty { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Thư Viện Ảnh — Văn Miếu Quốc Tử Giám</h1>
+  <p>178 ảnh trong bộ sưu tập</p>
+</header>
+<div class="controls">
+  <div class="search-wrap">
+    <input class="search-input" id="search" type="search" placeholder="&#x1F50D; Tìm kiếm ảnh...">
+  </div>
+  <div class="tabs" id="cat-tabs">
+    <button class="tab active" data-cat="">Tất cả (178)</button>
+    <button class="tab" data-cat="di-tich">Di Tích</button>
+    <button class="tab" data-cat="giao-duc-di-san">Giáo Dục Di Sản</button>
+    <button class="tab" data-cat="hoat-dong">Hoạt Động</button>
+  </div>
+  <div class="sub-tabs" id="sub-tabs"></div>
+</div>
+<div class="count-bar" id="count-bar"></div>
+<div class="grid" id="grid"></div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lb-close">&#x2715;</button>
+  <button class="lb-nav lb-prev" id="lb-prev">&#x2039;</button>
+  <img class="lb-img" id="lb-img" src="" alt="">
+  <div class="lb-caption">
+    <div id="lb-name"></div>
+    <div class="lb-sub" id="lb-sub"></div>
+  </div>
+  <div class="lb-counter" id="lb-counter"></div>
+  <button class="lb-nav lb-next" id="lb-next">&#x203a;</button>
+</div>
+
+<script>
+const IMAGES = [{"src":"site/assets/images/hero.jpg","thumb":"site/assets/images/hero.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"hero"},{"src":"site/assets/images/di-tich/bia-tien-si/1-nha-bia-tien-si-ben-tay.jpg","thumb":"site/assets/images/di-tich/bia-tien-si/1-nha-bia-tien-si-ben-tay-thumb.jpg","cat":"di-tich","sub":"bia-tien-si","name":"1-nha-bia-tien-si-ben-tay"},{"src":"site/assets/images/di-tich/bia-tien-si/12-vuon-bia-ben-dong.jpg","thumb":"site/assets/images/di-tich/bia-tien-si/12-vuon-bia-ben-dong-thumb.jpg","cat":"di-tich","sub":"bia-tien-si","name":"12-vuon-bia-ben-dong"},{"src":"site/assets/images/di-tich/bia-tien-si/2-nha-bia-tien-si-ben-dong.jpg","thumb":"site/assets/images/di-tich/bia-tien-si/2-nha-bia-tien-si-ben-dong-thumb.jpg","cat":"di-tich","sub":"bia-tien-si","name":"2-nha-bia-tien-si-ben-dong"},{"src":"site/assets/images/di-tich/bia-tien-si/2.jpg","thumb":"site/assets/images/di-tich/bia-tien-si/2-thumb.jpg","cat":"di-tich","sub":"bia-tien-si","name":"2"},{"src":"site/assets/images/di-tich/bia-tien-si/21-tran-diem-bia-khoa-thi-1589.jpg","thumb":"site/assets/images/di-tich/bia-tien-si/21-tran-diem-bia-khoa-thi-1589-thumb.jpg","cat":"di-tich","sub":"bia-tien-si","name":"21-tran-diem-bia-khoa-thi-1589"},{"src":"site/assets/images/di-tich/bia-tien-si/3-bia-tien-si.jpg","thumb":"site/assets/images/di-tich/bia-tien-si/3-bia-tien-si-thumb.jpg","cat":"di-tich","sub":"bia-tien-si","name":"3-bia-tien-si"},{"src":"site/assets/images/di-tich/bia-tien-si/3.jpg","thumb":"site/assets/images/di-tich/bia-tien-si/3-thumb.jpg","cat":"di-tich","sub":"bia-tien-si","name":"3"},{"src":"site/assets/images/di-tich/bia-tien-si/4-bia-tien-si.jpg","thumb":"site/assets/images/di-tich/bia-tien-si/4-bia-tien-si-thumb.jpg","cat":"di-tich","sub":"bia-tien-si","name":"4-bia-tien-si"},{"src":"site/assets/images/di-tich/bia-tien-si/5-bia-tien-si.jpg","thumb":"site/assets/images/di-tich/bia-tien-si/5-bia-tien-si-thumb.jpg","cat":"di-tich","sub":"bia-tien-si","name":"5-bia-tien-si"},{"src":"site/assets/images/di-tich/bia-tien-si/6-khu-vuon-bia-tien-si-tai-van-mieu-quoc-tu-giam-ha-noi.jpg","thumb":"site/assets/images/di-tich/bia-tien-si/6-khu-vuon-bia-tien-si-tai-van-mieu-quoc-tu-giam-ha-noi-thumb.jpg","cat":"di-tich","sub":"bia-tien-si","name":"6-khu-vuon-bia-tien-si-tai-van-mieu-quoc-tu-giam-ha-noi"},{"src":"site/assets/images/di-tich/bia-tien-si/7-khu-vuon-bia-tien-si-tai-van-mieu-quoc-tu-giam-ha-noi.jpg","thumb":"site/assets/images/di-tich/bia-tien-si/7-khu-vuon-bia-tien-si-tai-van-mieu-quoc-tu-giam-ha-noi-thumb.jpg","cat":"di-tich","sub":"bia-tien-si","name":"7-khu-vuon-bia-tien-si-tai-van-mieu-quoc-tu-giam-ha-noi"},{"src":"site/assets/images/di-tich/bia-tien-si/diembia.jpg","thumb":"site/assets/images/di-tich/bia-tien-si/diembia-thumb.jpg","cat":"di-tich","sub":"bia-tien-si","name":"diembia"},{"src":"site/assets/images/di-tich/bia-tien-si/khu-vuon-bia-tien-si-ben-tay.jpg","thumb":"site/assets/images/di-tich/bia-tien-si/khu-vuon-bia-tien-si-ben-tay-thumb.jpg","cat":"di-tich","sub":"bia-tien-si","name":"khu-vuon-bia-tien-si-ben-tay"},{"src":"site/assets/images/di-tich/danh-nhan/1-nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy.jpg","thumb":"site/assets/images/di-tich/danh-nhan/1-nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"1-nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy"},{"src":"site/assets/images/di-tich/danh-nhan/1-nha-tho-trang-nguyen-nguyen-truc-xa-tam-hung-thanh-oai-ha-noi-anh-p-ncst.jpg","thumb":"site/assets/images/di-tich/danh-nhan/1-nha-tho-trang-nguyen-nguyen-truc-xa-tam-hung-thanh-oai-ha-noi-anh-p-ncst-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"1-nha-tho-trang-nguyen-nguyen-truc-xa-tam-hung-thanh-oai-ha-noi-anh-p-ncst"},{"src":"site/assets/images/di-tich/danh-nhan/10k.jpg","thumb":"site/assets/images/di-tich/danh-nhan/10k-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"10k"},{"src":"site/assets/images/di-tich/danh-nhan/2-nghien-da-cua-quoc-tu-giam-xua-dat-tai-san-ddien-khai-thanh.jpg","thumb":"site/assets/images/di-tich/danh-nhan/2-nghien-da-cua-quoc-tu-giam-xua-dat-tai-san-ddien-khai-thanh-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"2-nghien-da-cua-quoc-tu-giam-xua-dat-tai-san-ddien-khai-thanh"},{"src":"site/assets/images/di-tich/danh-nhan/3-2-mo-cu-nguyen-duy-thi.jpg","thumb":"site/assets/images/di-tich/danh-nhan/3-2-mo-cu-nguyen-duy-thi-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"3-2-mo-cu-nguyen-duy-thi"},{"src":"site/assets/images/di-tich/danh-nhan/3-nghien-muc-da.jpg","thumb":"site/assets/images/di-tich/danh-nhan/3-nghien-muc-da-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"3-nghien-muc-da"},{"src":"site/assets/images/di-tich/danh-nhan/3.jpg","thumb":"site/assets/images/di-tich/danh-nhan/3-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"3"},{"src":"site/assets/images/di-tich/danh-nhan/4-1-sach-chinh-su-luu-lai-ten-tuoi-cua-ong.jpg","thumb":"site/assets/images/di-tich/danh-nhan/4-1-sach-chinh-su-luu-lai-ten-tuoi-cua-ong-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"4-1-sach-chinh-su-luu-lai-ten-tuoi-cua-ong"},{"src":"site/assets/images/di-tich/danh-nhan/4-khu-thai-hoc.jpg","thumb":"site/assets/images/di-tich/danh-nhan/4-khu-thai-hoc-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"4-khu-thai-hoc"},{"src":"site/assets/images/di-tich/danh-nhan/4.jpg","thumb":"site/assets/images/di-tich/danh-nhan/4-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"4"},{"src":"site/assets/images/di-tich/danh-nhan/8.jpg","thumb":"site/assets/images/di-tich/danh-nhan/8-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"8"},{"src":"site/assets/images/di-tich/danh-nhan/9.jpg","thumb":"site/assets/images/di-tich/danh-nhan/9-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"9"},{"src":"site/assets/images/di-tich/danh-nhan/bai-10.jpg","thumb":"site/assets/images/di-tich/danh-nhan/bai-10-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"bai-10"},{"src":"site/assets/images/di-tich/danh-nhan/ban-tho-nguyen-cong-co.jpg","thumb":"site/assets/images/di-tich/danh-nhan/ban-tho-nguyen-cong-co-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"ban-tho-nguyen-cong-co"},{"src":"site/assets/images/di-tich/danh-nhan/bia-khoa-thi-vinh-to-10-1628-dat-tai-van-mieu-quoc-tu-giam-ha-noi.jpg","thumb":"site/assets/images/di-tich/danh-nhan/bia-khoa-thi-vinh-to-10-1628-dat-tai-van-mieu-quoc-tu-giam-ha-noi-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"bia-khoa-thi-vinh-to-10-1628-dat-tai-van-mieu-quoc-tu-giam-ha-noi"},{"src":"site/assets/images/di-tich/danh-nhan/chuong-bich-ung.jpg","thumb":"site/assets/images/di-tich/danh-nhan/chuong-bich-ung-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"chuong-bich-ung"},{"src":"site/assets/images/di-tich/danh-nhan/co-kim-nhat-nguyet.jpg","thumb":"site/assets/images/di-tich/danh-nhan/co-kim-nhat-nguyet-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"co-kim-nhat-nguyet"},{"src":"site/assets/images/di-tich/danh-nhan/cong-nha-tho-nguyen-cong-co.jpg","thumb":"site/assets/images/di-tich/danh-nhan/cong-nha-tho-nguyen-cong-co-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"cong-nha-tho-nguyen-cong-co"},{"src":"site/assets/images/di-tich/danh-nhan/cong-nha-tho-tien-si-nhu-dinh-toan.jpg","thumb":"site/assets/images/di-tich/danh-nhan/cong-nha-tho-tien-si-nhu-dinh-toan-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"cong-nha-tho-tien-si-nhu-dinh-toan"},{"src":"site/assets/images/di-tich/danh-nhan/cong-nha-tho-tuong-quan-nghiem-ke.jpg","thumb":"site/assets/images/di-tich/danh-nhan/cong-nha-tho-tuong-quan-nghiem-ke-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"cong-nha-tho-tuong-quan-nghiem-ke"},{"src":"site/assets/images/di-tich/danh-nhan/img-0472.jpg","thumb":"site/assets/images/di-tich/danh-nhan/img-0472-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"img-0472"},{"src":"site/assets/images/di-tich/danh-nhan/kham-tho-tien-si-tran-cong-xan.jpg","thumb":"site/assets/images/di-tich/danh-nhan/kham-tho-tien-si-tran-cong-xan-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"kham-tho-tien-si-tran-cong-xan"},{"src":"site/assets/images/di-tich/danh-nhan/nha-tho-nguyen-cong-thai-xa-dai-kim-hoang-mai-ha-noi-anh-p-ncst.jpg","thumb":"site/assets/images/di-tich/danh-nhan/nha-tho-nguyen-cong-thai-xa-dai-kim-hoang-mai-ha-noi-anh-p-ncst-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"nha-tho-nguyen-cong-thai-xa-dai-kim-hoang-mai-ha-noi-anh-p-ncst"},{"src":"site/assets/images/di-tich/danh-nhan/nha-tho-tam-dai-vuong-nguyen-quy-duc-nguyen-quy-an-nguyen-quy-kinh.jpg","thumb":"site/assets/images/di-tich/danh-nhan/nha-tho-tam-dai-vuong-nguyen-quy-duc-nguyen-quy-an-nguyen-quy-kinh-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"nha-tho-tam-dai-vuong-nguyen-quy-duc-nguyen-quy-an-nguyen-quy-kinh"},{"src":"site/assets/images/di-tich/danh-nhan/nha-tho-tien-si-nhu-dinh-toan.jpg","thumb":"site/assets/images/di-tich/danh-nhan/nha-tho-tien-si-nhu-dinh-toan-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"nha-tho-tien-si-nhu-dinh-toan"},{"src":"site/assets/images/di-tich/danh-nhan/nha-tho-tien-si-quan-cong-nguyen-cong-co.jpg","thumb":"site/assets/images/di-tich/danh-nhan/nha-tho-tien-si-quan-cong-nguyen-cong-co-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"nha-tho-tien-si-quan-cong-nguyen-cong-co"},{"src":"site/assets/images/di-tich/danh-nhan/nha-tho-tien-si-tran-cong-xan.jpg","thumb":"site/assets/images/di-tich/danh-nhan/nha-tho-tien-si-tran-cong-xan-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"nha-tho-tien-si-tran-cong-xan"},{"src":"site/assets/images/di-tich/danh-nhan/nha-tho-vu-mien.jpg","thumb":"site/assets/images/di-tich/danh-nhan/nha-tho-vu-mien-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"nha-tho-vu-mien"},{"src":"site/assets/images/di-tich/danh-nhan/tuong-tho-danh-nhan-nguyen-quy-duc.jpg","thumb":"site/assets/images/di-tich/danh-nhan/tuong-tho-danh-nhan-nguyen-quy-duc-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"tuong-tho-danh-nhan-nguyen-quy-duc"},{"src":"site/assets/images/di-tich/danh-nhan/tuong-tho-tuong-quan-nghiem-ke-tai-nha-tho.jpg","thumb":"site/assets/images/di-tich/danh-nhan/tuong-tho-tuong-quan-nghiem-ke-tai-nha-tho-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"tuong-tho-tuong-quan-nghiem-ke-tai-nha-tho"},{"src":"site/assets/images/di-tich/danh-nhan/tuong-tho-vu-mien-tai-nha-tho.jpg","thumb":"site/assets/images/di-tich/danh-nhan/tuong-tho-vu-mien-tai-nha-tho-thumb.jpg","cat":"di-tich","sub":"danh-nhan","name":"tuong-tho-vu-mien-tai-nha-tho"},{"src":"site/assets/images/di-tich/kien-truc/cong-dai-thanh.jpg","thumb":"site/assets/images/di-tich/kien-truc/cong-dai-thanh-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"cong-dai-thanh"},{"src":"site/assets/images/di-tich/kien-truc/cong-dai-trung-1.jpg","thumb":"site/assets/images/di-tich/kien-truc/cong-dai-trung-1-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"cong-dai-trung-1"},{"src":"site/assets/images/di-tich/kien-truc/cong-dai-trung-2.jpg","thumb":"site/assets/images/di-tich/kien-truc/cong-dai-trung-2-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"cong-dai-trung-2"},{"src":"site/assets/images/di-tich/kien-truc/cong-dat-tai.jpg","thumb":"site/assets/images/di-tich/kien-truc/cong-dat-tai-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"cong-dat-tai"},{"src":"site/assets/images/di-tich/kien-truc/cong-thai-hoc-2.jpg","thumb":"site/assets/images/di-tich/kien-truc/cong-thai-hoc-2-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"cong-thai-hoc-2"},{"src":"site/assets/images/di-tich/kien-truc/cong-thanh-duc.jpg","thumb":"site/assets/images/di-tich/kien-truc/cong-thanh-duc-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"cong-thanh-duc"},{"src":"site/assets/images/di-tich/kien-truc/cong-van-mieu-mat-sau.jpg","thumb":"site/assets/images/di-tich/kien-truc/cong-van-mieu-mat-sau-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"cong-van-mieu-mat-sau"},{"src":"site/assets/images/di-tich/kien-truc/cong-van-mieu-mat-truoc-3.jpg","thumb":"site/assets/images/di-tich/kien-truc/cong-van-mieu-mat-truoc-3-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"cong-van-mieu-mat-truoc-3"},{"src":"site/assets/images/di-tich/kien-truc/cong-vm-mat-truoc.jpg","thumb":"site/assets/images/di-tich/kien-truc/cong-vm-mat-truoc-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"cong-vm-mat-truoc"},{"src":"site/assets/images/di-tich/kien-truc/gieng-thien-quang-va-cong-dai-thanh.jpg","thumb":"site/assets/images/di-tich/kien-truc/gieng-thien-quang-va-cong-dai-thanh-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"gieng-thien-quang-va-cong-dai-thanh"},{"src":"site/assets/images/di-tich/kien-truc/gieng-thien-quang.jpg","thumb":"site/assets/images/di-tich/kien-truc/gieng-thien-quang-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"gieng-thien-quang"},{"src":"site/assets/images/di-tich/kien-truc/goc-ben-dong-nha-hau-duong-va-lau-trong.jpg","thumb":"site/assets/images/di-tich/kien-truc/goc-ben-dong-nha-hau-duong-va-lau-trong-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"goc-ben-dong-nha-hau-duong-va-lau-trong"},{"src":"site/assets/images/di-tich/kien-truc/goc-ben-dong-nha-hau-duong.jpg","thumb":"site/assets/images/di-tich/kien-truc/goc-ben-dong-nha-hau-duong-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"goc-ben-dong-nha-hau-duong"},{"src":"site/assets/images/di-tich/kien-truc/goc-ben-tay-nha-hau-duong-2.jpg","thumb":"site/assets/images/di-tich/kien-truc/goc-ben-tay-nha-hau-duong-2-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"goc-ben-tay-nha-hau-duong-2"},{"src":"site/assets/images/di-tich/kien-truc/goc-ben-tay-nha-hau-duong.jpg","thumb":"site/assets/images/di-tich/kien-truc/goc-ben-tay-nha-hau-duong-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"goc-ben-tay-nha-hau-duong"},{"src":"site/assets/images/di-tich/kien-truc/ho-van-2.jpg","thumb":"site/assets/images/di-tich/kien-truc/ho-van-2-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"ho-van-2"},{"src":"site/assets/images/di-tich/kien-truc/ho-van.jpg","thumb":"site/assets/images/di-tich/kien-truc/ho-van-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"ho-van"},{"src":"site/assets/images/di-tich/kien-truc/img-9957.jpg","thumb":"site/assets/images/di-tich/kien-truc/img-9957-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"img-9957"},{"src":"site/assets/images/di-tich/kien-truc/img-9985.jpg","thumb":"site/assets/images/di-tich/kien-truc/img-9985-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"img-9985"},{"src":"site/assets/images/di-tich/kien-truc/khu-nhap-dao-1.jpg","thumb":"site/assets/images/di-tich/kien-truc/khu-nhap-dao-1-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"khu-nhap-dao-1"},{"src":"site/assets/images/di-tich/kien-truc/khu-nhap-dao.jpg","thumb":"site/assets/images/di-tich/kien-truc/khu-nhap-dao-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"khu-nhap-dao"},{"src":"site/assets/images/di-tich/kien-truc/khu-thanh-dat-va-kvc.jpg","thumb":"site/assets/images/di-tich/kien-truc/khu-thanh-dat-va-kvc-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"khu-thanh-dat-va-kvc"},{"src":"site/assets/images/di-tich/kien-truc/khu-vuon-bia-ts-ben-dong.jpg","thumb":"site/assets/images/di-tich/kien-truc/khu-vuon-bia-ts-ben-dong-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"khu-vuon-bia-ts-ben-dong"},{"src":"site/assets/images/di-tich/kien-truc/khu-vuon-bia-ts-ben-tay.jpg","thumb":"site/assets/images/di-tich/kien-truc/khu-vuon-bia-ts-ben-tay-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"khu-vuon-bia-ts-ben-tay"},{"src":"site/assets/images/di-tich/kien-truc/kvc-va-gieng-thien-quang.jpg","thumb":"site/assets/images/di-tich/kien-truc/kvc-va-gieng-thien-quang-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"kvc-va-gieng-thien-quang"},{"src":"site/assets/images/di-tich/kien-truc/l1190542.jpg","thumb":"site/assets/images/di-tich/kien-truc/l1190542-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"l1190542"},{"src":"site/assets/images/di-tich/kien-truc/lau-trong.jpg","thumb":"site/assets/images/di-tich/kien-truc/lau-trong-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"lau-trong"},{"src":"site/assets/images/di-tich/kien-truc/nha-bat-giac-vuon-giam.jpg","thumb":"site/assets/images/di-tich/kien-truc/nha-bat-giac-vuon-giam-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"nha-bat-giac-vuon-giam"},{"src":"site/assets/images/di-tich/kien-truc/nha-tien-duong.jpg","thumb":"site/assets/images/di-tich/kien-truc/nha-tien-duong-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"nha-tien-duong"},{"src":"site/assets/images/di-tich/kien-truc/rong-trang-tri-tren-noc-mai-dien-dai-thanh.jpg","thumb":"site/assets/images/di-tich/kien-truc/rong-trang-tri-tren-noc-mai-dien-dai-thanh-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"rong-trang-tri-tren-noc-mai-dien-dai-thanh"},{"src":"site/assets/images/di-tich/kien-truc/san-dai-bai-va-nha-dai-bai.jpg","thumb":"site/assets/images/di-tich/kien-truc/san-dai-bai-va-nha-dai-bai-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"san-dai-bai-va-nha-dai-bai"},{"src":"site/assets/images/di-tich/kien-truc/toa-bai-duong.jpg","thumb":"site/assets/images/di-tich/kien-truc/toa-bai-duong-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"toa-bai-duong"},{"src":"site/assets/images/di-tich/kien-truc/tu-tru-1.jpg","thumb":"site/assets/images/di-tich/kien-truc/tu-tru-1-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"tu-tru-1"},{"src":"site/assets/images/di-tich/kien-truc/van-mieu-mon-mat-truoc.jpg","thumb":"site/assets/images/di-tich/kien-truc/van-mieu-mon-mat-truoc-thumb.jpg","cat":"di-tich","sub":"kien-truc","name":"van-mieu-mon-mat-truoc"},{"src":"site/assets/images/di-tich/lich-su/1-toan-canh-van-mieu-quoc-tu-giam-dau-the-ky-xx-copy.jpg","thumb":"site/assets/images/di-tich/lich-su/1-toan-canh-van-mieu-quoc-tu-giam-dau-the-ky-xx-copy-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"1-toan-canh-van-mieu-quoc-tu-giam-dau-the-ky-xx-copy"},{"src":"site/assets/images/di-tich/lich-su/10-nha-bia-tien-si-ben-tay.jpg","thumb":"site/assets/images/di-tich/lich-su/10-nha-bia-tien-si-ben-tay-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"10-nha-bia-tien-si-ben-tay"},{"src":"site/assets/images/di-tich/lich-su/12-bia-tien-si.jpg","thumb":"site/assets/images/di-tich/lich-su/12-bia-tien-si-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"12-bia-tien-si"},{"src":"site/assets/images/di-tich/lich-su/2-tu-tru-va-ho-van-phia-truoc-van-mieu-quoc-tu-giam.jpg","thumb":"site/assets/images/di-tich/lich-su/2-tu-tru-va-ho-van-phia-truoc-van-mieu-quoc-tu-giam-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"2-tu-tru-va-ho-van-phia-truoc-van-mieu-quoc-tu-giam"},{"src":"site/assets/images/di-tich/lich-su/20-nha-ta-vu.jpg","thumb":"site/assets/images/di-tich/lich-su/20-nha-ta-vu-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"20-nha-ta-vu"},{"src":"site/assets/images/di-tich/lich-su/22-nha-huu-vu.jpg","thumb":"site/assets/images/di-tich/lich-su/22-nha-huu-vu-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"22-nha-huu-vu"},{"src":"site/assets/images/di-tich/lich-su/24-nha-bai-duong.jpg","thumb":"site/assets/images/di-tich/lich-su/24-nha-bai-duong-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"24-nha-bai-duong"},{"src":"site/assets/images/di-tich/lich-su/3-bia-ha-ma-va-cong-van-mieu.jpg","thumb":"site/assets/images/di-tich/lich-su/3-bia-ha-ma-va-cong-van-mieu-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"3-bia-ha-ma-va-cong-van-mieu"},{"src":"site/assets/images/di-tich/lich-su/30-cong-thai-hoc.jpg","thumb":"site/assets/images/di-tich/lich-su/30-cong-thai-hoc-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"30-cong-thai-hoc"},{"src":"site/assets/images/di-tich/lich-su/31-dien-khai-thanh.jpg","thumb":"site/assets/images/di-tich/lich-su/31-dien-khai-thanh-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"31-dien-khai-thanh"},{"src":"site/assets/images/di-tich/lich-su/33-nghien-da-cua-quoc-tu-giam-xua-dat-tai-san-ddien-khai-thanh.jpg","thumb":"site/assets/images/di-tich/lich-su/33-nghien-da-cua-quoc-tu-giam-xua-dat-tai-san-ddien-khai-thanh-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"33-nghien-da-cua-quoc-tu-giam-xua-dat-tai-san-ddien-khai-thanh"},{"src":"site/assets/images/di-tich/lich-su/34-cong-dong-mon-phia-pho-van-mieu-hien-nay.jpg","thumb":"site/assets/images/di-tich/lich-su/34-cong-dong-mon-phia-pho-van-mieu-hien-nay-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"34-cong-dong-mon-phia-pho-van-mieu-hien-nay"},{"src":"site/assets/images/di-tich/lich-su/38-nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy.jpg","thumb":"site/assets/images/di-tich/lich-su/38-nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"38-nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy"},{"src":"site/assets/images/di-tich/lich-su/4-tu-tru-va-cong-van-mieu.jpg","thumb":"site/assets/images/di-tich/lich-su/4-tu-tru-va-cong-van-mieu-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"4-tu-tru-va-cong-van-mieu"},{"src":"site/assets/images/di-tich/lich-su/40-nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy.jpg","thumb":"site/assets/images/di-tich/lich-su/40-nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"40-nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy"},{"src":"site/assets/images/di-tich/lich-su/42-nha-bai-duong-van-mieu-trong-ngay-te-khong.jpg","thumb":"site/assets/images/di-tich/lich-su/42-nha-bai-duong-van-mieu-trong-ngay-te-khong-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"42-nha-bai-duong-van-mieu-trong-ngay-te-khong"},{"src":"site/assets/images/di-tich/lich-su/5-bia-ha-ma.jpg","thumb":"site/assets/images/di-tich/lich-su/5-bia-ha-ma-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"5-bia-ha-ma"},{"src":"site/assets/images/di-tich/lich-su/8-khu-nhap-dao-va-cong-dai-trung.jpg","thumb":"site/assets/images/di-tich/lich-su/8-khu-nhap-dao-va-cong-dai-trung-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"8-khu-nhap-dao-va-cong-dai-trung"},{"src":"site/assets/images/di-tich/lich-su/9-gieng-thien-quang-va-khue-van-cac.jpg","thumb":"site/assets/images/di-tich/lich-su/9-gieng-thien-quang-va-khue-van-cac-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"9-gieng-thien-quang-va-khue-van-cac"},{"src":"site/assets/images/di-tich/lich-su/cong-dong-mon-phia-pho-van-mieu-hien-nay.jpg","thumb":"site/assets/images/di-tich/lich-su/cong-dong-mon-phia-pho-van-mieu-hien-nay-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"cong-dong-mon-phia-pho-van-mieu-hien-nay"},{"src":"site/assets/images/di-tich/lich-su/cong-thai-hoc.jpg","thumb":"site/assets/images/di-tich/lich-su/cong-thai-hoc-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"cong-thai-hoc"},{"src":"site/assets/images/di-tich/lich-su/nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy-2.jpg","thumb":"site/assets/images/di-tich/lich-su/nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy-2-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy-2"},{"src":"site/assets/images/di-tich/lich-su/nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy.jpg","thumb":"site/assets/images/di-tich/lich-su/nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"nen-cu-cua-truong-giam-sau-khi-dien-khai-thanh-bi-pha-huy"},{"src":"site/assets/images/di-tich/lich-su/nghien-da-cua-quoc-tu-giam-xua-dat-tai-san-ddien-khai-thanh.jpg","thumb":"site/assets/images/di-tich/lich-su/nghien-da-cua-quoc-tu-giam-xua-dat-tai-san-ddien-khai-thanh-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"nghien-da-cua-quoc-tu-giam-xua-dat-tai-san-ddien-khai-thanh"},{"src":"site/assets/images/di-tich/lich-su/nha-huu-vu.jpg","thumb":"site/assets/images/di-tich/lich-su/nha-huu-vu-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"nha-huu-vu"},{"src":"site/assets/images/di-tich/lich-su/nha-ta-vu.jpg","thumb":"site/assets/images/di-tich/lich-su/nha-ta-vu-thumb.jpg","cat":"di-tich","sub":"lich-su","name":"nha-ta-vu"},{"src":"site/assets/images/di-tich/tuong-tho/1-khongtu.jpg","thumb":"site/assets/images/di-tich/tuong-tho/1-khongtu-thumb.jpg","cat":"di-tich","sub":"tuong-tho","name":"1-khongtu"},{"src":"site/assets/images/di-tich/tuong-tho/2-phuc-thanh-nhan-hoi.jpg","thumb":"site/assets/images/di-tich/tuong-tho/2-phuc-thanh-nhan-hoi-thumb.jpg","cat":"di-tich","sub":"tuong-tho","name":"2-phuc-thanh-nhan-hoi"},{"src":"site/assets/images/di-tich/tuong-tho/3-thuat-thanh-tu-tu.jpg","thumb":"site/assets/images/di-tich/tuong-tho/3-thuat-thanh-tu-tu-thumb.jpg","cat":"di-tich","sub":"tuong-tho","name":"3-thuat-thanh-tu-tu"},{"src":"site/assets/images/di-tich/tuong-tho/4-tong-thanh-tang-sam.jpg","thumb":"site/assets/images/di-tich/tuong-tho/4-tong-thanh-tang-sam-thumb.jpg","cat":"di-tich","sub":"tuong-tho","name":"4-tong-thanh-tang-sam"},{"src":"site/assets/images/di-tich/tuong-tho/5-a-thanh-manh-tu.jpg","thumb":"site/assets/images/di-tich/tuong-tho/5-a-thanh-manh-tu-thumb.jpg","cat":"di-tich","sub":"tuong-tho","name":"5-a-thanh-manh-tu"},{"src":"site/assets/images/di-tich/tuong-tho/6-chu-van-an.jpg","thumb":"site/assets/images/di-tich/tuong-tho/6-chu-van-an-thumb.jpg","cat":"di-tich","sub":"tuong-tho","name":"6-chu-van-an"},{"src":"site/assets/images/di-tich/tuong-tho/7-ly-thanh-tong.jpg","thumb":"site/assets/images/di-tich/tuong-tho/7-ly-thanh-tong-thumb.jpg","cat":"di-tich","sub":"tuong-tho","name":"7-ly-thanh-tong"},{"src":"site/assets/images/di-tich/tuong-tho/8-ly-nhan-tong.jpg","thumb":"site/assets/images/di-tich/tuong-tho/8-ly-nhan-tong-thumb.jpg","cat":"di-tich","sub":"tuong-tho","name":"8-ly-nhan-tong"},{"src":"site/assets/images/di-tich/tuong-tho/9-lethanhtong.jpg","thumb":"site/assets/images/di-tich/tuong-tho/9-lethanhtong-thumb.jpg","cat":"di-tich","sub":"tuong-tho","name":"9-lethanhtong"},{"src":"site/assets/images/giao-duc-di-san/lop-1-3/1-hs-quan-sat-buc-phu-dieu-mhhs.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-1-3/1-hs-quan-sat-buc-phu-dieu-mhhs-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-1-3","name":"1-hs-quan-sat-buc-phu-dieu-mhhs"},{"src":"site/assets/images/giao-duc-di-san/lop-1-3/13-san-pham-cua-hs.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-1-3/13-san-pham-cua-hs-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-1-3","name":"13-san-pham-cua-hs"},{"src":"site/assets/images/giao-duc-di-san/lop-1-3/2-hs-dang-nghe-ke-chuyen-tri-khon-cua-ta-day.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-1-3/2-hs-dang-nghe-ke-chuyen-tri-khon-cua-ta-day-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-1-3","name":"2-hs-dang-nghe-ke-chuyen-tri-khon-cua-ta-day"},{"src":"site/assets/images/giao-duc-di-san/lop-1-3/hs-chup-anh-voi-kvc.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-1-3/hs-chup-anh-voi-kvc-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-1-3","name":"hs-chup-anh-voi-kvc"},{"src":"site/assets/images/giao-duc-di-san/lop-1-3/hs-dang-quan-sat-va-ve-kvc.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-1-3/hs-dang-quan-sat-va-ve-kvc-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-1-3","name":"hs-dang-quan-sat-va-ve-kvc"},{"src":"site/assets/images/giao-duc-di-san/lop-1-3/hs-doc-thong-tin-ve-kvc.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-1-3/hs-doc-thong-tin-ve-kvc-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-1-3","name":"hs-doc-thong-tin-ve-kvc"},{"src":"site/assets/images/giao-duc-di-san/lop-1-3/hs-hoc-cach-cam-but-long.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-1-3/hs-hoc-cach-cam-but-long-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-1-3","name":"hs-hoc-cach-cam-but-long"},{"src":"site/assets/images/giao-duc-di-san/lop-1-3/hs-tim-hieu-noi-dung-bia-ts-qua-pano-va-can-bo-giao-duc.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-1-3/hs-tim-hieu-noi-dung-bia-ts-qua-pano-va-can-bo-giao-duc-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-1-3","name":"hs-tim-hieu-noi-dung-bia-ts-qua-pano-va-can-bo-giao-duc"},{"src":"site/assets/images/giao-duc-di-san/lop-1-3/hs-tim-hieu-ve-lop-hoc-xua-qua-anh.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-1-3/hs-tim-hieu-ve-lop-hoc-xua-qua-anh-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-1-3","name":"hs-tim-hieu-ve-lop-hoc-xua-qua-anh"},{"src":"site/assets/images/giao-duc-di-san/lop-1-3/hs-trai-nghiem-mai-muc.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-1-3/hs-trai-nghiem-mai-muc-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-1-3","name":"hs-trai-nghiem-mai-muc"},{"src":"site/assets/images/giao-duc-di-san/lop-1-3/hs-trang-tri-coc-giay-lay-cam-hung-tu-hoa-van-tren-kvc.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-1-3/hs-trang-tri-coc-giay-lay-cam-hung-tu-hoa-van-tren-kvc-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-1-3","name":"hs-trang-tri-coc-giay-lay-cam-hung-tu-hoa-van-tren-kvc"},{"src":"site/assets/images/giao-duc-di-san/lop-1-3/hs-xac-dinh-khi-vuc-khao-sat-bia-ts-qua-so-do-bia-ts.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-1-3/hs-xac-dinh-khi-vuc-khao-sat-bia-ts-qua-so-do-bia-ts-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-1-3","name":"hs-xac-dinh-khi-vuc-khao-sat-bia-ts-qua-so-do-bia-ts"},{"src":"site/assets/images/giao-duc-di-san/lop-1-3/tac-pham-cua-hs.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-1-3/tac-pham-cua-hs-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-1-3","name":"tac-pham-cua-hs"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/2-hs-doc-thong-tin-o-bang-thong-tin-de-dien-vao-phieu-kham-pha.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/2-hs-doc-thong-tin-o-bang-thong-tin-de-dien-vao-phieu-kham-pha-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"2-hs-doc-thong-tin-o-bang-thong-tin-de-dien-vao-phieu-kham-pha"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/4-hs-tien-hanh-do-dac-tinh-toan-de-dien-thong-tin-vao-phieu-kham-pha.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/4-hs-tien-hanh-do-dac-tinh-toan-de-dien-thong-tin-vao-phieu-kham-pha-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"4-hs-tien-hanh-do-dac-tinh-toan-de-dien-thong-tin-vao-phieu-kham-pha"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/6-hs-quan-sat-hoc-lieu-va-su-dung-nhung-hoa-tren-kvc-de-trang-tri-cho-tac-pham-c.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/6-hs-quan-sat-hoc-lieu-va-su-dung-nhung-hoa-tren-kvc-de-trang-tri-cho-tac-pham-c-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"6-hs-quan-sat-hoc-lieu-va-su-dung-nhung-hoa-tren-kvc-de-trang-tri-cho-tac-pham-c"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/8-lop-4a1-chup-anh-luu-lai-khoanh-khac-lan-dau-lop-duoc-den-vmqtg-hoc-tap.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/8-lop-4a1-chup-anh-luu-lai-khoanh-khac-lan-dau-lop-duoc-den-vmqtg-hoc-tap-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"8-lop-4a1-chup-anh-luu-lai-khoanh-khac-lan-dau-lop-duoc-den-vmqtg-hoc-tap"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/cac-ban-hs-dang-phan-doan-de-tim-dung-linh-vat.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/cac-ban-hs-dang-phan-doan-de-tim-dung-linh-vat-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"cac-ban-hs-dang-phan-doan-de-tim-dung-linh-vat"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/hs-dang-thao-luan-de-dien-phiesu-dieu-tra.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/hs-dang-thao-luan-de-dien-phiesu-dieu-tra-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"hs-dang-thao-luan-de-dien-phiesu-dieu-tra"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/hs-hoc-cach-cam-but-long.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/hs-hoc-cach-cam-but-long-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"hs-hoc-cach-cam-but-long"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/hs-hoc-cach-in-cac-mang-hoa-van-trang-tri-tren-bia-ts.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/hs-hoc-cach-in-cac-mang-hoa-van-trang-tri-tren-bia-ts-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"hs-hoc-cach-in-cac-mang-hoa-van-trang-tri-tren-bia-ts"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/hs-lam-viec-theo-nhom-de-tim-linh-vat.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/hs-lam-viec-theo-nhom-de-tim-linh-vat-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"hs-lam-viec-theo-nhom-de-tim-linh-vat"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/hs-thao-luan-va-dua-ra-cac-y-kien-nhan-xet-ve-hien-trnagj-va-gia-phap-bao-ve-bia.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/hs-thao-luan-va-dua-ra-cac-y-kien-nhan-xet-ve-hien-trnagj-va-gia-phap-bao-ve-bia-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"hs-thao-luan-va-dua-ra-cac-y-kien-nhan-xet-ve-hien-trnagj-va-gia-phap-bao-ve-bia"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/hs-tim-hieu-cac-hoa-van-trang-tri-tren-bia-ts.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/hs-tim-hieu-cac-hoa-van-trang-tri-tren-bia-ts-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"hs-tim-hieu-cac-hoa-van-trang-tri-tren-bia-ts"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/hs-tim-hieu-ve-lop-hoc-xua-qua-anh.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/hs-tim-hieu-ve-lop-hoc-xua-qua-anh-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"hs-tim-hieu-ve-lop-hoc-xua-qua-anh"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/hs-trai-nghiem-mai-muc.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/hs-trai-nghiem-mai-muc-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"hs-trai-nghiem-mai-muc"},{"src":"site/assets/images/giao-duc-di-san/lop-4-6/tac-pham-cua-hs.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-4-6/tac-pham-cua-hs-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-4-6","name":"tac-pham-cua-hs"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/cac-ban-hs-tim-hieu-ve-moi-truong-cua-vm-truoc-buoi-trai-nghiem-tai-di-tich.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/cac-ban-hs-tim-hieu-ve-moi-truong-cua-vm-truoc-buoi-trai-nghiem-tai-di-tich-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"cac-ban-hs-tim-hieu-ve-moi-truong-cua-vm-truoc-buoi-trai-nghiem-tai-di-tich"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-khao-sat-bia-ts.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-khao-sat-bia-ts-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-khao-sat-bia-ts"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tham-gia-thao-luan-ve-hien-trang-va-giai-phap-bao-ve-bia-ts.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tham-gia-thao-luan-ve-hien-trang-va-giai-phap-bao-ve-bia-ts-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-tham-gia-thao-luan-ve-hien-trang-va-giai-phap-bao-ve-bia-ts"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-cong-trinh-kien-truc-cong-van-mieu.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-cong-trinh-kien-truc-cong-van-mieu-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-tim-hieu-cong-trinh-kien-truc-cong-van-mieu"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-linh-vat-nghe-trong-dien-dai-thanh.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-linh-vat-nghe-trong-dien-dai-thanh-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-tim-hieu-linh-vat-nghe-trong-dien-dai-thanh"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-linh-vat-tai-tu-tru.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-linh-vat-tai-tu-tru-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-tim-hieu-linh-vat-tai-tu-tru"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-linh-vat-tren-cong-dia-trung.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-linh-vat-tren-cong-dia-trung-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-tim-hieu-linh-vat-tren-cong-dia-trung"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-linhv-at-nghe-tai-cong-dai-thanh.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-linhv-at-nghe-tai-cong-dai-thanh-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-tim-hieu-linhv-at-nghe-tai-cong-dai-thanh"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-ve-cac-ki-thi-xua-kia-cua-nho-sinh.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-ve-cac-ki-thi-xua-kia-cua-nho-sinh-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-tim-hieu-ve-cac-ki-thi-xua-kia-cua-nho-sinh"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-ve-noi-quy-thi-cu-xua.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-ve-noi-quy-thi-cu-xua-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-tim-hieu-ve-noi-quy-thi-cu-xua"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-ve-sach-hoc-tai-truong-qtg-xua.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-ve-sach-hoc-tai-truong-qtg-xua-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-tim-hieu-ve-sach-hoc-tai-truong-qtg-xua"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-ve-truong-qtg.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-ve-truong-qtg-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-tim-hieu-ve-truong-qtg"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-ve-vm-qtg-truoc-buoi-trai-nghiem-tai-di-tich.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-tim-hieu-ve-vm-qtg-truoc-buoi-trai-nghiem-tai-di-tich-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-tim-hieu-ve-vm-qtg-truoc-buoi-trai-nghiem-tai-di-tich"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-trai-nghiem-dung-leu-chong.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-trai-nghiem-dung-leu-chong-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-trai-nghiem-dung-leu-chong"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-trai-nghiem-in-linh-vat.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-trai-nghiem-in-linh-vat-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-trai-nghiem-in-linh-vat"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/hs-trai-nghiem-ki-nang-in-linh-vat-nghe-tren-giay-do.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/hs-trai-nghiem-ki-nang-in-linh-vat-nghe-tren-giay-do-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"hs-trai-nghiem-ki-nang-in-linh-vat-nghe-tren-giay-do"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/mot-ban-hs-ve-lai-kien-truc-cua-bia-ha-ma.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/mot-ban-hs-ve-lai-kien-truc-cua-bia-ha-ma-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"mot-ban-hs-ve-lai-kien-truc-cua-bia-ha-ma"},{"src":"site/assets/images/giao-duc-di-san/lop-7-12/san-pham-in-tranh-cua-hs.jpg","thumb":"site/assets/images/giao-duc-di-san/lop-7-12/san-pham-in-tranh-cua-hs-thumb.jpg","cat":"giao-duc-di-san","sub":"lop-7-12","name":"san-pham-in-tranh-cua-hs"},{"src":"site/assets/images/giao-duc-di-san/mam-non/1-hs-quan-sat-buc-phu-dieu-mhhs.jpg","thumb":"site/assets/images/giao-duc-di-san/mam-non/1-hs-quan-sat-buc-phu-dieu-mhhs-thumb.jpg","cat":"giao-duc-di-san","sub":"mam-non","name":"1-hs-quan-sat-buc-phu-dieu-mhhs"},{"src":"site/assets/images/giao-duc-di-san/mam-non/13-san-pham-cua-hs.jpg","thumb":"site/assets/images/giao-duc-di-san/mam-non/13-san-pham-cua-hs-thumb.jpg","cat":"giao-duc-di-san","sub":"mam-non","name":"13-san-pham-cua-hs"},{"src":"site/assets/images/giao-duc-di-san/mam-non/2-hs-dang-nghe-ke-chuyen-tri-khon-cua-ta-day.jpg","thumb":"site/assets/images/giao-duc-di-san/mam-non/2-hs-dang-nghe-ke-chuyen-tri-khon-cua-ta-day-thumb.jpg","cat":"giao-duc-di-san","sub":"mam-non","name":"2-hs-dang-nghe-ke-chuyen-tri-khon-cua-ta-day"},{"src":"site/assets/images/giao-duc-di-san/mam-non/cac-be-tap-to-mau-linh-vat-nghe.jpg","thumb":"site/assets/images/giao-duc-di-san/mam-non/cac-be-tap-to-mau-linh-vat-nghe-thumb.jpg","cat":"giao-duc-di-san","sub":"mam-non","name":"cac-be-tap-to-mau-linh-vat-nghe"},{"src":"site/assets/images/giao-duc-di-san/mam-non/hs-tim-hieu-ve-linh-vat-nghe.jpg","thumb":"site/assets/images/giao-duc-di-san/mam-non/hs-tim-hieu-ve-linh-vat-nghe-thumb.jpg","cat":"giao-duc-di-san","sub":"mam-non","name":"hs-tim-hieu-ve-linh-vat-nghe"},{"src":"site/assets/images/giao-duc-di-san/mam-non/hs-tim-hieu-ve-nghe-o-cong-dai-thanh.jpg","thumb":"site/assets/images/giao-duc-di-san/mam-non/hs-tim-hieu-ve-nghe-o-cong-dai-thanh-thumb.jpg","cat":"giao-duc-di-san","sub":"mam-non","name":"hs-tim-hieu-ve-nghe-o-cong-dai-thanh"},{"src":"site/assets/images/hoat-dong/1-toan-canh-van-mieu-quoc-tu-giam-dau-the-ky-xx.jpg","thumb":"site/assets/images/hoat-dong/1-toan-canh-van-mieu-quoc-tu-giam-dau-the-ky-xx-thumb.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"1-toan-canh-van-mieu-quoc-tu-giam-dau-the-ky-xx"},{"src":"site/assets/images/hoat-dong/10-1.jpg","thumb":"site/assets/images/hoat-dong/10-1-thumb.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"10-1"},{"src":"site/assets/images/hoat-dong/10-2.jpg","thumb":"site/assets/images/hoat-dong/10-2-thumb.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"10-2"},{"src":"site/assets/images/hoat-dong/10-3.jpg","thumb":"site/assets/images/hoat-dong/10-3-thumb.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"10-3"},{"src":"site/assets/images/hoat-dong/10-du-khach-tham-quan-phong-trung-bay.jpg","thumb":"site/assets/images/hoat-dong/10-du-khach-tham-quan-phong-trung-bay-thumb.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"10-du-khach-tham-quan-phong-trung-bay"},{"src":"site/assets/images/hoat-dong/2-nha-bai-duong-van-mieu-trong-ngay-te-khong.jpg","thumb":"site/assets/images/hoat-dong/2-nha-bai-duong-van-mieu-trong-ngay-te-khong-thumb.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"2-nha-bai-duong-van-mieu-trong-ngay-te-khong"},{"src":"site/assets/images/hoat-dong/3.jpg","thumb":"site/assets/images/hoat-dong/3-thumb.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"3"},{"src":"site/assets/images/hoat-dong/4.jpg","thumb":"site/assets/images/hoat-dong/4-thumb.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"4"},{"src":"site/assets/images/hoat-dong/5.jpg","thumb":"site/assets/images/hoat-dong/5-thumb.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"5"},{"src":"site/assets/images/hoat-dong/6.jpg","thumb":"site/assets/images/hoat-dong/6-thumb.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"6"},{"src":"site/assets/images/hoat-dong/7.jpg","thumb":"site/assets/images/hoat-dong/7-thumb.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"7"},{"src":"site/assets/images/hoat-dong/8-si-tu-leu-chong-di-thi.jpg","thumb":"site/assets/images/hoat-dong/8-si-tu-leu-chong-di-thi-thumb.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"8-si-tu-leu-chong-di-thi"},{"src":"site/assets/images/hoat-dong/9-si-tu-xem-bang-vang.jpg","thumb":"site/assets/images/hoat-dong/9-si-tu-xem-bang-vang-thumb.jpg","cat":"hoat-dong","sub":"hoat-dong","name":"9-si-tu-xem-bang-vang"}];
+const CAT_LABELS = {'di-tich':'Di Tích','giao-duc-di-san':'Giáo Dục Di Sản','hoat-dong':'Hoạt Động'};
+const SUB_LABELS = {
+  'bia-tien-si':'Bia Tiến Sĩ','danh-nhan':'Danh Nhân','kien-truc':'Kiến Trúc',
+  'lich-su':'Lịch Sử','tuong-tho':'Tượng Thờ',
+  'lop-1-3':'Lớp 1–3','lop-4-6':'Lớp 4–6','lop-7-12':'Lớp 7–12','mam-non':'Mầm Non',
+  'hoat-dong':'Hoạt Động'
+};
+const SUB_BY_CAT = {
+  'di-tich':['bia-tien-si','danh-nhan','kien-truc','lich-su','tuong-tho'],
+  'giao-duc-di-san':['mam-non','lop-1-3','lop-4-6','lop-7-12'],
+  'hoat-dong':[]
+};
+
+function readableName(s) {
+  return s.replace(/^\d+-/,'').replace(/-/g,' ')
+    .replace(/\b\w/g,c=>c.toUpperCase()).trim() || s;
+}
+
+let activeCat='', activeSub='', searchQ='', filtered=[], lbIdx=0;
+const grid=document.getElementById('grid');
+const subTabsEl=document.getElementById('sub-tabs');
+const countBar=document.getElementById('count-bar');
+
+function getFiltered() {
+  return IMAGES.filter(img=>{
+    if(activeCat && img.cat!==activeCat) return false;
+    if(activeSub && img.sub!==activeSub) return false;
+    if(searchQ){
+      const q=searchQ.toLowerCase();
+      const hay=(img.name+' '+(SUB_LABELS[img.sub]||img.sub)+' '+(CAT_LABELS[img.cat]||img.cat)).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function renderSubTabs(){
+  subTabsEl.innerHTML='';
+  const subs=activeCat?(SUB_BY_CAT[activeCat]||[]):[];
+  if(!subs.length) return;
+  const all=document.createElement('button');
+  all.className='sub-tab'+(activeSub===''?' active':'');
+  all.textContent='Tất cả';
+  all.onclick=()=>{activeSub='';renderAll();};
+  subTabsEl.appendChild(all);
+  subs.forEach(s=>{
+    const btn=document.createElement('button');
+    btn.className='sub-tab'+(activeSub===s?' active':'');
+    btn.textContent=SUB_LABELS[s]||s;
+    btn.onclick=()=>{activeSub=s;renderAll();};
+    subTabsEl.appendChild(btn);
+  });
+}
+
+function renderGrid(){
+  filtered=getFiltered();
+  grid.innerHTML='';
+  const label=activeCat?(CAT_LABELS[activeCat]||activeCat):'toàn bộ';
+  countBar.textContent=filtered.length+' ảnh'+(activeSub?' — '+(SUB_LABELS[activeSub]||activeSub):'');
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty">Không tìm thấy ảnh nào.</div>';
+    return;
+  }
+  filtered.forEach((img,i)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    const image=document.createElement('img');
+    image.src=img.thumb;
+    image.alt=readableName(img.name);
+    image.loading='lazy';
+    image.onerror=function(){if(this.src!==img.src)this.src=img.src;};
+    const lbl=document.createElement('div');
+    lbl.className='card-label';
+    lbl.textContent=readableName(img.name);
+    card.appendChild(image);
+    card.appendChild(lbl);
+    card.onclick=()=>openLightbox(i);
+    grid.appendChild(card);
+  });
+}
+
+function renderAll(){renderSubTabs();renderGrid();}
+
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCat=btn.dataset.cat;
+    activeSub='';
+    renderAll();
+  };
+});
+
+document.getElementById('search').addEventListener('input',e=>{
+  searchQ=e.target.value.trim();
+  renderAll();
+});
+
+function openLightbox(idx){
+  lbIdx=idx; showLb();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow='';
+}
+function showLb(){
+  const img=filtered[lbIdx];
+  document.getElementById('lb-img').src=img.src;
+  document.getElementById('lb-img').alt=readableName(img.name);
+  document.getElementById('lb-name').textContent=readableName(img.name);
+  const sl=SUB_LABELS[img.sub]||img.sub;
+  const cl=CAT_LABELS[img.cat]||img.cat;
+  document.getElementById('lb-sub').textContent=cl+(sl&&sl!==cl?' › '+sl:'');
+  document.getElementById('lb-counter').textContent=(lbIdx+1)+' / '+filtered.length;
+}
+document.getElementById('lb-close').onclick=closeLightbox;
+document.getElementById('lb-prev').onclick=()=>{lbIdx=(lbIdx-1+filtered.length)%filtered.length;showLb();};
+document.getElementById('lb-next').onclick=()=>{lbIdx=(lbIdx+1)%filtered.length;showLb();};
+document.getElementById('lightbox').addEventListener('click',e=>{if(e.target===e.currentTarget)closeLightbox();});
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lightbox').classList.contains('open')) return;
+  if(e.key==='Escape') closeLightbox();
+  if(e.key==='ArrowLeft'){lbIdx=(lbIdx-1+filtered.length)%filtered.length;showLb();}
+  if(e.key==='ArrowRight'){lbIdx=(lbIdx+1)%filtered.length;showLb();}
+});
+
+renderAll();
+</script>
+</body>
+</html>
