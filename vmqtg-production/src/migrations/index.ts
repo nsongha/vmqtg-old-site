@@ -5,6 +5,7 @@ import * as migration_20260513_200000_refresh_hoat_dong_vi from './20260513_2000
 import * as migration_20260513_220000_refresh_anchor_sections from './20260513_220000_refresh_anchor_sections';
 import * as migration_20260513_230000_refresh_dich_vu_drop_e6 from './20260513_230000_refresh_dich_vu_drop_e6';
 import * as migration_20260514_040000_short_page_titles from './20260514_040000_short_page_titles';
+import * as migration_20260516_041600_add_media_category from './20260516_041600_add_media_category';
 
 export const migrations = [
   {
@@ -41,5 +42,10 @@ export const migrations = [
     up: migration_20260514_040000_short_page_titles.up,
     down: migration_20260514_040000_short_page_titles.down,
     name: '20260514_040000_short_page_titles'
+  },
+  {
+    up: migration_20260516_041600_add_media_category.up,
+    down: migration_20260516_041600_add_media_category.down,
+    name: '20260516_041600_add_media_category'
   },
 ];
