@@ -64,8 +64,7 @@ nav.main-nav a:hover, nav.main-nav a.active {
 
 .hero {
   position: relative; padding: 60px 0 50px;
-  background: linear-gradient(rgba(90,24,24,.6), rgba(90,24,24,.55)),
-    url('/vmqtg-old-site/assets/images/hero.jpg') center/cover;
+  background: linear-gradient(rgba(90,24,24,.6), rgba(90,24,24,.55));
   color: var(--cream); text-align: center;
 }
 .hero h2 { font-size: 36px; margin: 0 0 10px; letter-spacing: 1px; }
