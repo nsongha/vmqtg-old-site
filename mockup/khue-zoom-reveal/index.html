@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Khuê · Văn Miếu — Quốc Tử Giám</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap"
+    />
+
+    <style>
+      :root {
+        --ink:        #14110d;
+        --ink-soft:   #1d1813;
+        --paper:      #f5ede1;
+        --paper-dim:  #d8cdb9;
+        --vermillion: #c75832;
+        --vermillion-deep: #9a3e22;
+        --ember:      #e2754a;
+        --jade:       #6b7a5a;
+        --gold:       #b89968;
+        --stone:      #8a8276;
+
+        /* dynamic scroll variables, set by JS */
+        --p: 0;          /* overall scroll progress 0..1 in sticky stage */
+        --p-text: 0;     /* hero text intro */
+        --p-iris: 0;     /* iris reveal phase */
+        --p-zoom: 0;     /* gate zoom-out phase */
+        --p-panel: 0;    /* approach panel phase */
+        --iris-r: 200vmax;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: var(--ink);
+        color: var(--paper);
+        font-family: "Be Vietnam Pro", system-ui, sans-serif;
+        font-weight: 300;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      html { scroll-behavior: smooth; }
+      body { overflow-x: hidden; }
+
+      .display {
+        font-family: "Cormorant Garamond", "Times New Roman", serif;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+      }
+
+      /* ───────── PAGE LAYOUT ───────── */
+
+      .stage {
+        position: relative;
+        height: 480vh;            /* scroll runway */
+      }
+
+      .sticky {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+        background: var(--ink);
+      }
+
+      /* ───────── LAYER 1 · YouTube hero ───────── */
+
+      .hero-video {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        /* gentle drift back as the iris reveals */
+        transform: scale(calc(1 + 0.08 * var(--p-iris)));
+        transition: transform 60ms linear;
+      }
+      .hero-video::before {
+        /* anti-flash backdrop while iframe loads */
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(ellipse at 50% 35%, #2a1410 0%, #14110d 65%),
+          var(--ink);
+        z-index: -1;
+      }
+      .hero-video iframe,
+      .hero-video video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100vw;
+        height: 56.25vw;        /* 16:9 */
+        min-width: 177.78vh;    /* 16:9 cover */
+        min-height: 100vh;
+        transform: translate(-50%, -50%);
+        border: 0;
+        object-fit: cover;
+        pointer-events: none;
+      }
+      @keyframes kenburns {
+        0%   { transform: scale(1.08) translate(0,    0); }
+        100% { transform: scale(1.18) translate(-2%, -1%); }
+      }
+      .hero-video::after {
+        /* subtle warm tone over video */
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(ellipse at 50% 40%, transparent 0%, rgba(20,17,13,0.55) 100%),
+          linear-gradient(180deg, rgba(20,17,13,0.35) 0%, transparent 22%, transparent 70%, rgba(20,17,13,0.55) 100%);
+        mix-blend-mode: multiply;
+      }
+
+      /* ───────── LAYER 2 · Gate backdrop (with iris hole) ───────── */
+
+      .gate-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        opacity: var(--p-iris);
+        pointer-events: none;
+      }
+      .gate-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("khue-van-cac-photo.jpg");
+        background-size: cover;
+        background-position: center 38%;
+        /* zoom out as scroll progresses */
+        transform: scale(calc(1.55 - 0.55 * var(--p-zoom)));
+        transform-origin: 50% 32%;
+        /* sepia-warm grade */
+        filter: saturate(0.92) contrast(1.04) brightness(0.94);
+        /* iris hole: visible everywhere EXCEPT a circle at center */
+        -webkit-mask:
+          radial-gradient(circle at 50% 50%,
+            transparent 0,
+            transparent calc(var(--iris-r) - 1px),
+            #000 var(--iris-r));
+        mask:
+          radial-gradient(circle at 50% 50%,
+            transparent 0,
+            transparent calc(var(--iris-r) - 1px),
+            #000 var(--iris-r));
+      }
+      .gate-img::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(ellipse at 50% 32%, transparent 30%, rgba(20,17,13,0.55) 100%),
+          linear-gradient(180deg, transparent 60%, rgba(20,17,13,0.8) 100%);
+      }
+
+      /* ───────── LAYER 3 · Rays around the iris ───────── */
+
+      .rays {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 3;
+        width: calc(var(--iris-r) * 2.4);
+        height: calc(var(--iris-r) * 2.4);
+        transform: translate(-50%, -50%) rotate(calc(var(--p-iris) * 18deg));
+        pointer-events: none;
+        opacity: calc(var(--p-iris) * (1 - var(--p-zoom)));
+        transition: opacity 80ms linear;
+        mix-blend-mode: screen;
+      }
+      .rays svg { width: 100%; height: 100%; display: block; overflow: visible; }
+      .rays .ring {
+        fill: none;
+        stroke: var(--vermillion);
+        stroke-width: 0.6;
+        opacity: 0.92;
+      }
+      .rays .ring-inner {
+        stroke: var(--ember);
+        stroke-width: 0.3;
+        opacity: 0.7;
+      }
+      .rays .bead {
+        fill: var(--vermillion);
+        filter: drop-shadow(0 0 1.6px rgba(231,124,82,0.7));
+      }
+
+      /* ───────── LAYER 4 · Hero text ───────── */
+
+      .hero-text {
+        position: absolute;
+        inset: 0;
+        z-index: 4;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        opacity: calc(1 - var(--p-iris) * 1.6);
+        transform: translateY(calc(var(--p-iris) * -2vh));
+        pointer-events: none;
+      }
+      .hero-text-inner {
+        max-width: min(720px, 88vw);
+        padding: 0 24px;
+        transform: translateY(calc((1 - var(--p-text)) * 24px));
+        opacity: var(--p-text);
+        transition: transform 120ms linear, opacity 120ms linear;
+      }
+      .kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 11px;
+        letter-spacing: 0.42em;
+        text-transform: uppercase;
+        color: var(--paper-dim);
+        margin-bottom: 28px;
+      }
+      .kicker::before, .kicker::after {
+        content: "";
+        width: 40px;
+        height: 1px;
+        background: var(--paper-dim);
+        opacity: 0.6;
+      }
+      .hero-text h1.display {
+        font-size: clamp(72px, 14vw, 200px);
+        line-height: 0.92;
+        margin: 0 0 18px;
+        color: var(--paper);
+        font-weight: 500;
+        font-style: italic;
+        letter-spacing: -0.02em;
+        text-shadow: 0 6px 40px rgba(0,0,0,0.6);
+      }
+      .hero-text h1 .han {
+        display: block;
+        font-size: 0.34em;
+        font-style: normal;
+        letter-spacing: 0.4em;
+        color: var(--vermillion);
+        opacity: 0.9;
+        margin-bottom: 12px;
+        font-family: "Cormorant Garamond", serif;
+      }
+      .hero-text .lede {
+        font-size: clamp(15px, 1.4vw, 18px);
+        line-height: 1.55;
+        max-width: 520px;
+        margin: 0 auto;
+        color: var(--paper-dim);
+        font-weight: 300;
+      }
+      .hero-text .lede em {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        color: var(--paper);
+        font-size: 1.06em;
+      }
+
+      /* ───────── LAYER 5 · Scroll cue ───────── */
+
+      .scroll-cue {
+        position: absolute;
+        left: 50%;
+        bottom: 36px;
+        transform: translateX(-50%);
+        z-index: 5;
+        font-size: 10px;
+        letter-spacing: 0.42em;
+        text-transform: uppercase;
+        color: var(--paper-dim);
+        opacity: calc(1 - var(--p-iris) * 2.6);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+      .scroll-cue .line {
+        width: 1px;
+        height: 56px;
+        background: linear-gradient(180deg, transparent 0%, var(--vermillion) 100%);
+        position: relative;
+        overflow: hidden;
+      }
+      .scroll-cue .line::after {
+        content: "";
+        position: absolute;
+        top: -20px;
+        left: 0;
+        width: 1px;
+        height: 20px;
+        background: var(--paper);
+        animation: drip 2.4s cubic-bezier(0.65,0.05,0.36,1) infinite;
+      }
+      @keyframes drip {
+        0%   { top: -20px; opacity: 0; }
+        20%  { opacity: 1; }
+        100% { top: 56px; opacity: 0; }
+      }
+
+      /* ───────── LAYER 6 · Approach panel (section 2) ───────── */
+
+      .approach {
+        position: absolute;
+        inset: 0;
+        z-index: 6;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        padding: clamp(40px, 6vw, 80px) clamp(24px, 5vw, 72px);
+        pointer-events: none;
+        opacity: var(--p-panel);
+      }
+      .approach > * { pointer-events: auto; }
+      .approach .top {
+        align-self: start;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 24px;
+        transform: translateY(calc((1 - var(--p-panel)) * -32px));
+      }
+      .approach .crest {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: clamp(18px, 1.6vw, 22px);
+        color: var(--paper);
+        letter-spacing: 0.02em;
+      }
+      .approach .crest .han {
+        font-style: normal;
+        color: var(--vermillion);
+        margin-right: 10px;
+        letter-spacing: 0.3em;
+        font-weight: 600;
+      }
+      .approach .meta {
+        text-align: right;
+        font-size: 11px;
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: var(--paper-dim);
+        line-height: 1.8;
+      }
+      .approach .meta strong {
+        display: block;
+        font-weight: 500;
+        color: var(--paper);
+        font-size: 12px;
+      }
+
+      .approach .bottom {
+        display: grid;
+        grid-template-columns: 1.1fr 2fr;
+        gap: clamp(24px, 4vw, 56px);
+        align-items: end;
+        transform: translateY(calc((1 - var(--p-panel)) * 40px));
+      }
+      .approach h2.display {
+        font-size: clamp(40px, 6.4vw, 92px);
+        line-height: 0.96;
+        font-weight: 500;
+        font-style: italic;
+        color: var(--paper);
+        margin: 0;
+        max-width: 12ch;
+        letter-spacing: -0.02em;
+        text-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      }
+      .approach h2 .accent {
+        color: var(--vermillion);
+        font-style: normal;
+        font-weight: 600;
+      }
+
+      .quick {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: clamp(12px, 1.4vw, 18px);
+      }
+
+      .qcard {
+        --i: 0;
+        position: relative;
+        display: block;
+        padding: 22px 22px 24px;
+        text-decoration: none;
+        color: var(--paper);
+        background: rgba(20,17,13,0.55);
+        backdrop-filter: blur(10px) saturate(1.1);
+        -webkit-backdrop-filter: blur(10px) saturate(1.1);
+        border: 1px solid rgba(245,237,225,0.12);
+        overflow: hidden;
+        transition: transform 320ms cubic-bezier(0.22,0.61,0.36,1), border-color 320ms, background 320ms;
+        transform: translateY(calc((1 - var(--p-panel)) * (40px + var(--i) * 18px)));
+      }
+      .qcard::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(199,88,50,0.0) 30%, rgba(199,88,50,0.25) 100%);
+        opacity: 0;
+        transition: opacity 320ms ease;
+      }
+      .qcard:hover {
+        transform: translateY(calc((1 - var(--p-panel)) * (40px + var(--i) * 18px) - 4px));
+        border-color: rgba(199,88,50,0.55);
+        background: rgba(28,20,14,0.72);
+      }
+      .qcard:hover::before { opacity: 1; }
+
+      .qcard .num {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 13px;
+        color: var(--vermillion);
+        letter-spacing: 0.2em;
+      }
+      .qcard .title {
+        margin-top: 24px;
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-weight: 500;
+        font-size: clamp(22px, 2vw, 28px);
+        line-height: 1.05;
+        color: var(--paper);
+      }
+      .qcard .title .han {
+        display: block;
+        font-style: normal;
+        font-size: 12px;
+        letter-spacing: 0.42em;
+        text-transform: uppercase;
+        color: var(--paper-dim);
+        margin-bottom: 8px;
+        font-family: "Be Vietnam Pro", sans-serif;
+      }
+      .qcard .desc {
+        margin-top: 12px;
+        font-size: 13px;
+        line-height: 1.55;
+        color: var(--paper-dim);
+      }
+      .qcard .cta {
+        margin-top: 22px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 11px;
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        color: var(--paper);
+      }
+      .qcard .cta svg {
+        width: 18px;
+        height: 8px;
+        transition: transform 320ms ease;
+      }
+      .qcard:hover .cta svg { transform: translateX(6px); }
+
+      .qcard .icon {
+        position: absolute;
+        top: 22px;
+        right: 22px;
+        width: 28px;
+        height: 28px;
+        color: var(--paper-dim);
+        opacity: 0.85;
+        transition: color 320ms, opacity 320ms;
+      }
+      .qcard:hover .icon { color: var(--vermillion); opacity: 1; }
+
+      /* ───────── frame · top-bar ───────── */
+      .frame {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 30;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 22px clamp(24px, 5vw, 56px);
+        font-size: 11px;
+        letter-spacing: 0.42em;
+        text-transform: uppercase;
+        color: var(--paper);
+        mix-blend-mode: difference;
+        pointer-events: none;
+      }
+      .frame .mark {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 17px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        text-transform: none;
+        color: var(--paper);
+      }
+      .frame .mark .han {
+        color: var(--vermillion);
+        font-style: normal;
+        margin-right: 6px;
+        letter-spacing: 0.3em;
+        font-size: 13px;
+      }
+      .frame .right { display: flex; gap: 28px; }
+
+      /* ───────── after the stage (placeholder for next sections) ───────── */
+      .next-hint {
+        position: relative;
+        height: 40vh;
+        background: var(--ink);
+        display: grid;
+        place-items: center;
+        text-align: center;
+      }
+      .next-hint p {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        color: var(--paper-dim);
+        font-size: 16px;
+        max-width: 32ch;
+      }
+      .next-hint .dash {
+        width: 1px;
+        height: 60px;
+        background: linear-gradient(180deg, transparent, var(--vermillion), transparent);
+        margin: 0 auto 24px;
+      }
+
+      @media (max-width: 768px) {
+        .approach .bottom {
+          grid-template-columns: 1fr;
+          gap: 28px;
+        }
+        .quick { grid-template-columns: 1fr; }
+        .approach .top .meta { display: none; }
+        .frame .right { display: none; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- top frame -->
+    <div class="frame">
+      <div class="mark"><span class="han">奎</span>Khuê · Văn Miếu</div>
+      <div class="right">
+        <span>Hà Nội</span>
+        <span>MCMXLII</span>
+      </div>
+    </div>
+
+    <main>
+      <!-- ═══════════ CINEMATIC ZOOM-REVEAL STAGE ═══════════ -->
+      <section class="stage" id="stage">
+        <div class="sticky">
+
+          <!-- LAYER 1: hero background media
+               Three options — enable whichever you have available:
+               ─────────────────────────────────────────────────────
+               (A) Local MP4 (most reliable; drop your file in this folder)
+               (B) YouTube iframe (must allow embedding; use youtube-nocookie domain)
+               (C) Static photo with Ken Burns drift (fallback, always works)
+               ───────────────────────────────────────────────────── -->
+          <div class="hero-video">
+            <video autoplay muted loop playsinline preload="auto" poster="khue-van-cac-photo.jpg">
+              <source src="hero.mp4" type="video/mp4">
+            </video>
+          </div>
+
+          <!-- LAYER 2: Khuê Văn Các backdrop with iris hole -->
+          <div class="gate-layer">
+            <div class="gate-img"></div>
+          </div>
+
+          <!-- LAYER 3: SVG sun-ray decoration aligned to iris boundary -->
+          <div class="rays" id="rays">
+            <svg viewBox="-100 -100 200 200" aria-hidden="true">
+              <!-- two faint rings hugging the iris edge -->
+              <circle class="ring"       cx="0" cy="0" r="42"/>
+              <circle class="ring ring-inner" cx="0" cy="0" r="44.5"/>
+              <!-- 8 beaded rays generated below by JS -->
+              <g id="ray-beads"></g>
+            </svg>
+          </div>
+
+          <!-- LAYER 4: Hero text -->
+          <div class="hero-text">
+            <div class="hero-text-inner">
+              <p class="kicker">Hà Nội · từ năm 1070</p>
+              <h1 class="display">
+                <span class="han">奎 文 閣</span>
+                Khuê
+              </h1>
+              <p class="lede">
+                <em>"Sao Khuê toả sáng trên bầu trời văn hiến."</em><br/>
+                Bước qua chiếc gương tròn — nơi nghìn năm Quốc Tử Giám
+                vẫn lặng lẽ soi mình xuống Giếng Thiên Quang.
+              </p>
+            </div>
+          </div>
+
+          <!-- LAYER 5: Scroll cue -->
+          <div class="scroll-cue">
+            <span>Cuộn xuống</span>
+            <span class="line"></span>
+          </div>
+
+          <!-- LAYER 6: Approach panel (section 2 lands here) -->
+          <div class="approach">
+            <div class="top">
+              <div class="crest">
+                <span class="han">文 廟</span>
+                Văn Miếu · Quốc Tử Giám
+              </div>
+              <div class="meta">
+                <strong>Mở cửa hôm nay</strong>
+                07:30 — 18:00 · Khu nội tự<br/>
+                17.2°C · Trời quang
+              </div>
+            </div>
+
+            <div class="bottom">
+              <h2 class="display">
+                Bắt đầu hành trình <span class="accent">từ Khuê Văn Các</span>
+              </h2>
+
+              <div class="quick">
+                <a href="#" class="qcard" style="--i: 0">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                    <path d="M3 9h18M3 9v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2M8 5V3M16 5V3"/>
+                  </svg>
+                  <span class="num">I.</span>
+                  <div class="title">
+                    <span class="han">Tickets</span>
+                    Mua vé nhanh
+                  </div>
+                  <p class="desc">Vé phổ thông, vé đoàn và vé trải nghiệm số — đặt trước 15 phút.</p>
+                  <span class="cta">
+                    Đặt vé
+                    <svg viewBox="0 0 18 8" fill="none" stroke="currentColor" stroke-width="1.4">
+                      <path d="M0 4h17M13 1l4 3-4 3"/>
+                    </svg>
+                  </span>
+                </a>
+
+                <a href="#" class="qcard" style="--i: 1">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                    <path d="M4 21V8l8-5 8 5v13M9 21v-7h6v7M9 11h.01M15 11h.01"/>
+                  </svg>
+                  <span class="num">II.</span>
+                  <div class="title">
+                    <span class="han">Heritage</span>
+                    Di tích
+                  </div>
+                  <p class="desc">Năm khu sân thiêng, 82 bia tiến sĩ và bản đồ tương tác đa lớp.</p>
+                  <span class="cta">
+                    Khám phá
+                    <svg viewBox="0 0 18 8" fill="none" stroke="currentColor" stroke-width="1.4">
+                      <path d="M0 4h17M13 1l4 3-4 3"/>
+                    </svg>
+                  </span>
+                </a>
+
+                <a href="#" class="qcard" style="--i: 2">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                    <path d="M3 6h18M6 6v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M10 11l2 2 4-4"/>
+                  </svg>
+                  <span class="num">III.</span>
+                  <div class="title">
+                    <span class="han">Events</span>
+                    Sự kiện
+                  </div>
+                  <p class="desc">Lễ vinh danh thủ khoa, đêm thư pháp, trình diễn nhạc cung đình.</p>
+                  <span class="cta">
+                    Lịch tháng này
+                    <svg viewBox="0 0 18 8" fill="none" stroke="currentColor" stroke-width="1.4">
+                      <path d="M0 4h17M13 1l4 3-4 3"/>
+                    </svg>
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- After the stage: a soft hint that more sections would continue here -->
+      <section class="next-hint">
+        <div>
+          <div class="dash"></div>
+          <p>
+            Tiếp theo · Khuê Văn Các xoay sang trái, hòa vào bản đồ<br/>
+            toàn bộ khu Văn Miếu — <em>đang dựng</em>.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      /* ─────────────────────────────────────────────────────────
+       *  Generate beaded sun-rays for the iris decoration
+       * ──────────────────────────────────────────────────────── */
+      (function buildRays() {
+        const g = document.getElementById("ray-beads");
+        const RAYS = 8;                          // number of rays
+        const BEAD_COUNT = 6;                    // beads per ray
+        const INNER = 48;                        // start radius (outside the ring)
+        const STEP  = 7;                         // distance between beads
+        const SIZES = [1.7, 2.3, 2.0, 2.6, 2.1, 1.5];  // bead radii
+        let svg = "";
+        for (let i = 0; i < RAYS; i++) {
+          const a = (i * 360) / RAYS;
+          svg += `<g transform="rotate(${a})">`;
+          for (let j = 0; j < BEAD_COUNT; j++) {
+            const x = INNER + j * STEP;
+            svg += `<circle class="bead" cx="${x}" cy="0" r="${SIZES[j]}"/>`;
+          }
+          // tiny accent bead at the tip
+          svg += `<circle class="bead" cx="${INNER + BEAD_COUNT * STEP + 2}" cy="0" r="0.9" opacity="0.6"/>`;
+          svg += `</g>`;
+        }
+        g.innerHTML = svg;
+      })();
+
+      /* ─────────────────────────────────────────────────────────
+       *  Scroll-driven progress
+       *  Timeline (within the sticky stage, 0..1):
+       *    0.00 → 0.12   text fade-in
+       *    0.12 → 0.62   iris reveal (huge → small)
+       *    0.55 → 0.88   gate zoom-out
+       *    0.78 → 1.00   approach panel slide-in
+       * ──────────────────────────────────────────────────────── */
+      const root  = document.documentElement;
+      const stage = document.getElementById("stage");
+
+      const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+      const ease  = (t) => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2) / 2; // easeInOutQuad
+      const mapRange = (v, a, b) => clamp((v - a) / (b - a));
+
+      function update() {
+        const rect = stage.getBoundingClientRect();
+        const total = rect.height - window.innerHeight;
+        const p = clamp(-rect.top / total);
+
+        const pText  = ease(mapRange(p, 0.00, 0.12));
+        const pIris  = ease(mapRange(p, 0.12, 0.62));
+        const pZoom  = ease(mapRange(p, 0.55, 0.88));
+        const pPanel = ease(mapRange(p, 0.78, 1.00));
+
+        // Iris radius: from huge (covers gate) to tiny (just a sparkle of video)
+        // Using vmin so it feels right on both portrait and landscape.
+        const rStart = 220;   // vmin – fully hides the gate, only video shows
+        const rEnd   = 4.2;   // vmin – tiny pinhole
+        const irisR  = rStart + (rEnd - rStart) * pIris;
+
+        root.style.setProperty("--p",       p.toFixed(4));
+        root.style.setProperty("--p-text",  pText.toFixed(4));
+        root.style.setProperty("--p-iris",  pIris.toFixed(4));
+        root.style.setProperty("--p-zoom",  pZoom.toFixed(4));
+        root.style.setProperty("--p-panel", pPanel.toFixed(4));
+        root.style.setProperty("--iris-r",  irisR.toFixed(2) + "vmin");
+      }
+
+      let ticking = false;
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(() => { update(); ticking = false; });
+          ticking = true;
+        }
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      update();
+    </script>
+  </body>
+</html>

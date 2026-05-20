@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #14110d;
+  --color-ink-soft: #1d1813;
+  --color-paper: #f5ede1;
+  --color-paper-dim: #d8cdb9;
+  --color-vermillion: #c75832;
+  --color-vermillion-deep: #9a3e22;
+  --color-ember: #e2754a;
+  --color-jade: #6b7a5a;
+  --color-gold: #b89968;
+  --color-stone: #8a8276;
+
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body { overflow-x: hidden; }
+
+.font-display {
+  font-family: var(--font-display), "Times New Roman", serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* hero intro — fades in once on load */
+.hero-intro {
+  animation: heroIn 1.5s cubic-bezier(0.22, 0.61, 0.36, 1) 0.35s both;
+}
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* scroll-cue drip */
+.scroll-line {
+  display: block;
+  width: 1px;
+  height: 56px;
+  background: linear-gradient(180deg, transparent 0%, var(--color-vermillion) 100%);
+  position: relative;
+  overflow: hidden;
+}
+.scroll-line::after {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 1px;
+  height: 20px;
+  background: var(--color-paper);
+  animation: drip 2.4s cubic-bezier(0.65, 0.05, 0.36, 1) infinite;
+}
+@keyframes drip {
+  0%   { top: -20px; opacity: 0; }
+  20%  { opacity: 1; }
+  100% { top: 56px;  opacity: 0; }
+}
+
+/* qcard hover lift */
+.qcard:hover {
+  border-color: rgba(199, 88, 50, 0.55) !important;
+  background: rgba(28, 20, 14, 0.72) !important;
+  transform: translateY(calc((1 - var(--p-panel, 0)) * (40px + var(--i, 0) * 18px) - 4px)) !important;
+}
+
+/* header — link + CTA hover */
+.hdr-link { transition: color 200ms ease; }
+.hdr-link:hover { color: var(--color-paper) !important; }
+.hdr-cta { transition: background 200ms ease, transform 200ms ease; }
+.hdr-cta:hover {
+  background: var(--color-vermillion-deep) !important;
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
