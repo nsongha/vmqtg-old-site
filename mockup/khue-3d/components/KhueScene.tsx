@@ -1,13 +1,30 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { Environment } from "@react-three/drei";
-import { Suspense } from "react";
+import { Environment, useProgress } from "@react-three/drei";
+import { Suspense, useEffect } from "react";
 import Khue from "./Khue";
 import VideoPlane from "./VideoPlane";
 import CameraRig from "./CameraRig";
 
-export default function KhueScene() {
+export default function KhueScene({
+  videoPlay,
+  onVideoReady,
+  onVideoProgress,
+  onAssetsProgress,
+}: {
+  videoPlay: boolean;
+  onVideoReady: () => void;
+  onVideoProgress: (fraction: number) => void;
+  onAssetsProgress: (fraction: number) => void;
+}) {
+  // The GLB gate model and the environment HDR both load through three's
+  // default loading manager — useProgress reports their combined progress.
+  const { progress, total } = useProgress();
+  useEffect(() => {
+    onAssetsProgress(total > 0 ? progress / 100 : 0);
+  }, [progress, total, onAssetsProgress]);
+
   return (
     <Canvas
       gl={{ alpha: true, antialias: true, preserveDrawingBuffer: false }}
@@ -20,7 +37,11 @@ export default function KhueScene() {
         gl.localClippingEnabled = true;
       }}
     >
-      <VideoPlane />
+      <VideoPlane
+        play={videoPlay}
+        onReady={onVideoReady}
+        onProgress={onVideoProgress}
+      />
 
       <Suspense fallback={null}>
         <Khue />

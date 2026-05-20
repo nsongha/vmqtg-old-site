@@ -37,6 +37,15 @@ body { overflow-x: hidden; }
   letter-spacing: -0.01em;
 }
 
+/* preloader — gentle breathing pulse on the logo mark */
+.preloader-pulse {
+  animation: preloaderPulse 1.6s ease-in-out infinite;
+}
+@keyframes preloaderPulse {
+  0%, 100% { opacity: 0.45; transform: scale(0.97); }
+  50%      { opacity: 1;    transform: scale(1); }
+}
+
 /* hero intro — fades in once on load */
 .hero-intro {
   animation: heroIn 1.5s cubic-bezier(0.22, 0.61, 0.36, 1) 0.35s both;

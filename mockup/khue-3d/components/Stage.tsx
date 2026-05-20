@@ -1,10 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { scrollProgress, clamp, easeInOut, mapRange } from "@/lib/scroll";
 import { cameraPoses } from "@/lib/cameraPoses";
 import CameraTuner from "./CameraTuner";
+import Preloader from "./Preloader";
+import LogoMark from "./LogoMark";
 
 // R3F Canvas is browser-only — never SSR it.
 const KhueScene = dynamic(() => import("./KhueScene"), { ssr: false });
@@ -13,6 +15,67 @@ export default function Stage() {
   const stageRef = useRef<HTMLDivElement>(null);
   // Lets the "Cuộn xuống" cue trigger the same guided glide as a wheel-down.
   const glideRef = useRef<() => void>(() => {});
+
+  // ── Preloading gate ──────────────────────────────────────────────────
+  // The page must not be scrolled before the hero video, the gate model and
+  // its lighting have decoded — otherwise the viewer scrolls an empty scene.
+  const [videoReady, setVideoReady] = useState(false);
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [assetsProgress, setAssetsProgress] = useState(0);
+  const [photoReady, setPhotoReady] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [showPreloader, setShowPreloader] = useState(true);
+  const readyRef = useRef(false);
+
+  const handleVideoReady = useCallback(() => setVideoReady(true), []);
+  const handleVideoProgress = useCallback((f: number) => setVideoProgress(f), []);
+  const handleAssetsProgress = useCallback(
+    (f: number) => setAssetsProgress(f),
+    [],
+  );
+
+  // The Section-2 photo is a CSS background — preload it so its reveal is
+  // clean, but never let a photo failure trap the gate.
+  useEffect(() => {
+    const img = new Image();
+    const flag = () => setPhotoReady(true);
+    img.onload = flag;
+    img.onerror = flag;
+    img.src = "/khue-real.jpg";
+  }, []);
+
+  // Latch ready once every asset has decoded…
+  useEffect(() => {
+    if (ready) return;
+    if (videoReady && photoReady && assetsProgress >= 1) setReady(true);
+  }, [ready, videoReady, photoReady, assetsProgress]);
+
+  // …with a hard ceiling so a stalled network can never trap the viewer.
+  useEffect(() => {
+    const t = setTimeout(() => setReady(true), 20000);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Drop the overlay one fade after the ready flip.
+  useEffect(() => {
+    readyRef.current = ready;
+    if (!ready) return;
+    const t = setTimeout(() => setShowPreloader(false), 650);
+    return () => clearTimeout(t);
+  }, [ready]);
+
+  // Lock scrolling until the scene is ready to be explored.
+  useEffect(() => {
+    document.documentElement.style.overflow = ready ? "" : "hidden";
+    if (!ready) window.scrollTo(0, 0);
+    return () => {
+      document.documentElement.style.overflow = "";
+    };
+  }, [ready]);
+
+  const loadProgress = ready
+    ? 1
+    : Math.min(0.99, 0.18 * assetsProgress + 0.82 * videoProgress);
 
   useEffect(() => {
     // A scrollytelling page should always open at the top.
@@ -88,6 +151,11 @@ export default function Stage() {
     };
 
     const onWheel = (e: WheelEvent) => {
+      // Swallow wheel intent while the preloader is still up.
+      if (!readyRef.current) {
+        e.preventDefault();
+        return;
+      }
       const p = scrollProgress.value;
       if (e.deltaY > 0) {
         // Downward intent → guided glide to Section 2.
@@ -163,7 +231,12 @@ export default function Stage() {
 
           {/* ─── LAYER 2 · 3D model (transparent canvas over video) ─── */}
           <div className="absolute inset-0">
-            <KhueScene />
+            <KhueScene
+              videoPlay={ready}
+              onVideoReady={handleVideoReady}
+              onVideoProgress={handleVideoProgress}
+              onAssetsProgress={handleAssetsProgress}
+            />
           </div>
 
           {/* ─── LAYER 2.5 · Section-2 real photo ───
@@ -214,7 +287,7 @@ export default function Stage() {
               }}
             />
             <div
-              className="hero-intro relative px-6"
+              className={`${ready ? "hero-intro " : ""}relative px-6`}
               style={{
                 maxWidth: "min(860px, 92vw)",
                 fontFamily: "var(--font-montserrat), system-ui, sans-serif",
@@ -300,6 +373,8 @@ export default function Stage() {
           <Approach />
         </div>
       </section>
+
+      {showPreloader && <Preloader progress={loadProgress} done={ready} />}
     </>
   );
 }
@@ -354,28 +429,6 @@ function Stat({
 /* ──────────────────────────────────────────────────────────────────────── */
 
 const NAV_LINKS = ["Tham quan", "Di tích", "Trưng bày", "Các hoạt động", "Dịch vụ"];
-
-function LogoMark({ height = 30 }: { height?: number }) {
-  // The source artwork only fills a portrait slice of its 140×140 canvas —
-  // this viewBox is cropped tight to the glyph so it fills the badge.
-  return (
-    <svg
-      width={height * 0.506}
-      height={height}
-      viewBox="42.7 16 54.7 108"
-      fill="currentColor"
-      aria-hidden
-    >
-      <g transform="matrix(1,0,0,1,0,-942)">
-        <g transform="matrix(1.044776,0,0,0.751982,269.552239,266.099147)">
-          <g transform="matrix(0.957143,0,0,1.329818,-190.302243,994.851051)">
-            <path d="M2.826,-4.771L-4.283,-4.771C-5.557,-4.771 -6.589,-3.738 -6.589,-2.464C-6.589,-1.19 -5.557,-0.158 -4.283,-0.158L2.826,-0.158C4.1,-0.158 5.133,-1.19 5.133,-2.465C5.133,-3.738 4.1,-4.771 2.826,-4.771ZM-21.712,47.79C-20.438,47.79 -19.406,46.758 -19.406,45.484L-19.406,12.988L-3.036,12.988L-3.036,45.481C-3.036,46.755 -2.004,47.788 -0.73,47.788C0.544,47.788 1.577,46.755 1.577,45.481L1.577,12.988L17.948,12.988L17.948,45.484C17.948,46.758 18.981,47.79 20.255,47.79C21.53,47.79 22.562,46.758 22.562,45.484L22.562,10.682C22.562,9.408 21.53,8.375 20.255,8.375L-21.712,8.375C-22.987,8.375 -24.02,9.408 -24.02,10.682L-24.02,45.484C-24.02,46.758 -22.987,47.79 -21.712,47.79M-23.524,-48.572C-24.228,-49.779 -23.907,-51.278 -22.806,-51.919C-21.705,-52.561 -20.243,-52.102 -19.539,-50.894L-16.854,-46.29L-0.728,-18.62L15.398,-46.29L18.081,-50.894C18.784,-52.102 20.248,-52.561 21.349,-51.919C22.45,-51.278 22.771,-49.779 22.068,-48.572L20.658,-46.154L4.114,-17.767L1.431,-13.163C1.175,-12.723 0.816,-12.386 0.413,-12.162C0.401,-12.155 0.393,-12.145 0.381,-12.138C0.035,-11.937 -0.346,-11.855 -0.728,-11.859C-1.11,-11.855 -1.491,-11.937 -1.837,-12.138C-1.85,-12.145 -1.858,-12.155 -1.87,-12.162C-2.273,-12.386 -2.631,-12.723 -2.887,-13.163L-5.571,-17.767L-22.115,-46.154L-23.524,-48.572Z" />
-          </g>
-        </g>
-      </g>
-    </svg>
-  );
-}
 
 function Frame() {
   // Tier 1 (utility bar) collapses while scrolling down; Tier 2 (main nav)

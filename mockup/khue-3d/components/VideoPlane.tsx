@@ -27,7 +27,15 @@ const PLANE_W = 0.34;
  *  - at the INSIDE camera pose the plane fills the viewport (hero = video)
  *  - at the HERO camera pose the plane stays inside the model silhouette
  */
-export default function VideoPlane() {
+export default function VideoPlane({
+  play,
+  onReady,
+  onProgress,
+}: {
+  play: boolean;
+  onReady: () => void;
+  onProgress: (fraction: number) => void;
+}) {
   const video = useMemo(() => {
     const v = document.createElement("video");
     v.src = "/hero.mp4";
@@ -55,20 +63,45 @@ export default function VideoPlane() {
     return t;
   }, [video]);
 
+  // Track buffering — feeds the preloader. `canplaythrough` (readyState 4) is
+  // the "safe to reveal" signal; the one-off check covers a cache hit that
+  // already resolved before this effect attached its listeners.
   useEffect(() => {
-    const tryPlay = () => video.play().catch(() => {});
-    tryPlay();
-    video.addEventListener("canplay", tryPlay);
-    // Browsers may block autoplay until a gesture — scroll counts.
-    window.addEventListener("scroll", tryPlay, { passive: true, once: true });
-    window.addEventListener("pointerdown", tryPlay, { once: true });
+    const reportProgress = () => {
+      if (video.duration && video.buffered.length) {
+        const end = video.buffered.end(video.buffered.length - 1);
+        onProgress(Math.min(1, end / video.duration));
+      }
+    };
+    const reportReady = () => {
+      onProgress(1);
+      onReady();
+    };
+    video.addEventListener("progress", reportProgress);
+    video.addEventListener("loadeddata", reportProgress);
+    video.addEventListener("canplaythrough", reportReady);
+    reportProgress();
+    if (video.readyState >= 4) reportReady();
     return () => {
-      video.removeEventListener("canplay", tryPlay);
+      video.removeEventListener("progress", reportProgress);
+      video.removeEventListener("loadeddata", reportProgress);
+      video.removeEventListener("canplaythrough", reportReady);
       video.pause();
       video.src = "";
       texture.dispose();
     };
-  }, [video, texture]);
+  }, [video, texture, onReady, onProgress]);
+
+  // The intro video only starts once the preloader clears, so the viewer
+  // always catches it from frame 0.
+  useEffect(() => {
+    if (!play) return;
+    video.currentTime = 0;
+    const tryPlay = () => video.play().catch(() => {});
+    tryPlay();
+    window.addEventListener("pointerdown", tryPlay, { once: true });
+    return () => window.removeEventListener("pointerdown", tryPlay);
+  }, [play, video]);
 
   const meshRef = useRef<THREE.Mesh>(null);
   const matRef = useRef<THREE.MeshBasicMaterial>(null);
