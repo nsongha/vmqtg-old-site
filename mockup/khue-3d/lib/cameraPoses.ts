@@ -14,7 +14,7 @@ export const POSE_DEFAULTS = {
   modelZ: 0, // gate model: positive = nearer the camera
   clipZ: -0.155, // model clip: geometry behind this Z is cut (hides the back roof)
   // Guided Section 1 → Section 2 glide, in seconds (eased slow-fast-slow):
-  glideDuration: 3,
+  glideDuration: 5,
   // Section-2 photo (fades in after the video) — aligned to the 3D silhouette:
   photoScale: 1.074,
   photoX: 0, // % of viewport, horizontal nudge

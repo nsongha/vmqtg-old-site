@@ -1,9 +1,9 @@
-import Stage from "@/components/Stage";
+import ExperienceGate from "@/components/ExperienceGate";
 
 export default function Page() {
   return (
     <main>
-      <Stage />
+      <ExperienceGate />
     </main>
   );
 }

@@ -139,7 +139,10 @@ export default function Stage() {
       if (!el) return;
       const rect = el.getBoundingClientRect();
       const total = (rect.height - window.innerHeight) * 0.8;
-      const p = clamp(-rect.top / total);
+      // Guard the division: an unsettled / zero-height measurement makes
+      // `total` 0, and -rect.top / 0 yields NaN — which would then poison
+      // scrollProgress and the --p / --p-hide CSS vars permanently.
+      const p = total > 0 ? clamp(-rect.top / total) : 0;
       scrollProgress.value = p;
 
       // --p-hide (hero text) stays scroll-driven. --p-panel (Section-2 photo
